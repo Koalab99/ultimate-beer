@@ -1,5 +1,16 @@
 #include <Rectangle.h>
 
+Rectangle::Rectangle(float x, float y, float w, float h) {
+	setX(x);
+	setY(y);
+	setW(w);
+	setH(h);
+}
+
+Rectangle::~Rectangle() {
+
+}
+
 float Rectangle::getX() const {
 	return m_x;
 }
@@ -17,7 +28,7 @@ float Rectangle::getW() const {
 }
 
 void Rectangle::setX(float x) {
-	if(x > 0) {
+	if(x >= 0) {
 		m_x = x;
 	}
 	else {
@@ -26,7 +37,7 @@ void Rectangle::setX(float x) {
 }
 
 void Rectangle::setY(float y) {
-	if(y > 0) {
+	if(y >= 0) {
 		m_y = y;
 	}
 	else {
@@ -36,7 +47,7 @@ void Rectangle::setY(float y) {
 }
 
 void Rectangle::setW(float w) {
-	if(w > 0) {
+	if(w >= 0) {
 		m_w = w;
 	}
 	else {
@@ -46,11 +57,10 @@ void Rectangle::setW(float w) {
 }
 
 void Rectangle::setH(float h) {
-	if(h > 0) {
+	if(h >= 0) {
 		m_h = h;
 	}
 	else {
 		m_h = 0;
 	}
-
 }
