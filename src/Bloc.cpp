@@ -2,18 +2,17 @@
 
 float Bloc::GetX() const
 {
-    cout<<"_"<<endl;
-    return x;
+    return m_x;
 }
 
 float Bloc::GetY() const
 {
-    return y;
+    return m_y;
 }
 
 void Bloc::SetX(float x)
 {
-    if(y >= 0) {
+    if(x >= 0) {
 		m_x = x;
 	}
 }

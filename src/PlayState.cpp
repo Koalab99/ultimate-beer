@@ -1,3 +1,4 @@
+#include <PlayState.h>
 #include <Map.h>
 #include <Player.h>
 
@@ -8,11 +9,6 @@ PlayState::PlayState(Map *map, Player *player) {
 
 PlayState::~PlayState() {
 
-}
-
-void PlayState::update() {
-	m_map->update();
-	m_player->update();
 }
 
 Player *PlayState::getPlayer() const {
