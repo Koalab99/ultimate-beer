@@ -83,7 +83,7 @@ void Player::jump() {
 void Player::update() {
 	if(!m_floor) {
 		m_speed -= g;
-		if(m_map->collide(m_x, m_y, m_w, m_h)) {
+		if(!m_map->collide(m_x, m_y, m_w, m_h).isNull()) {
 			m_floor = true;
 			m_speed = 0;
 		}
