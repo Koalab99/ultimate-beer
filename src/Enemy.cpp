@@ -16,17 +16,14 @@ void Enemy::setAlive(bool x)
   m_alive = x;
 }
 
-Rectangle Enemy::getRectangle()
+Rectangle Enemy::getRectangle() const
 {
   return m_rectangle;
 }
 
 void Enemy::setRectangle(Rectangle rect)
 {
-  if (rect>0)
-    {
-      m_rectangle = rect;
-    }
+  m_rectangle = rect;
 }
 
 Enemy::~Enemy()

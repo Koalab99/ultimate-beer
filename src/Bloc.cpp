@@ -1,4 +1,5 @@
-#Include <Bloc.h>
+#include <Bloc.h>
+#include <Position.h>
 
 float Bloc::GetX() const
 {
@@ -31,7 +32,7 @@ float Bloc::GetWidth()
 
 float Bloc::GetHeight()
 {
-  return heigth;
+  return height;
 }
 
 Bloc::Bloc()
@@ -47,4 +48,17 @@ Bloc::Bloc(float, float, float, float)
 Bloc::~Bloc()
 {
     
+}
+
+Position Bloc::isInside(Position &p) {
+  Position ret;
+  if(m_x <= p.getX() && m_x + width >= p.getX()) {
+    ret.setX((p.getX() - m_x > m_x + width - p.getX()) ? p.getX() - (m_x + width) : p.getX() - m_x);
+    if(m_y <= p.getY() && m_y + height >= p.getY()) {
+      ret.setY((p.getY() - m_y > m_y + height - p.getY()) ? p.getY() - (m_y + height) : p.getY() - m_y);
+      return ret;
+    }
+  }
+  ret.setX(0);
+  return ret;
 }

@@ -1,10 +1,12 @@
 #ifndef Bloc_h
 #define Bloc_h
 
+#include <Position.h>
+
 class Bloc {
     private:
     float width;
-    float heigth; 
+    float height; 
     float m_x;
     float m_y;
 
@@ -17,6 +19,8 @@ class Bloc {
 
     float GetWidth();
     float GetHeight();
+
+    Position isInside(Position &p);
 
     Bloc();
     Bloc(float, float, float, float);
