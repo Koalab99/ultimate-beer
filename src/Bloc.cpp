@@ -13,30 +13,30 @@ float Bloc::GetY() const
 void Bloc::SetX(float x)
 {
     if(x >= 0) {
-		m_x = x;
-	}
+      m_x = x;
+    }
 }
 
 void Bloc::SetY(float y)
 {
-    if(y >= 0) {
-		m_y = y;
-	}
+  if(y >= 0) {
+    m_y = y;
+  }
 }
 
 float Bloc::GetWidth()
 {
-    return width;
+  return width;
 }
 
 float Bloc::GetHeight()
 {
-    return heigth;
+  return heigth;
 }
 
 Bloc::Bloc()
 {
-
+  
 }
 
 Bloc::Bloc(float, float, float, float)
