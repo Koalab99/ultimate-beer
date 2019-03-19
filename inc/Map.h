@@ -3,6 +3,7 @@
 
 #include <Bloc.h>
 #include <Position.h>
+#include <vector>
 
 class Map {
 private:

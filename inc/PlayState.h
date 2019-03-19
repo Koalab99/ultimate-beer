@@ -13,12 +13,12 @@ public:
 	PlayState(Map *map, Player *player);
 	~PlayState();
 
-	void render() = 0;
-	void update();
-	void input() = 0;
+	virtual void render() = 0;
+	virtual void update() = 0;
+	virtual void input() = 0;
 	
 	Player *getPlayer() const;
 	Map *getMap() const;
-}
+};
 
 #endif
