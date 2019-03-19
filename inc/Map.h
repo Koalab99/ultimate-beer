@@ -8,7 +8,7 @@
 class Map {
 private:
 	std::vector<Bloc> blocs;
-	Position pointCollide(float x, float y);
+	Position pointCollide(Position &p);
 public:
 	Position collide(float x, float y, float w, float h);
 };
