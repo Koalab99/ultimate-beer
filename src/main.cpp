@@ -1,6 +1,8 @@
 #include <iostream>
 #include <Game.h>
 #include <unistd.h>
+#include "Map.h"
+using namespace std;
 
 int main() {
 	Game g;
@@ -13,6 +15,10 @@ int main() {
 	else {
 		std::cerr << "Game couldn't start" << std::endl;
 	}
-
+	Map carte("text.txt");
+    carte.open("text.txt");
+    cout << "main nb:"<<carte.getNbBloc() << endl;
+    cout << "main X:" <<carte.getBlocs()[1].GetX();
+    cout << "main GetType:" <<carte.getBlocs()[1].GetType();
 	return 0;
 }

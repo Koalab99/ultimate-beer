@@ -4,9 +4,14 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 Map::Map(const std::string &filename) {
 	// Do something.
+}
+
+Map::~Map(){
 }
 
 Bloc Map::collide(float x, float y) {
@@ -35,10 +40,50 @@ bool Map::blocExists(Bloc c) {
 	return c != m_blocs.end()[0];
 }
 
+int Map::getNbBloc(){
+    return m_nbBlocks;
+}
+
+vector<Bloc> Map::getBlocs(){
+    return m_blocs;
+}
+
+
 float Map::getH() {
 	return m_h;
 }
 
 float Map::getW() {
 	return m_w;
+}
+
+void Map::open(string path){
+
+     ifstream monFlux(path.c_str(), ios::in);
+     if(monFlux){
+
+            string ligne;
+            monFlux>> m_dimx;
+            monFlux>> m_dimy;
+            monFlux>> m_nbBlocks;
+            cout<< "nb block: "<<m_nbBlocks << endl;
+            float h,w,x,y;
+            int t;
+
+            for(int i=0; i<m_nbBlocks;i++){
+                monFlux>>w;
+                monFlux>>h;
+                monFlux>>x;
+                monFlux>>y;
+                monFlux>>t;
+                Bloc monblocs(w,h,x,y,t);
+                cout << "w:"<<monblocs.GetWidth() <<" h:"<<monblocs.GetHeight() << " x:"<<monblocs.GetX()<< " y:"<< monblocs.GetY() << endl;
+                m_blocs.push_back(monblocs);
+            }
+
+            monFlux.close();
+     }
+     else{
+         cout << "Erreur : Impossible d'ouvrir le fichier." << endl;
+     }
 }

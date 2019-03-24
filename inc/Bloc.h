@@ -9,6 +9,7 @@ class Bloc {
     float height; 
     float m_x;
     float m_y;
+	int m_type;
 
     public:
     float GetX() const;
@@ -19,11 +20,13 @@ class Bloc {
 
     float GetWidth() const;
     float GetHeight() const;
+	
+	int GetType();
 
     Position isInside(Position &p);
 
     Bloc();
-    Bloc(float, float, float, float);
+    Bloc(float width, float height, float m_x, float m_y, int m_type);
     ~Bloc();
 
     bool operator==(const Bloc &other);
