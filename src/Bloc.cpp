@@ -25,12 +25,12 @@ void Bloc::SetY(float y)
   }
 }
 
-float Bloc::GetWidth()
+float Bloc::GetWidth() const
 {
   return width;
 }
 
-float Bloc::GetHeight()
+float Bloc::GetHeight() const
 {
   return height;
 }
@@ -61,4 +61,12 @@ Position Bloc::isInside(Position &p) {
   }
   ret.setX(0);
   return ret;
+}
+
+bool Bloc::operator==(const Bloc &other) {
+	return (other.GetX() == m_x && other.GetY() == m_y && other.GetWidth() == width && other.GetHeight() == height);
+}
+
+bool Bloc::operator!=(const Bloc &other) {
+	return !(*this == other);
 }

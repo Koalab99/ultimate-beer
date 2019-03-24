@@ -17,14 +17,17 @@ class Bloc {
     void SetX(float);
     void SetY(float);
 
-    float GetWidth();
-    float GetHeight();
+    float GetWidth() const;
+    float GetHeight() const;
 
     Position isInside(Position &p);
 
     Bloc();
     Bloc(float, float, float, float);
     ~Bloc();
+
+    bool operator==(const Bloc &other);
+    bool operator!=(const Bloc &other);
 };
 
 #endif

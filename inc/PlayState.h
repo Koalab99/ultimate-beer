@@ -4,8 +4,13 @@
 #include <Map.h>
 #include <Player.h>
 
+enum PlayStatesState {
+	HIT,
+	DEAD
+};
+
 class PlayState {
-private:
+protected:
 	Map *m_map;
 	Player *m_player;
 
@@ -14,7 +19,7 @@ public:
 	~PlayState();
 
 	virtual void render() = 0;
-	virtual void update() = 0;
+	virtual int update() = 0;
 	virtual void input() = 0;
 	
 	Player *getPlayer() const;

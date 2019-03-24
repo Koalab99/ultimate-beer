@@ -14,7 +14,7 @@ private:
 	bool m_floor;
 	int m_life;
 public:
-	Player(Map *map);
+	Player(Map *map = nullptr);
 	~Player();
 	float getX() const;
 	float getY() const;
