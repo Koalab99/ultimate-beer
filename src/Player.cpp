@@ -1,5 +1,6 @@
 #include <Player.h>
 #include <Map.h>
+#include <iostream>
 
 const float g = 0.001f;
 
@@ -81,8 +82,18 @@ void Player::jump() {
 }
 
 void Player::update() {
-	if(!m_floor) {
+	if(m_y < 10) {
+		m_y = 10;
+	}
+	if(m_direction != 0) {
+		m_x += m_direction;
+	}
+/*	if(!m_floor) {
 		m_speed -= g;
+		if(m_map == nullptr) {
+			std::cerr << "Null map" << std::endl;
+			return;
+		}
 		if(m_map->blocExists(m_map->collide(m_x, m_y)) && m_map->blocExists(m_map->collide(m_x + m_w, m_y)) ) {
 			m_floor = true;
 			m_speed = 0;
@@ -91,4 +102,13 @@ void Player::update() {
 			m_y += m_speed;
 		}
 	}
-}
+	else {
+		if(m_map == nullptr) {
+			return ;
+		}
+		if(!m_map->blocExists(m_map->collide(m_x, m_y)) && 
+				!m_map->blocExists(m_map->collide(m_x+m_w, m_y))) {
+			m_floor = !m_floor;
+		}
+	}
+*/}

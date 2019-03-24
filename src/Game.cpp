@@ -18,7 +18,7 @@ Game::~Game() {
 }
 
 int Game::init() {
-	m_map = new Map("testMap.map");
+	m_map = new Map("Level 1");
 	m_player = new Player(m_map);
 	m_playstate = new TextPlay(m_map, m_player);
 	if(m_map == nullptr || m_player == nullptr || m_playstate == nullptr) {

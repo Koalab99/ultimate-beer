@@ -6,7 +6,7 @@
 CC=g++
 FILETYPE=cpp
 
-CCFLAG=-Wall -I$(INCDIR) --std=c++11
+CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g
 LDFLAG= 
 
 EXE=ultimateBeer

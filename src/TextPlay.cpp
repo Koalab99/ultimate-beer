@@ -3,7 +3,9 @@
 #include <PlayState.h>
 #include <Rectangle.h>
 #include <Player.h>
+#include <Enemy.h>
 #include <Bloc.h>
+#include <signal.h>
 
 TextPlay::TextPlay(Map *map, Player *player) 
 	: PlayState(map, player) {
@@ -24,8 +26,13 @@ void TextPlay::render() {
 	else {
 		getMapArray((int)(m_player->getX() - DIMW/2), (int)(m_player->getX() + DIMW/2));
 	}
-	for(int i = 0; i < DIMW; i++) {
-		for(int j = m_map->getH(); j > 0; j--) {
+	for(int j = m_player->getY() + m_player->getH(); j >= m_player->getY(); j--) {
+		for(int i = m_player->getX(); i < m_player->getX() + m_player->getW(); i++) {
+			m_mapArray[i][j] = '8';
+		}
+	}
+	for(int j = m_map->getH(); j > 0; j--) {
+		for(int i = 0; i < DIMW; i++) {
 			std::cout << m_mapArray[i][j];
 		}
 		std::cout << std::endl;
@@ -56,11 +63,17 @@ void TextPlay::getMapArray(int min, int max) {
 }
 
 int TextPlay::update() {
+	m_player->update();
+	std::vector<Enemy>::iterator i;
+	for(i = m_enemies.begin(); i != m_enemies.end(); ++i) {
+		if(i->isAlive()) {
+			i->update();
+		}
+	}
 	return 0;	
 }
 
 void TextPlay::input() {
-	
 }
 
 void TextPlay::loop() {

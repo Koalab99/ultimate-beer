@@ -13,6 +13,7 @@ private:
 	Map *m_map;
 	bool m_floor;
 	int m_life;
+	float m_direction;
 public:
 	Player(Map *map = nullptr);
 	~Player();

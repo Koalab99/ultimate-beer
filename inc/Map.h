@@ -14,11 +14,12 @@ private:
 public:
 	Map(const std::string &filename);
 	~Map();
-	Bloc collide(float x, float y);
-	bool blocExists(Bloc c);
+	Bloc *collide(float x, float y);
+	bool blocExists(Bloc *c);
 	std::vector<Bloc> *getBlocsInRange(int &number, float x, float w);
 	float getH();
 	float getW();
+	bool fall(float x, float y, float w);
 };
 
 #endif

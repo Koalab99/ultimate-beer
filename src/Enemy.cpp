@@ -1,8 +1,9 @@
 #include <Enemy.h>
 #include <Rectangle.h>
+#include <Map.h>
 using namespace std;
 
-Enemy::Enemy(): m_alive(true),  m_rectangle(0,0,1,2) 
+Enemy::Enemy(Map *map, float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_direction(1), m_map(map)
 {
 }
 
@@ -28,4 +29,14 @@ void Enemy::setRectangle(Rectangle rect)
 
 Enemy::~Enemy()
 {
+}
+
+void Enemy::update() {
+	Rectangle r(m_rectangle.getX() + m_direction, m_rectangle.getY(), m_rectangle.getW(), m_rectangle.getH());
+	if(m_map->fall(r.getX(), r.getY(), r.getW())) {
+		m_direction *= -1;
+	}
+	else {
+		m_rectangle = r;
+	}
 }
