@@ -32,7 +32,19 @@ int Game::init() {
 int Game::loop() {
 	m_playstate->render();
 	m_playstate->input();
-	return m_playstate->update();
+	int type = m_playstate->update();
+	switch(type) {
+		case 0:
+			return true;
+			break;
+		case 1:
+			return false;
+			break;
+
+		default:
+			std::cout << "wtf" << std::endl;
+			return false;
+	}
 }
 
 Player *Game::getPlayer() const {
