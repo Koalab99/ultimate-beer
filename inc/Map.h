@@ -15,9 +15,7 @@ private:
 	std::vector<Bloc> m_blocs;
 	float m_h;
 	float m_w;
-	double m_dimx;
-    double m_dimy;
-    int m_nbBlocks;
+    	int m_nbBlocks;
 	
 public:
 	Map(const std::string &filename);

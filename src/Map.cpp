@@ -68,10 +68,8 @@ void Map::open(std::string path){
 
      ifstream monFlux(path.c_str(), ios::in);
      if(monFlux){
-
-            string ligne;
-            monFlux>> m_dimx;
-            monFlux>> m_dimy;
+            monFlux>> m_w;
+            monFlux>> m_h;
             monFlux>> m_nbBlocks;
             cout<< "nb block: "<<m_nbBlocks << endl;
             float h,w,x,y;

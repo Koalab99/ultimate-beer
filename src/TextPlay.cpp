@@ -1,6 +1,7 @@
 #include <iostream>
 #include <TextPlay.h>
 #include <PlayState.h>
+#include <Map.h>
 #include <Rectangle.h>
 #include <Player.h>
 #include <Enemy.h>
@@ -26,17 +27,33 @@ TextPlay::~TextPlay() {
 
 void TextPlay::render() {
 	clear();
-	if((int)m_player->getX() < COLS/2) {
-		getMapArray(0, COLS);		
-	}
-	else {
-		getMapArray((int)(m_player->getX() - COLS/2), (int)(m_player->getX() + COLS/2));
-	}
-	for(int j = (int)(m_player->getY() + m_player->getH())-1; j >= (int)m_player->getY(); j--) {
-		for(int i = m_player->getX(); i < m_player->getX() + m_player->getW(); i++) {
-			mvprintw(m_map->getH() - j, i, "8");
+	if(((int)m_player->getX() < COLS/2)) {
+		getMapArray(0, COLS-1);		
+		for(int j = (int)m_player->getY(); j <= (int)(m_player->getY() + m_player->getH()); j++) {
+			for(int i = m_player->getX(); i < m_player->getX() + m_player->getW(); i++) {
+				mvprintw(m_map->getH() - j, i, "8");
+			}
 		}
 	}
+	else if(m_player->getX() >= COLS/2 && m_player->getX() <= m_map->getW() - COLS/2) {
+		getMapArray((int)(m_player->getX() - COLS/2), (int)(m_player->getX() + COLS/2));
+		for(int j = (int)m_player->getY(); j <= (int)(m_player->getY() + m_player->getH()); j++) {
+			for(int i = COLS/2; i < COLS/2 + m_player->getW(); i++) {
+				mvprintw(m_map->getH() - j, i, "8");
+			}
+		}
+	}
+	else {
+		getMapArray(m_map->getW() - COLS, m_map->getW());
+		for(int j = (int)m_player->getY(); j <= (int)(m_player->getY() + m_player->getH()); j++) {
+			for(int i = (int)m_player->getX() % (int)(m_map->getW() - COLS); i < ((int)m_player->getX() % (int)(m_map->getW() - COLS)) + m_player->getW(); i++) {
+				mvprintw(m_map->getH() - j, i, "8");
+			}
+		}
+	}
+	mvprintw(m_map->getH() + 2, 0, "x Player = %d", (int)m_player->getX());
+	mvprintw(m_map->getH() + 3, 0, "w Map    = %d", (int)m_map->getW());
+	mvprintw(m_map->getH() + 4, 0, "COLS     = %d", COLS);
 	refresh();
 }
 
@@ -47,7 +64,7 @@ void TextPlay::getMapArray(int min, int max) {
 
 	for(std::vector<Bloc>::iterator i = visibleBlocs->begin(); i != visibleBlocs->end(); ++i) {
 		for(int x = ((int)i->GetX() < min) ? 0 : i->GetX() - min ; 
-				x < COLS && x < (int)i->GetX() + (int)i->GetWidth(); 	x++) {
+				x < COLS && x < (int)i->GetX() + (int)i->GetWidth() - min; 	x++) {
 			for(int y = (int)i->GetY() + (int)i->GetHeight(); y > (int)i->GetY(); y--) {
 				mvprintw(m_map->getH() - y, x, "#");
 			}
