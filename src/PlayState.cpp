@@ -5,6 +5,7 @@
 PlayState::PlayState(Map *map, Player *player) {
 	m_map = map;
 	m_player = player;
+	m_quit = false;
 }
 
 PlayState::~PlayState() {

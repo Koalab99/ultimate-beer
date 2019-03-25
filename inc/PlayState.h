@@ -13,10 +13,10 @@ class PlayState {
 protected:
 	Map *m_map;
 	Player *m_player;
-
+	bool m_quit;
 public:
 	PlayState(Map *map, Player *player);
-	~PlayState();
+	virtual ~PlayState();
 
 	virtual void render() = 0;
 	virtual int update() = 0;

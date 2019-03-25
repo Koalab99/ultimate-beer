@@ -4,11 +4,17 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 Map::Map(const std::string &filename) {
 	m_h = 30;
 	m_w = 200;
 	// Do something.
+	open(filename);
+}
+
+Map::~Map(){
 }
 
 Bloc *Map::collide(float x, float y) {
@@ -34,8 +40,17 @@ std::vector<Bloc> *Map::getBlocsInRange(int &number, float x, float w) {
 }
 
 bool Map::blocExists(Bloc *c) {
-	return c != &m_blocs.end()[0];
+	return *c != m_blocs.end()[0];
 }
+
+int Map::getNbBloc(){
+    return m_nbBlocks;
+}
+
+vector<Bloc> Map::getBlocs(){
+    return m_blocs;
+}
+
 
 float Map::getH() {
 	return m_h;
@@ -47,4 +62,35 @@ float Map::getW() {
 
 bool Map::fall(float x, float y, float w) {
 	return (!blocExists(collide(x, y-0.01)) && !blocExists(collide(x+w, y-0.01)));
+}
+
+void Map::open(std::string path){
+
+     ifstream monFlux(path.c_str(), ios::in);
+     if(monFlux){
+
+            string ligne;
+            monFlux>> m_dimx;
+            monFlux>> m_dimy;
+            monFlux>> m_nbBlocks;
+            cout<< "nb block: "<<m_nbBlocks << endl;
+            float h,w,x,y;
+            int t;
+
+            for(int i=0; i<m_nbBlocks;i++){
+                monFlux>> w >> h >> x >> y >> t;
+                Bloc monblocs(w,h,x,y);
+		std::cout << "w:"<<monblocs.GetWidth() <<" h:"<<monblocs.GetHeight() << " x:"<<monblocs.GetX()<< " y:"<< monblocs.GetY() << std::endl;
+		if(t == 1) {
+	                m_blocs.push_back(monblocs);
+		} else if(t == 2) {
+			// Do nothing for now
+		}
+            }
+
+            monFlux.close();
+     }
+     else{
+         cout << "Erreur : Impossible d'ouvrir le fichier." << endl;
+     }
 }

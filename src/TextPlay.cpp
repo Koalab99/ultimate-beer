@@ -6,45 +6,38 @@
 #include <Enemy.h>
 #include <Bloc.h>
 #include <signal.h>
+#include <curses.h>
 
 TextPlay::TextPlay(Map *map, Player *player) 
 	: PlayState(map, player) {
-	for(int i = 0; i < DIMW; i++) {
-		m_mapArray[i] = new char[(int)map->getH()];
-	}
+	initscr();
+	cbreak();
+	noecho();
+	keypad(stdscr, TRUE);
+	curs_set(0);
+	nodelay(stdscr, TRUE);
 }
 
 TextPlay::~TextPlay() {
 	// Follow PlayState Destructor
+	endwin();
+	curs_set(1);
 }
 
 void TextPlay::render() {
 	clear();
-	if((int)m_player->getX() < DIMW/2) {
-		getMapArray(0, DIMW);		
+	if((int)m_player->getX() < COLS/2) {
+		getMapArray(0, COLS);		
 	}
 	else {
-		getMapArray((int)(m_player->getX() - DIMW/2), (int)(m_player->getX() + DIMW/2));
+		getMapArray((int)(m_player->getX() - COLS/2), (int)(m_player->getX() + COLS/2));
 	}
-	for(int j = m_player->getY() + m_player->getH(); j >= m_player->getY(); j--) {
+	for(int j = (int)(m_player->getY() + m_player->getH())-1; j >= (int)m_player->getY(); j--) {
 		for(int i = m_player->getX(); i < m_player->getX() + m_player->getW(); i++) {
-			m_mapArray[i][j] = '8';
+			mvprintw(m_map->getH() - j, i, "8");
 		}
 	}
-	for(int j = m_map->getH(); j > 0; j--) {
-		for(int i = 0; i < DIMW; i++) {
-			std::cout << m_mapArray[i][j];
-		}
-		std::cout << std::endl;
-	}
-}
-
-void TextPlay::clear() {
-	for(int i = 0; i < DIMW; i++) {
-		for(int j = m_map->getH(); j>0; j--) {
-			m_mapArray[i][j] = ' ';
-		}
-	}
+	refresh();
 }
 
 void TextPlay::getMapArray(int min, int max) {
@@ -54,9 +47,9 @@ void TextPlay::getMapArray(int min, int max) {
 
 	for(std::vector<Bloc>::iterator i = visibleBlocs->begin(); i != visibleBlocs->end(); ++i) {
 		for(int x = ((int)i->GetX() < min) ? 0 : i->GetX() - min ; 
-				x < DIMW && x < (int)i->GetX() + (int)i->GetWidth(); 	x++) {
+				x < COLS && x < (int)i->GetX() + (int)i->GetWidth(); 	x++) {
 			for(int y = (int)i->GetY() + (int)i->GetHeight(); y > (int)i->GetY(); y--) {
-				m_mapArray[x][y] = '#';
+				mvprintw(m_map->getH() - y, x, "#");
 			}
 		}
 	}
@@ -70,10 +63,32 @@ int TextPlay::update() {
 			i->update();
 		}
 	}
-	return 0;	
+	return m_quit;	
 }
 
 void TextPlay::input() {
+	int c;
+	if((c = getch()) != ERR) {
+		switch(c) {
+			case KEY_UP:
+				m_player->jump();
+				break;
+			case KEY_RIGHT:
+				m_player->setDirection(1);
+				break;
+			case KEY_LEFT:
+				m_player->setDirection(-1);
+				break;
+			case (int)'q':
+				m_quit = true;
+				break;
+			default:
+				break;
+		}
+	}
+	else {
+		m_player->setDirection(0);
+	}
 }
 
 void TextPlay::loop() {

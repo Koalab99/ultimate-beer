@@ -7,7 +7,7 @@ CC=g++
 FILETYPE=cpp
 
 CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g
-LDFLAG= 
+LDFLAG=-lncurses 
 
 EXE=ultimateBeer
 

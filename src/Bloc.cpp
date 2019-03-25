@@ -35,14 +35,17 @@ float Bloc::GetHeight() const
   return height;
 }
 
+int Bloc::GetType()
+{
+    return m_type;
+}
+
 Bloc::Bloc()
 {
   
 }
 
-Bloc::Bloc(float, float, float, float)
-{
-
+Bloc::Bloc(float w, float h, float x, float y):width(w),height(h),m_x(x),m_y(y){
 }
 
 Bloc::~Bloc()

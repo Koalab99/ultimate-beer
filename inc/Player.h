@@ -13,7 +13,7 @@ private:
 	Map *m_map;
 	bool m_floor;
 	int m_life;
-	float m_direction;
+	int m_direction;
 public:
 	Player(Map *map = nullptr);
 	~Player();
@@ -21,7 +21,6 @@ public:
 	float getY() const;
 	float getW() const;
 	float getH() const;
-	float getAcc() const;
 	bool getFloor() const;
 	int getLife() const;
 	float getSpeed() const;
@@ -32,6 +31,7 @@ public:
 	void setH(float h);
 	void setLife(int life);
 	void setMap(Map *map);
+	void setDirection(int x);
 	void jump();
 
 	void update();

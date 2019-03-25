@@ -2,7 +2,7 @@
 #include <Map.h>
 #include <iostream>
 
-const float g = 0.001f;
+const float g = 0.015f;
 
 Player::Player(Map *map) {
 	m_x = 2;
@@ -77,38 +77,52 @@ void Player::setMap(Map *map) {
 void Player::jump() {
 	if(m_floor) {
 		m_floor = false;
-		m_speed = .05f;
+		m_speed = 2.f;
 	}
 }
 
 void Player::update() {
-	if(m_y < 10) {
-		m_y = 10;
-	}
-	if(m_direction != 0) {
-		m_x += m_direction;
-	}
-/*	if(!m_floor) {
+	if(!m_floor) {
 		m_speed -= g;
+		if(m_speed > 2) {
+			m_speed = 2;
+		}
+		else if(m_speed < -2) {
+			m_speed = -2;
+		}
+		m_y += m_speed*0.03;
 		if(m_map == nullptr) {
 			std::cerr << "Null map" << std::endl;
 			return;
 		}
-		if(m_map->blocExists(m_map->collide(m_x, m_y)) && m_map->blocExists(m_map->collide(m_x + m_w, m_y)) ) {
-			m_floor = true;
+		Bloc *b = m_map->collide(m_x, m_y);
+		Bloc *c = m_map->collide(m_x + m_w, m_y);
+		if(m_map->blocExists(b) && m_map->blocExists(c) ) {
+			m_y = b->GetY() + b->GetHeight() + 1;
 			m_speed = 0;
-		}
-		else {
-			m_y += m_speed;
+			m_floor = true;
 		}
 	}
 	else {
 		if(m_map == nullptr) {
 			return ;
 		}
-		if(!m_map->blocExists(m_map->collide(m_x, m_y)) && 
-				!m_map->blocExists(m_map->collide(m_x+m_w, m_y))) {
+		if(!m_map->blocExists(m_map->collide(m_x, m_y-1.01)) && 
+				!m_map->blocExists(m_map->collide(m_x+m_w, m_y-1.01))) {
 			m_floor = !m_floor;
 		}
 	}
-*/}
+	m_x += m_direction;
+}
+
+void Player::setDirection(int x) {
+	if(x > 0) {
+		m_direction = 1;
+	}
+	else if(x < 0) {
+		m_direction = -1;
+	}
+	else {
+		m_direction = 0;
+	}
+}

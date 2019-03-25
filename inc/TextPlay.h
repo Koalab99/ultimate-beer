@@ -21,7 +21,6 @@ public:
 	TextPlay(Map *map, Player *player);
 	~TextPlay();
 	void render();
-	void clear();
 	void getMapArray(int min, int max);
 	void loop();
 	int update();
