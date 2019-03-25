@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-
+class Map;
 class Enemy {
  private:
   bool  m_alive;

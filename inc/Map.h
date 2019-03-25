@@ -3,13 +3,14 @@
 
 #include <Bloc.h>
 #include <Position.h>
+#include <Enemy.h>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 
 using namespace std;
-
+class Enemy;
 class Map {
 private:
 	std::vector<Bloc> m_blocs;
@@ -18,7 +19,7 @@ private:
     	int m_nbBlocks;
 	
 public:
-	Map(const std::string &filename);
+	Map(const std::string &filename, std::vector<Enemy> *enemies);
 	~Map();
 	Bloc *collide(float x, float y);
 	bool blocExists(Bloc *c);
@@ -26,7 +27,7 @@ public:
 	
 	int getNbBloc();
 	std::vector<Bloc> getBlocs();
-	void open(string path);
+	void open(const string &path, std::vector<Enemy> *enemies);
 	
 	float getH();
 	float getW();

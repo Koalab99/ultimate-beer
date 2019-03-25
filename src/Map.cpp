@@ -7,11 +7,11 @@
 #include <iostream>
 #include <fstream>
 
-Map::Map(const std::string &filename) {
+Map::Map(const std::string &filename, std::vector<Enemy> *enemies) {
 	m_h = 30;
 	m_w = 200;
 	// Do something.
-	open(filename);
+	open(filename, enemies);
 }
 
 Map::~Map(){
@@ -64,7 +64,7 @@ bool Map::fall(float x, float y, float w) {
 	return (!blocExists(collide(x, y-0.01)) && !blocExists(collide(x+w, y-0.01)));
 }
 
-void Map::open(std::string path){
+void Map::open(const std::string &path, std::vector<Enemy> *enemies){
 
      ifstream monFlux(path.c_str(), ios::in);
      if(monFlux){
@@ -82,7 +82,8 @@ void Map::open(std::string path){
 		if(t == 1) {
 	                m_blocs.push_back(monblocs);
 		} else if(t == 2) {
-			// Do nothing for now
+			Enemy n(this, x, y);
+			enemies->push_back(n);
 		}
             }
 

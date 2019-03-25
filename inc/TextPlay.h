@@ -15,10 +15,10 @@ class TextPlay : public PlayState {
 private:
 	char *m_mapArray[DIMW];
 	std::vector<Bloc> *m_visibleBlocs;
-	std::vector<Enemy> m_enemies;
+	std::vector<Enemy> *m_enemies;
 	pid_t m_eventListener;
 public:
-	TextPlay(Map *map, Player *player);
+	TextPlay(Map *map, Player *player, std::vector<Enemy> *enemies);
 	~TextPlay();
 	void render();
 	void getMapArray(int min, int max);

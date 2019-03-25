@@ -9,7 +9,7 @@
 #include <signal.h>
 #include <curses.h>
 
-TextPlay::TextPlay(Map *map, Player *player) 
+TextPlay::TextPlay(Map *map, Player *player, std::vector<Enemy> *enemies) 
 	: PlayState(map, player) {
 	initscr();
 	cbreak();
@@ -17,6 +17,7 @@ TextPlay::TextPlay(Map *map, Player *player)
 	keypad(stdscr, TRUE);
 	curs_set(0);
 	nodelay(stdscr, TRUE);
+	m_enemies = enemies;
 }
 
 TextPlay::~TextPlay() {
@@ -75,7 +76,7 @@ void TextPlay::getMapArray(int min, int max) {
 int TextPlay::update() {
 	m_player->update();
 	std::vector<Enemy>::iterator i;
-	for(i = m_enemies.begin(); i != m_enemies.end(); ++i) {
+	for(i = m_enemies->begin(); i != m_enemies->end(); ++i) {
 		if(i->isAlive()) {
 			i->update();
 		}

@@ -20,9 +20,10 @@ Game::~Game() {
 }
 
 int Game::init() {
-	m_map = new Map("data/map/level1.map");
+	std::vector<Enemy> *enemies = new std::vector<Enemy>();
+	m_map = new Map("data/map/level1.map", enemies);
 	m_player = new Player(m_map);
-	m_playstate = new TextPlay(m_map, m_player);
+	m_playstate = new TextPlay(m_map, m_player, enemies);
 	if(m_map == nullptr || m_player == nullptr || m_playstate == nullptr) {
 		return -1;
 	}
