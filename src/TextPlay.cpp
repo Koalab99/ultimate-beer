@@ -52,9 +52,10 @@ void TextPlay::render() {
 			}
 		}
 	}
-	mvprintw(m_map->getH() + 2, 0, "x Player = %d", (int)m_player->getX());
-	mvprintw(m_map->getH() + 3, 0, "w Map    = %d", (int)m_map->getW());
-	mvprintw(m_map->getH() + 4, 0, "COLS     = %d", COLS);
+	mvprintw(m_map->getH() + 1, 0, "Help:");
+	mvprintw(m_map->getH() + 3, 4, "Q                       - Quit the Game");
+	mvprintw(m_map->getH() + 4, 4, "Up arrow                - Jump");
+	mvprintw(m_map->getH() + 5, 4, "Left or Right arrow     - Move left or right");
 	refresh();
 }
 
@@ -71,6 +72,7 @@ void TextPlay::getMapArray(int min, int max) {
 			}
 		}
 	}
+	delete visibleBlocs;
 }
 
 int TextPlay::update() {
@@ -90,6 +92,7 @@ void TextPlay::input() {
 		switch(c) {
 			case KEY_UP:
 				m_player->jump();
+				m_player->setDirection(0);
 				break;
 			case KEY_RIGHT:
 				m_player->setDirection(1);
@@ -101,6 +104,7 @@ void TextPlay::input() {
 				m_quit = true;
 				break;
 			default:
+				m_player->setDirection(0);
 				break;
 		}
 	}

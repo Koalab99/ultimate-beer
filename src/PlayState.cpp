@@ -9,7 +9,9 @@ PlayState::PlayState(Map *map, Player *player) {
 }
 
 PlayState::~PlayState() {
-
+	if(m_map != nullptr) {
+		delete m_map;
+	}
 }
 
 Player *PlayState::getPlayer() const {

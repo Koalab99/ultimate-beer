@@ -15,15 +15,15 @@ Game::~Game() {
 		delete m_player;
 	if(m_playstate != nullptr) 
 		delete m_playstate;
-
-
+	if(m_enemies != nullptr)
+		delete m_enemies;
 }
 
 int Game::init() {
-	std::vector<Enemy> *enemies = new std::vector<Enemy>();
-	m_map = new Map("data/map/level1.map", enemies);
+	std::vector<Enemy> *m_enemies = new std::vector<Enemy>();
+	m_map = new Map("data/map/level1.map", m_enemies);
 	m_player = new Player(m_map);
-	m_playstate = new TextPlay(m_map, m_player, enemies);
+	m_playstate = new TextPlay(m_map, m_player, m_enemies);
 	if(m_map == nullptr || m_player == nullptr || m_playstate == nullptr) {
 		return -1;
 	}
