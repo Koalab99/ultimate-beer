@@ -72,6 +72,7 @@ void TextPlay::getMapArray(int min, int max) {
 			}
 		}
 	}
+	delete visibleBlocs;
 }
 
 int TextPlay::update() {
