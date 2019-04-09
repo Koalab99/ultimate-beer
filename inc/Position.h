@@ -4,7 +4,7 @@
 class Position {
 private:
 	float m_x;
-	int m_y;
+	float m_y;
 public:
 	float getX() const;
 	float getY() const;
