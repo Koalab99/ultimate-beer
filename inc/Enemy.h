@@ -22,7 +22,8 @@ class Enemy {
   Rectangle getRectangle() const;
   void setRectangle(Rectangle rect);
 
-  void update();
+  int getDirection() const;
+  void setDirection(const int direction);
 
   ~Enemy(); 
 

@@ -4,7 +4,8 @@
 #include <Player.h>
 #include <PlayState.h>
 #include <string>
-#include <TextPlay.h>
+#include <PlayState.h>
+#include <SDL2/SDL.h>
 
 Game::Game() {
 
@@ -13,29 +14,29 @@ Game::Game() {
 Game::~Game() {
 	if(m_player != nullptr) 
 		delete m_player;
-	if(m_playstate != nullptr) 
-		delete m_playstate;
+	if(m_state != nullptr) 
+		delete m_state;
 	if(m_enemies != nullptr)
 		delete m_enemies;
 }
 
 int Game::init() {
+	SDL_Window
 	std::vector<Enemy> *m_enemies = new std::vector<Enemy>();
-	m_map = new Map("data/map/level1.map", m_enemies);
-	m_player = new Player(m_map);
-	m_playstate = new TextPlay(m_map, m_player, m_enemies);
-	if(m_map == nullptr || m_player == nullptr || m_playstate == nullptr) {
+	m_map = nullptr; 
+	m_player = new Player(nullptr);
+	m_state = new PlayState("data/map/level1.map", m_player);
+	if(m_map == nullptr || m_player == nullptr || m_state == nullptr) {
 		return -1;
 	}
 	m_quit = false;
 	return 0;
-	
 }
 
 int Game::loop() {
-	m_playstate->render();
-	m_playstate->input();
-	int type = m_playstate->update();
+	m_state->render();
+	m_state->input();
+	int type = m_state->update();
 	switch(type) {
 		case 0:
 			return true;
@@ -54,6 +55,6 @@ Player *Game::getPlayer() const {
 	return m_player;
 }
 
-PlayState *Game::getPlayState() const {
-	return m_playstate;
+PlayState *Game::getState() const {
+	return m_state;
 }
