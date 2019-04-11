@@ -6,8 +6,8 @@
 CC=g++
 FILETYPE=cpp
 
-CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g
-LDFLAG=-lncurses 
+CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g $(sdl2-config --cflags)
+LDFLAG=$(sdl2-config --libs)
 
 EXE=ultimateBeer
 

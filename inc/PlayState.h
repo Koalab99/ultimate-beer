@@ -3,6 +3,8 @@
 
 #include <Map.h>
 #include <Player.h>
+#include <SDL2/SDL.h>
+#include <Enemy.h>
 
 enum PlayStatesState {
 	HIT,
@@ -12,10 +14,13 @@ enum PlayStatesState {
 class PlayState {
 protected:
 	Map *m_map;
+	std::vector<Enemy> m_enemies;
 	Player *m_player;
 	bool m_quit;
+	void updateEnemies();
 public:
-	PlayState(Map *map, Player *player);
+	PlayState(SDL_Window *window, std::string &path, Player *player);
+
 	virtual ~PlayState();
 
 	virtual void render() = 0;

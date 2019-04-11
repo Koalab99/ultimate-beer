@@ -3,7 +3,7 @@
 #include <Map.h>
 using namespace std;
 
-Enemy::Enemy(Map *map, float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_direction(1), m_map(map)
+Enemy::Enemy(float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_direction(1), m_map(map)
 {
 }
 
@@ -27,16 +27,19 @@ void Enemy::setRectangle(Rectangle rect)
   m_rectangle = rect;
 }
 
-Enemy::~Enemy()
-{
+int getDirection() const { 
+	return m_direction;
 }
 
-void Enemy::update() {
-	Rectangle r(m_rectangle.getX() + m_direction, m_rectangle.getY(), m_rectangle.getW(), m_rectangle.getH());
-	if(m_map->fall(r.getX(), r.getY(), r.getW())) {
-		m_direction *= -1;
+void setDirection(const int direction) {
+	if(direction != -1 && direction != 1) {
+		m_direction = 1;
 	}
 	else {
-		m_rectangle = r;
+		m_direction = direction;
 	}
+}
+
+Enemy::~Enemy()
+{
 }

@@ -8,10 +8,8 @@
 
 class Game {
 private:
-	Map *m_map;
 	Player *m_player;
-	PlayState *m_playstate;
-	std::vector<Enemy> *m_enemies;
+	GameState *m_state;
 	bool m_quit;
 
 public:
@@ -19,9 +17,8 @@ public:
 	~Game();
 	int init();
 	int loop();
-	Map *getMap() const;
 	Player *getPlayer() const;
-	PlayState *getPlayState() const;
+	PlayState *getState() const;
 
 };
 
