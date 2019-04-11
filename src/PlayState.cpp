@@ -7,22 +7,24 @@
 #include <Position.h>
 #include <Rectangle.h>
 #include <Bloc.h>
+#include <GameState.h>
 
 void PlayState::updateEnemies() {
 	for(std::vector<Enemy>::iterator i = m_enemies.begin(); i != m_enemies.end(); i++) {
-		Rectangle rect = i.getRectangle();
-		Bloc b = i.getBloc();
-		if(i.getDirection() == 1 && rect.getX() + rect.getW() >= b.getX() + b.getW()) {
-			i.getDirection = -1;
+		Rectangle rect = i->getRectangle();
+		Bloc *b = i->getBloc();
+		if(i->getDirection() == 1 && rect.getX() + rect.getW() >= b->GetX() + b->GetWidth()) {
+			i->setDirection(-1);
 		}
-		else if(i.getDirection() == -1 && rect.getX <= b.getX()) {
-			i.getDirection = 1;
+		else if(i->getDirection() == -1 && rect.getX() <= b->GetX()) {
+			i->setDirection(1);
 		}
-		i.setX(i.getX() + i.getDirection * ENEMY_SPEED);
+		i->setX(rect.getX() + i->getDirection() * ENEMY_SPEED);
 	}
 }
 
-PlayState::PlayState(SDL_Window *window, std::string &path, Player *player) {
+PlayState::PlayState(SDL_Window *window, std::string path, Player *player) 
+	: GameState(window) {
 	m_map = new Map(path, &m_enemies);
 	m_player = player;
 	m_quit = false;
@@ -42,3 +44,15 @@ Map *PlayState::getMap() const {
 	return m_map;
 }
 
+void PlayState::render() {
+	
+}
+
+void PlayState::input() {
+
+}
+
+int PlayState::update() {
+
+	return 0;
+}

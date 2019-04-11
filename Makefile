@@ -6,8 +6,8 @@
 CC=g++
 FILETYPE=cpp
 
-CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g $(sdl2-config --cflags)
-LDFLAG=$(sdl2-config --libs)
+CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g $(shell sdl2-config --cflags)
+LDFLAG=$(shell sdl2-config --libs) -lSDL2_ttf -lSDL2_image
 
 EXE=ultimateBeer
 

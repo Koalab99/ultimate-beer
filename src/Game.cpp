@@ -6,6 +6,8 @@
 #include <string>
 #include <PlayState.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 Game::Game() {
 
@@ -16,17 +18,32 @@ Game::~Game() {
 		delete m_player;
 	if(m_state != nullptr) 
 		delete m_state;
-	if(m_enemies != nullptr)
-		delete m_enemies;
+	if(m_window != NULL)
+		SDL_DestroyWindow(m_window);
+	SDL_Quit();
+	TTF_Quit();
+	IMG_Quit();
 }
 
 int Game::init() {
-	SDL_Window
-	std::vector<Enemy> *m_enemies = new std::vector<Enemy>();
-	m_map = nullptr; 
-	m_player = new Player(nullptr);
-	m_state = new PlayState("data/map/level1.map", m_player);
-	if(m_map == nullptr || m_player == nullptr || m_state == nullptr) {
+	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+		exit(EXIT_FAILURE);	
+	}
+	if(TTF_Init() == -1) {
+		exit(EXIT_FAILURE);
+	}
+	int flags = IMG_INIT_JPG;
+	if((IMG_Init(flags)&flags) != flags) {
+		exit(EXIT_FAILURE);
+	}
+
+	m_window = SDL_CreateWindow("Ultimate Beer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 720, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	if(m_window == NULL) {
+		return -1;
+	}
+	m_player = new Player();
+	m_state = new PlayState(m_window, "data/map/level1.map", m_player);
+	if(m_player == nullptr || m_state == nullptr) {
 		return -1;
 	}
 	m_quit = false;
@@ -55,6 +72,6 @@ Player *Game::getPlayer() const {
 	return m_player;
 }
 
-PlayState *Game::getState() const {
+GameState *Game::getState() {
 	return m_state;
 }

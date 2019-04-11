@@ -15,7 +15,7 @@ private:
 	int m_life;
 	int m_direction;
 public:
-	Player(Map *map = nullptr);
+	Player();
 	~Player();
 	float getX() const;
 	float getY() const;

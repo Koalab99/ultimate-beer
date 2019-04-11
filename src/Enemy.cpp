@@ -1,9 +1,11 @@
 #include <Enemy.h>
 #include <Rectangle.h>
 #include <Map.h>
+#include <Rectangle.h>
+
 using namespace std;
 
-Enemy::Enemy(float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_direction(1), m_map(map)
+Enemy::Enemy(float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_direction(1)
 {
 }
 
@@ -27,11 +29,11 @@ void Enemy::setRectangle(Rectangle rect)
   m_rectangle = rect;
 }
 
-int getDirection() const { 
+int Enemy::getDirection() const { 
 	return m_direction;
 }
 
-void setDirection(const int direction) {
+void Enemy::setDirection(const int direction) {
 	if(direction != -1 && direction != 1) {
 		m_direction = 1;
 	}
@@ -42,4 +44,16 @@ void setDirection(const int direction) {
 
 Enemy::~Enemy()
 {
+}
+
+Bloc *Enemy::getBloc() const {
+	return m_bloc;
+}
+
+void Enemy::setBloc(Bloc *bloc) {
+	m_bloc = bloc;
+}
+
+void Enemy::setX(float x) {
+	m_rectangle.setX(x);
 }

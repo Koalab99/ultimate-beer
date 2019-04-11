@@ -6,7 +6,7 @@ class GameState
 {
  public:
   GameState(SDL_Window* window);
-  ~GameState();
+  virtual ~GameState();
   
   virtual void input() = 0;
   virtual void render() = 0;

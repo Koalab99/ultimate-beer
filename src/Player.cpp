@@ -4,14 +4,13 @@
 
 const float g = 0.20f;
 
-Player::Player(Map *map) {
+Player::Player() {
 	m_x = 2;
 	m_y = 20;
 	m_w = 1;
 	m_h = 1.5;
 	m_speed = 0;
 	m_floor = false;
-	m_map = map;
 }
 
 Player::~Player() {

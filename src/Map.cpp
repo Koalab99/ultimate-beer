@@ -82,7 +82,7 @@ void Map::open(const std::string &path, std::vector<Enemy> *enemies){
 		if(t == 1) {
 	                m_blocs.push_back(monblocs);
 		} else if(t == 2) {
-			Enemy n(this, x, y);
+			Enemy n(x, y);
 			enemies->push_back(n);
 		}
             }
