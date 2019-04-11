@@ -1,6 +1,6 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
-#include <SDL>
+#include <SDL2/SDL.h>
  
  class GameState
 {
