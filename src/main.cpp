@@ -8,7 +8,7 @@ int main() {
 	Game g;
 	if(g.init() == 0) {
 		while(g.loop()) {
-			usleep(50000);
+			usleep(100000);
 		}
 	}
 	else {

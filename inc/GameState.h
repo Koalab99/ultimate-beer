@@ -14,5 +14,6 @@ class GameState
   
 protected:
   SDL_Window* m_window;
+  SDL_Renderer *m_renderer;
 };
 #endif

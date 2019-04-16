@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <Menu.h>
 
 Game::Game() {
 
@@ -26,14 +27,17 @@ Game::~Game() {
 }
 
 int Game::init() {
-	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) {
 		exit(EXIT_FAILURE);	
 	}
 	if(TTF_Init() == -1) {
+		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 	int flags = IMG_INIT_JPG;
 	if((IMG_Init(flags)&flags) != flags) {
+		SDL_Quit();
+		TTF_Quit();
 		exit(EXIT_FAILURE);
 	}
 
@@ -41,8 +45,9 @@ int Game::init() {
 	if(m_window == NULL) {
 		return -1;
 	}
+	SDL_SetWindowMinimumSize(m_window, 360, 240);
 	m_player = new Player();
-	m_state = new PlayState(m_window, "data/map/level1.map", m_player);
+	m_state = new Menu(m_window);
 	if(m_player == nullptr || m_state == nullptr) {
 		return -1;
 	}
