@@ -4,11 +4,13 @@
 #include <Player.h>
 #include <PlayState.h>
 #include <string>
-#include <PlayState.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <Menu.h>
+#include <StateReturnValue.h>
+
+extern TTF_Font *gFont;
 
 Game::Game() {
 
@@ -45,8 +47,13 @@ int Game::init() {
 	if(m_window == NULL) {
 		return -1;
 	}
-	SDL_SetWindowMinimumSize(m_window, 360, 240);
+//	SDL_SetWindowMinimumSize(m_window, 360, 240); // Doesnt work idk why
 	m_player = new Player();
+	gFont = TTF_OpenFont("data/font/Action_Man.ttf", 128);
+	if(gFont == NULL) {
+		std::cerr << "Could not load font" << std::endl;
+		std::cerr << TTF_GetError() << std::endl;
+	}
 	m_state = new Menu(m_window);
 	if(m_player == nullptr || m_state == nullptr) {
 		return -1;
@@ -60,17 +67,21 @@ int Game::loop() {
 	m_state->input();
 	int type = m_state->update();
 	switch(type) {
-		case 0:
-			return true;
-			break;
-		case 1:
+		case RETURN_QUIT:
 			return false;
 			break;
-
+		case RETURN_PLAY:
+			delete m_state;
+			m_state = new PlayState(m_window, m_player);
+			break;
+		case RETURN_MENU:
+			delete m_state;
+			m_state = new Menu(m_window);
+			break;
 		default:
-			std::cout << "wtf" << std::endl;
-			return false;
+			break;
 	}
+	return true;
 }
 
 Player *Game::getPlayer() const {

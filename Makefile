@@ -3,11 +3,11 @@
 #   If you're lucky, he might wave you sometimes !
 #
 
-CC=g++
+CC=g++ 
 FILETYPE=cpp
 
-CCFLAG=-Wall -I$(INCDIR) --std=c++11 -g $(shell sdl2-config --cflags)
-LDFLAG=$(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf
+CCFLAG=-Wall -I$(INCDIR) --std=c++17 -g $(shell sdl2-config --cflags)
+LDFLAG=$(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf -lstdc++fs
 
 EXE=ultimateBeer
 

@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <Player.h>
-#include <PlayState.h>
+#include <PlayLevel.h>
 #include <Map.h>
 #include <Enemy.h>
 #include <GameState.h>

@@ -9,6 +9,7 @@ GameState::GameState(SDL_Window* window): m_window(window){
 
 
 GameState::~GameState() {
+	SDL_DestroyRenderer(m_renderer);
 }
 			 
 

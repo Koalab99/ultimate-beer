@@ -1,36 +1,30 @@
-#ifndef PLAY_STATE_H
-#define PLAY_STATE_H
-
-#include <Map.h>
-#include <Player.h>
+#ifndef PLAYSTATE_H
+#define PLAYSTATE_H
 #include <SDL2/SDL.h>
-#include <Enemy.h>
-#include <GameState.h>
-
-enum PlayStatesState {
-	HIT,
-	DEAD
-};
+#include <PlayLevel.h>
+#include <LevelInfo.h>
+#include <Button.h>
 
 class PlayState : public GameState {
-protected:
-	Map *m_map;
-	std::vector<Enemy> m_enemies;
-	Player *m_player;
+private:
+	bool m_playing;
 	bool m_quit;
-	void updateEnemies();
-	SDL_Renderer *m_renderer;
-public:
-	PlayState(SDL_Window *window, std::string path, Player *player);
+	int m_mouseX;
+	int m_mouseY;
+	std::string m_order;
+	SDL_Texture *m_background;
+	std::vector<LevelInfo*> m_levels;
+	Player *m_player;
+	PlayLevel *m_currentLevel;
+	Button *m_menuButton;
 
+public:
+	PlayState(SDL_Window *, Player *);
 	~PlayState();
 
 	void render();
-	int update();
 	void input();
-	
-	Player *getPlayer() const;
-	Map *getMap() const;
+	int update();
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <GameState.h>
 #include <Button.h>
 #include <vector>
+#include <EnumMenuChoice.h>
 
 class Menu: public GameState {
 public:
@@ -24,6 +25,7 @@ private:
   int m_mouseX;
   int m_mouseY;
   bool m_quit;
+  std::string m_choice;
   std::vector<Button*> m_buttons;
   SDL_Texture *m_background;
 };
