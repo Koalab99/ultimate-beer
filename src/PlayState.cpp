@@ -63,6 +63,10 @@ void PlayState::render() {
 		}
 		rect = { x, y, w, h };
 		SDL_RenderCopy(m_renderer, (*i)->getTexture(), NULL, &rect);
+		y += height/5 + 5;
+		h /= 2;
+		rect = { x, y, w, h };
+		SDL_RenderCopy(m_renderer, (*i)->getTitle(), NULL, &rect);
 	}
 	SDL_RenderPresent(m_renderer);
 }
