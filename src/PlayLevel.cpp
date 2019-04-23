@@ -61,10 +61,22 @@ void PlayLevel::render() {
 }
 
 void PlayLevel::input() {
+  SDL_Event event;
 
+  while(SDL_PollEvent(&event) > 0)
+    { 
+      if(event.type == SDL_QUIT)
+	{
+	  m_quit = true;
+	  
+	}
+    }
 }
 
 int PlayLevel::update() {
-	m_quit = true;
-	return 0;
+  if(m_quit == true)
+    {
+	return 1;
+    }
+  return 0; 
 }
