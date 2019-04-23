@@ -53,3 +53,4 @@ clean:
 mrproper:
 	@echo "Deleting all unnecessary files..."
 	@rm -rf $(OBJDIR) $(BINDIR) $(DEPDIR)
+	@rm -rf $(SRCDIR)*~ $(INCDIR)*~
