@@ -1,6 +1,8 @@
 #include <Player.h>
 #include <Map.h>
 #include <iostream>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 const float g = 0.20f;
 
@@ -151,3 +153,15 @@ void Player::setDirection(int x) {
 		m_direction = 0;
 	}
 }
+
+void Player::load_img(SDL_Renderer *load)
+{
+  SDL_DestroyTexture(m_texture);
+  m_texture = IMG_LoadTexture(load, "data/img/ZombiePizza.png");
+  
+}
+
+SDL_Texture* Player::getTexture(){
+  return m_texture; 
+}
+

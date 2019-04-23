@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <Map.h>
+#include <SDL2/SDL.h>
 
 class Player {
 private:
@@ -14,6 +15,10 @@ private:
 	bool m_floor;
 	int m_life;
 	int m_direction;
+	SDL_Texture *m_texture;
+	int nb_img;
+	
+	
 public:
 	Player();
 	~Player();
@@ -35,6 +40,10 @@ public:
 	void jump();
 
 	void update();
+
+	void load_img(SDL_Renderer*);
+	SDL_Texture* getTexture();
+	
 };
 
 #endif

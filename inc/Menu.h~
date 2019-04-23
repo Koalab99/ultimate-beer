@@ -1,0 +1,16 @@
+#ifndef Menu_H
+#define Menu_H
+#include <SDL>
+
+
+class Menu: public GameState {
+
+  bool play();
+  bool character();
+  bool language();
+  bool rules();
+  bool Quit();
+
+  ~Menu(); 
+}
+

@@ -1,0 +1,13 @@
+#include Menu.h
+#include GameState.h
+
+using namespace std;
+
+Menu::Menu(): GameState(){
+}
+
+bool Menu::rules() {
+  if(rules == true){
+    
+    }
+}
