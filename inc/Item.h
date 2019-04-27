@@ -6,27 +6,24 @@
 
 class Item {
 private:
-	
 	float m_x;
-    float m_y;
+	float m_y;
+	Rectangle m_rectangle;
 	bool m_eaten;
 	int m_id;
-	Rectangle m_rectangle;
-	
+
 public:
-	Item();
-	Item(float, float);
-	Item(int id);
+	Item(float, float, int);
 	~Item();
-	
-	float GetX() const;
-    float GetY() const;
-    
-    void SetX(float);
-    void SetY(float);
-	
+
+	float getX() const;
+	float getY() const;
+
+	void setX(float);
+	void setY(float);
+
 	int getId() const;
-	void SetEaten(bool);
+	void setEaten(bool);
 	bool isEaten() const;
 };
 

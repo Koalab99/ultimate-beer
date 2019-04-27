@@ -29,7 +29,7 @@ void PlayLevel::updateEnemies() {
 PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_renderer = renderer;
 	m_map = nullptr;
-	//	m_map = new Map(path, &m_enemies);
+	m_map = new Map(path);
 	m_pauseState = new PauseState(m_renderer);
 	m_pause = false;
 	m_player = player;
@@ -70,13 +70,11 @@ void PlayLevel::render() {
 	}
 	else {
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
-		SDL_RenderClear(m_renderer);	
-
-
-
-
-
-
+		SDL_RenderClear(m_renderer);		
+		int width;
+		int height;
+		SDL_GetRendererOutputSize(m_renderer, &width, &height);
+		
 		SDL_RenderPresent(m_renderer);
 
 	}

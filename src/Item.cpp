@@ -1,48 +1,41 @@
 #include <Item.h>
 
-Item::Item() {
-}
-
-Item::Item(float x, float y): m_x(x), m_y(y), m_eaten(false), m_id(0),m_rectangle(m_x,m_y,1,1) {
-}
-
-Item::Item(int id) {
-	m_id = id;
+Item::Item(float x, float y, int id): m_x(x), m_y(y), m_rectangle(m_x,m_y,1,1), m_eaten(false), m_id(id) {
 }
 
 Item::~Item() {
-	
+
 }
 
 int Item::getId() const {
 	return m_id;
 }
 
-float Item::GetX() const
+float Item::getX() const
 {
-    return m_x;
+	return m_x;
 }
 
-float Item::GetY() const
+float Item::getY() const
 {
-    return m_y;
+	return m_y;
 }
 
-void Item::SetX(float x)
+void Item::setX(float x)
 {
-    if(x >= 0) {
-      m_x = x;
-    }
+	if(x >= 0) {
+		m_x = x;
+	}
 }
 
-void Item::SetY(float y)
+void Item::setY(float y)
 {
-  if(y >= 0) {
-    m_y = y;
-  }
+	if(y >= 0) {
+		m_y = y;
+	}
 }
 
-void Item::SetEaten(bool eaten)
+void Item::setEaten(bool eaten)
 {
 	m_eaten = eaten;
 }

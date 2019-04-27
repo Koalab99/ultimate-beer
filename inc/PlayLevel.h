@@ -16,6 +16,8 @@ protected:
 	Player *m_player;
 	StateReturnValue m_return;
 	PauseState *m_pauseState;
+	float playerX;
+	float playerY;
 	bool m_pause;
 	void updateEnemies();
 	SDL_Renderer *m_renderer;
