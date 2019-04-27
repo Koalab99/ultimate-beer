@@ -65,7 +65,7 @@ int Game::init() {
 int Game::loop() {
 	m_state->render();
 	m_state->input();
-	int type = m_state->update();
+	StateReturnValue type = m_state->update();
 	switch(type) {
 		case RETURN_QUIT:
 			return false;

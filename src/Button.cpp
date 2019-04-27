@@ -62,10 +62,6 @@ int Button::getH() {
 	return m_height;
 }
 
-EnumMenuChoice Button::getChoice() const {
-	return m_choice;
-}
-
 SDL_Texture *Button::getTexture() {
 	return m_texture;
 }

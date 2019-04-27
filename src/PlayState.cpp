@@ -28,7 +28,11 @@ PlayState::PlayState(SDL_Window *window, Player *player) : GameState(window) {
 }
 
 PlayState::~PlayState() {
-
+	SDL_DestroyTexture(m_background);
+	delete m_menuButton;
+	for(const LevelInfo *elem : m_levels) {
+		delete elem;
+	}
 }
 
 void PlayState::render() {
@@ -83,7 +87,7 @@ void PlayState::input() {
 	}
 }
 
-int PlayState::update() {
+StateReturnValue PlayState::update() {
 	if(m_quit) {
 		return RETURN_QUIT;
 	}
@@ -93,7 +97,7 @@ int PlayState::update() {
 	else if(m_order == "") {
 		return RETURN_NOTHING;
 	}
-	else {
+	else if(m_order != "") {
 		std::vector<LevelInfo*>::iterator i;
 		for(i = m_levels.begin(); i != m_levels.end(); i++) {
 			if((*i)->getPath() == m_order) {
@@ -105,11 +109,15 @@ int PlayState::update() {
 				break;
 			}
 		}
-		if(i != m_levels.end()) {
-			// We created a new PlayLevel object, ready to use !
-			// We take its return code in order to treat it properly depending on what happened
-			int result = m_currentLevel->run();
-			
+	}
+	if(m_playing) {
+		// We created a new PlayLevel object, ready to use !
+		// We take its return code in order to treat it properly depending on what happened
+		StateReturnValue result = m_currentLevel->run();
+		m_playing = false;
+		delete m_currentLevel;
+		if(result != RETURN_BACK && result != RETURN_PLAY) {
+			return result;
 		}
 	}
 	m_order = "";

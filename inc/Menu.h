@@ -4,7 +4,7 @@
 #include <GameState.h>
 #include <Button.h>
 #include <vector>
-#include <EnumMenuChoice.h>
+#include <StateReturnValue.h>
 
 class Menu: public GameState {
 public:
@@ -17,7 +17,7 @@ public:
   bool quit();
 
   void input();
-  int update();
+  StateReturnValue update();
   void render();
 
   ~Menu(); 

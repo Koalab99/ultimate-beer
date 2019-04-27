@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <EnumMenuChoice.h>
 #include <StateReturnValue.h>
 
 using namespace std;
@@ -64,7 +63,7 @@ void Menu::render() {
 	SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
 	std::vector<Button*>::iterator i;
 	int count;
-	m_choice = NONE;
+	m_choice = "";
 	for(count = 0, i = m_buttons.begin(); i != m_buttons.end(); i++, count++) {
 		SDL_Texture *texture = (*i)->getTexture();
 		int x, y, bw, bh;
@@ -84,9 +83,9 @@ void Menu::render() {
 	SDL_RenderPresent(m_renderer);
 }
 
-int Menu::update() {
+StateReturnValue Menu::update() {
 	if(m_quit) {
-		return 1;
+		return RETURN_QUIT;
 	}
 	else if(m_choice == "Quit") 
 		return RETURN_QUIT;

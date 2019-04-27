@@ -9,6 +9,8 @@
 #include <Bloc.h>
 #include <GameState.h>
 #include <iostream>
+#include <StateReturnValue.h>
+#include <PauseState.h>
 
 void PlayLevel::updateEnemies() {
 	for(std::vector<Enemy>::iterator i = m_enemies.begin(); i != m_enemies.end(); i++) {
@@ -26,26 +28,32 @@ void PlayLevel::updateEnemies() {
 
 PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_renderer = renderer;
-//	m_map = new Map(path, &m_enemies);
+	m_map = nullptr;
+	//	m_map = new Map(path, &m_enemies);
+	m_pauseState = new PauseState(m_renderer);
+	m_pause = false;
 	m_player = player;
-	m_quit = false;
+	m_return = RETURN_NOTHING;
 }
 
 PlayLevel::~PlayLevel() {
 	if(m_map != nullptr) {
 		delete m_map;
 	}
+	if(m_pauseState != nullptr) {
+		delete m_pauseState;
+	}
 }
 
-int PlayLevel::run() {
-	int updateState;
-	while(!m_quit) {
+StateReturnValue PlayLevel::run() {
+	while(m_return == RETURN_NOTHING) {
 		render();
 		input();
-		updateState = update();
+		update();
 	}
 
-	return updateState;
+
+	return m_return;
 }
 
 Player *PlayLevel::getPlayer() const {
@@ -57,26 +65,65 @@ Map *PlayLevel::getMap() const {
 }
 
 void PlayLevel::render() {
-	
+	if(m_pause) {
+		m_pauseState->render();
+	}
+	else {
+		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+		SDL_RenderClear(m_renderer);	
+
+
+
+
+
+
+		SDL_RenderPresent(m_renderer);
+
+	}
 }
 
 void PlayLevel::input() {
-  SDL_Event event;
-
-  while(SDL_PollEvent(&event) > 0)
-    { 
-      if(event.type == SDL_QUIT)
-	{
-	  m_quit = true;
-	  
+	if(m_pause) {
+		m_pauseState->handleInput();
 	}
-    }
+	else {
+		SDL_Event event;
+
+		while(SDL_PollEvent(&event) > 0)
+		{ 
+			if(event.type == SDL_QUIT) {
+				m_return = RETURN_QUIT;
+			}
+			else if(event.type == SDL_KEYDOWN) {
+				switch(event.key.keysym.sym) {
+					case SDLK_ESCAPE:
+						m_pause = true;
+						break;
+					default:
+						break;
+
+				}
+			}
+		}
+	}
 }
 
-int PlayLevel::update() {
-  if(m_quit == true)
-    {
-	return 1;
-    }
-  return 0; 
+StateReturnValue PlayLevel::update() {
+	if(m_pause) {
+		m_return = m_pauseState->update();	
+		if(m_return == RETURN_BACK) {
+			m_pause = false;
+			m_return = RETURN_NOTHING;
+		}
+		else if(m_return != RETURN_NOTHING) {
+			m_pause = false;
+			delete m_pauseState;
+			m_pauseState = nullptr;
+		}
+	} 
+	else {
+		// Game code here
+		return m_return;
+	}
+	return m_return; 
 }

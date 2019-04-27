@@ -4,6 +4,7 @@
 #include <PlayLevel.h>
 #include <LevelInfo.h>
 #include <Button.h>
+#include <StateReturnValue.h>
 
 class PlayState : public GameState {
 private:
@@ -24,7 +25,7 @@ public:
 
 	void render();
 	void input();
-	int update();
+	StateReturnValue update();
 };
 
 #endif
