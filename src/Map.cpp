@@ -70,10 +70,15 @@ bool Map::fall(float x, float y, float w) {
 }
 
 void Map::open(const std::string &path){
-
 	int nbBlocks;
 	ifstream fileStream(path.c_str(), ios::in);
 	if(fileStream){
+		// Get the title
+		getline(fileStream, m_title);
+		// Jump to next line, this one is not important but we need it !
+		getline(fileStream, m_minipath);
+		// This one get the background image path
+		getline(fileStream, m_path);
 		fileStream>> m_w;
 		fileStream>> m_h;
 		fileStream>> nbBlocks;
@@ -106,4 +111,17 @@ void Map::open(const std::string &path){
 	else{
 		cout << "Erreur : Impossible d'ouvrir le fichier." << endl;
 	}
+}
+
+std::string Map::getPath() {
+	return m_path;
+}
+
+
+std::string Map::getMiniPath() {
+	return m_minipath;
+}
+
+std::string Map::getTitle() {
+	return m_title;
 }

@@ -19,6 +19,9 @@ private:
 	std::vector<Bloc> m_blocs;
 	std::vector<Enemy> m_enemies;
 	std::vector<Item> m_items;
+	std::string m_title;
+	std::string m_minipath;
+	std::string m_path;
 	float m_h;
 	float m_w;
 	
@@ -39,6 +42,10 @@ public:
 	
 	float getH();
 	float getW();
+	std::string getMiniPath();
+	std::string getPath();
+	std::string getTitle();
+
 	bool fall(float x, float y, float w);
 };
 
