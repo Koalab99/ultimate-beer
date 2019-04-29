@@ -20,7 +20,10 @@ protected:
 	float playerY;
 	bool m_pause;
 	void updateEnemies();
+	SDL_Texture *m_background;
+	SDL_Rect positionFond;
 	SDL_Renderer *m_renderer;
+	
 public:
 	PlayLevel(SDL_Renderer *renderer, std::string path, Player *player);
 

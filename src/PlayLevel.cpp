@@ -1,6 +1,7 @@
 #include <PlayLevel.h>
 #include <Map.h>
 #include <Player.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 #include <string>
 #include <Enemy.h>
@@ -34,6 +35,12 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_pause = false;
 	m_player = player;
 	m_return = RETURN_NOTHING;
+	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
+	int w, h;
+	SDL_GetRendererOutputSize(m_renderer, &w, &h);
+	int BGW, BGH;
+	SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
+	positionFond.x=(BGW - BGH*w/h)/2;
 }
 
 PlayLevel::~PlayLevel() {
@@ -74,11 +81,41 @@ void PlayLevel::render() {
 		int width;
 		int height;
 		SDL_GetRendererOutputSize(m_renderer, &width, &height);
-		
-		SDL_RenderPresent(m_renderer);
+		int BGW, BGH;
+		SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
 
+		SDL_Event event;
+		SDL_PollEvent(&event);
+	
+		switch(event.type) {
+
+			case SDL_KEYDOWN:
+				switch(event.key.keysym.sym) {
+
+					case SDLK_LEFT:
+					if(positionFond.x>(BGW - BGH*width/height)/2){
+						positionFond.x = positionFond.x-4;
+					}
+					break;
+					
+					case SDLK_RIGHT:
+					positionFond.x = positionFond.x+6;
+					break;
+				}
+			}
+				
+				SDL_Rect backgroundRect = { positionFond.x, -200, (BGH*width/height)/3, (BGH/3)*3 };
+				SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
+		
+
+
+	
+	SDL_RenderPresent(m_renderer);
 	}
+
 }
+
+	
 
 void PlayLevel::input() {
 	if(m_pause) {
