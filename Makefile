@@ -25,7 +25,7 @@ SRC:=$(wildcard $(SRCDIR)*.$(FILETYPE))
 OBJ:=$(patsubst $(SRCDIR)%.$(FILETYPE), $(OBJDIR)%.o, $(SRC))
 DEP:=$(patsubst $(OBJDIR)%.o, $(DEPDIR)%.d, $(OBJ))
 
-.PHONY: all clean mrproper
+.PHONY: all clean mrproper regtest
 
 all: $(DIRS) $(BINDIR)$(EXE)
 
@@ -45,6 +45,10 @@ $(OBJDIR)%.o: $(SRCDIR)%.$(FILETYPE)
 	@echo "Generating the dependancy file for $*"
 	@echo -n "$(OBJDIR)" > $(DEPDIR)$*.d
 	@$(CC) -MM $(CCFLAG) $(SRCDIR)$*.$(FILETYPE) >> $(DEPDIR)$*.d
+
+regtest:
+	@g++ regtest/LevelFile.cpp -o regtest/testFile
+	@./regtest/testFile data/map/*
 
 clean:
 	@echo "Deleting temporary files..."
