@@ -24,6 +24,10 @@ protected:
 	bool m_moving;
 	Uint32 m_movingTicks;
 	Uint32 m_animationTime;
+	int m_BGW;
+	int m_BGH;
+	int m_width;
+	int m_height;
 	int m_movingFrame;
 	int m_totalMovingFrame;
 	bool m_pause;
