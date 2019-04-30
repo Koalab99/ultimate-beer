@@ -140,25 +140,26 @@ void PlayLevel::render() {
 		// Clearing screen
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 		SDL_RenderClear(m_renderer);
-		// Getting render (window) size
-		int width;
-		int height;
-		SDL_GetRendererOutputSize(m_renderer, &width, &height);
 		// Won't get into trouble with a division by 0
+		SDL_GetRendererOutputSize(m_renderer, &m_width, &m_height);
 		if(m_map->getH() == 0) {
 			std::cout << "Division with zero error" << std::endl;
 			assert(m_map->getH() != 0);
 		}
 		// Getting the size of the background
-		int BGW, BGH;
-		SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
-		// Showing background
-		SDL_Rect backgroundRect = { m_positionFond.x, -200, (BGH*width/height)/3, (BGH/3)*3 };
+		// Claire should explain this
+		SDL_QueryTexture(m_background, NULL, NULL, &m_BGW, &m_BGH);
+
+		SDL_Rect backgroundRect = { m_positionFond.x, -200, (m_BGH*m_width/m_height)/3, (m_BGH/3)*3 };
 		SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
+		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
+			m_positionFond.x= m_positionFond.x-6;
+		}
 		// Player display
 		SDL_Rect src;
 		// Player moving
 		if(m_moving) {
+
 			int textureWidth, textureHeight;
 			SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
 			// Chosing the right part of the sprite we're going to use
@@ -252,7 +253,9 @@ void PlayLevel::input() {
 						m_moving = true;
 						m_player->setDirection(1);
 						// Claire can explain that
-						m_positionFond.x = m_positionFond.x+6;
+						if(m_positionFond.x<m_BGW-(m_BGH*m_width/m_height)/3){
+							m_positionFond.x = m_positionFond.x+6;
+						}
 						break;
 					default:
 						break;
