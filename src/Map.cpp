@@ -9,7 +9,6 @@
 
 Map::Map(const std::string &filename) {
 	open(filename);
-	std::cout << m_spawnX << " " << m_spawnY << std::endl;
 }
 
 Map::~Map(){
@@ -46,8 +45,8 @@ bool Map::blocExists(Bloc *c) {
 	return *c != m_blocs.end()[0];
 }
 
-std::vector<Bloc> Map::getBlocs(){
-	return m_blocs;
+std::vector<Bloc> *Map::getBlocs(){
+	return &m_blocs;
 }
 
 std::vector<Enemy> Map::getEnemies() {
@@ -85,12 +84,11 @@ void Map::open(const std::string &path){
 		fileStream>> m_spawnX;
 		fileStream>> m_spawnY;
 		fileStream>> nbBlocks;
-		cout<< "nb block: "<<nbBlocks << endl;
 		float h,w,x,y;
 		int t;
 
 		for(int i=0; i< nbBlocks;i++){
-			fileStream>> w >> h >> x >> y >> t;
+			fileStream>> x >> y >> w >> h >> t;
 			if(t == 1) {
 				Bloc b(w,h,x,y);
 				m_blocs.push_back(b);

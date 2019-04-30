@@ -85,6 +85,14 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 		std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
 		assert(m_background != nullptr);
 	}
+	// Loading bloc texture
+	m_blocTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 10, 10);
+	// Should be changed by Kler
+	SDL_SetRenderTarget(m_renderer, m_blocTexture);
+	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+	SDL_RenderClear(m_renderer);
+	SDL_RenderPresent(m_renderer);
+	SDL_SetRenderTarget(m_renderer, NULL);
 	// Claire can explain this
 	m_positionFond.x=0;
 }
@@ -155,11 +163,15 @@ void PlayLevel::render() {
 		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
 			m_positionFond.x= m_positionFond.x-6;
 		}
+		// Display the blocs
+		// For each blocs
+		for(auto i = m_map->getBlocs()->begin(); i < m_map->getBlocs()->end(); i++) {
+			drawOnMap(m_blocTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
+		}
 		// Player display
 		SDL_Rect src;
 		// Player moving
 		if(m_moving) {
-
 			int textureWidth, textureHeight;
 			SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
 			// Chosing the right part of the sprite we're going to use

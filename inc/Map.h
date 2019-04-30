@@ -34,7 +34,7 @@ public:
 	
 	int getNbBloc();
 
-	std::vector<Bloc> getBlocs();
+	std::vector<Bloc> *getBlocs();
 	std::vector<Enemy> getEnemies();
 	std::vector<Item> getItems();
 
