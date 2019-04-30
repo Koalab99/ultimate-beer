@@ -1,6 +1,7 @@
 #include <PlayLevel.h>
 #include <Map.h>
 #include <Player.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <string>
@@ -54,6 +55,12 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_movingTicks = 0;
 	m_pause = false;
 	m_return = RETURN_NOTHING;
+	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
+	int w, h;
+	SDL_GetRendererOutputSize(m_renderer, &w, &h);
+	int BGW, BGH;
+	SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
+	m_positionFond.x=0;
 }
 
 PlayLevel::~PlayLevel() {
@@ -106,6 +113,12 @@ void PlayLevel::render() {
 			assert(m_map->getH() != 0);
 		}
 		int scale = height / m_map->getH();
+		int BGW, BGH;
+		SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
+
+				SDL_Rect backgroundRect = { m_positionFond.x, -200, (BGH*width/height)/3, (BGH/3)*3 };
+				SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
+		
 		if(m_moving) {
 			dest = { (int)(scale * m_playerX), (int)(scale * m_playerY), (int)(scale * m_playerW), (int)(scale * m_playerH) };
 			int textureWidth, textureHeight;
@@ -119,9 +132,15 @@ void PlayLevel::render() {
 			}
 		}
 		
-		SDL_RenderPresent(m_renderer);
+
+
+	
+	SDL_RenderPresent(m_renderer);
 	}
+
 }
+
+	
 
 void PlayLevel::input() {
 	if(m_pause) {
@@ -140,13 +159,18 @@ void PlayLevel::input() {
 				case SDLK_ESCAPE:
 					m_pause = true;
 					break;
-				case SDLK_d:
-					m_moving = true;
-					m_player->setDirection(1);
-					break;
-				case SDLK_q: 
+				case SDLK_LEFT:
 					m_moving = true;
 					m_player->setDirection(-1);
+					if(m_positionFond.x>3){
+						m_positionFond.x = m_positionFond.x-4;
+					}
+					break;
+				
+				case SDLK_RIGHT:
+					m_moving = true;
+					m_player->setDirection(1);
+					m_positionFond.x = m_positionFond.x+6;
 					break;
 				default:
 					break;
@@ -154,14 +178,14 @@ void PlayLevel::input() {
 			}
 			else if(event.type == SDL_KEYUP) {
 				switch(event.key.keysym.sym) {
-					case SDLK_d:
+					case SDLK_RIGHT:
 						// If D is released
 						if(m_player->getDirection() != -1) {
 							m_player->setDirection(0);
 							m_moving = false;
 						}
 						break;
-					case SDLK_q:
+					case SDLK_LEFT:
 						if(m_player->getDirection() != 1) {
 							m_player->setDirection(0);
 							m_moving = false;
