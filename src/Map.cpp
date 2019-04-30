@@ -9,6 +9,7 @@
 
 Map::Map(const std::string &filename) {
 	open(filename);
+	std::cout << m_spawnX << " " << m_spawnY << std::endl;
 }
 
 Map::~Map(){
@@ -75,12 +76,14 @@ void Map::open(const std::string &path){
 	if(fileStream){
 		// Get the title
 		getline(fileStream, m_title);
-		// Jump to next line, this one is not important but we need it !
+		// Get the path of the miniature of the level
 		getline(fileStream, m_minipath);
 		// This one get the background image path
 		getline(fileStream, m_path);
 		fileStream>> m_w;
 		fileStream>> m_h;
+		fileStream>> m_spawnX;
+		fileStream>> m_spawnY;
 		fileStream>> nbBlocks;
 		cout<< "nb block: "<<nbBlocks << endl;
 		float h,w,x,y;
@@ -111,6 +114,14 @@ void Map::open(const std::string &path){
 	else{
 		cout << "Erreur : Impossible d'ouvrir le fichier." << endl;
 	}
+}
+
+float Map::getSpawnX() const {
+	return m_spawnX;
+}
+
+float Map::getSpawnY() const {
+	return m_spawnY;
 }
 
 std::string Map::getPath() {

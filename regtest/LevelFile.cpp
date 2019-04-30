@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 		fstream file;
 		string someString;
 		int nbElem, type;
-		float width, height, x, y, w, h;
+		float width, height, spawnCoord, x, y, w, h;
 		// Loop throught each files given as an argument.
 		for(int i = 1; i < argc; i++) {
 			cout << "Testing file " << argv[i] << "...";
@@ -32,6 +32,12 @@ int main(int argc, char **argv) {
 			// Get the height
 			assert(file >> height);
 			assert(height > 0 && height < 50);
+			// Get the spawn point x coordinate
+			assert(file >> spawnCoord);
+			assert(spawnCoord > 0 && spawnCoord < width);
+			// Get the spawn point x coordinate
+			assert(file >> spawnCoord);
+			assert(spawnCoord > 0 && spawnCoord < height);
 			// Get the number of Elements
 			assert(file >> nbElem);
 			assert(nbElem > 1);

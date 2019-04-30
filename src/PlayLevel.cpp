@@ -44,9 +44,9 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 		std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
 		assert(m_playerRunningTexture != nullptr);
 	}
-	m_playerX = 2;
-	m_playerY = 2;
-	m_playerW = 1;
+	m_playerX = m_map->getSpawnX();
+	m_playerY = m_map->getSpawnY();
+	m_playerW = 2;
 	m_playerH = 2;
 	m_movingFrame = 0;
 	m_totalMovingFrame = m_player->getNumImagesRunning();
@@ -120,27 +120,53 @@ void PlayLevel::render() {
 				SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
 		
 		if(m_moving) {
-			dest = { (int)(scale * m_playerX), (int)(scale * m_playerY), (int)(scale * m_playerW), (int)(scale * m_playerH) };
+			dest = { (int)(scale * m_playerX), height - (int)(scale * m_playerY), (int)(scale * m_playerW), (int)(scale * m_playerH) };
 			int textureWidth, textureHeight;
 			SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
 			src = { textureWidth / m_totalMovingFrame * m_movingFrame, 0, textureWidth / m_totalMovingFrame, textureHeight };
 			if(m_player->getDirection() == 1) {
-				SDL_RenderCopy(m_renderer, m_playerRunningTexture, &src, &dest);
+				drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH);
 			}
 			else if(m_player->getDirection() == -1) {
-				SDL_RenderCopyEx(m_renderer, m_playerRunningTexture, &src, &dest, 0, NULL, SDL_FLIP_HORIZONTAL);
+				drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
 			}
 		}
-		
-
-
-	
 	SDL_RenderPresent(m_renderer);
 	}
 
 }
 
-	
+void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, float y, float w, float h, SDL_RendererFlip flip) {
+	// Get render information;
+	int renderWidth, renderHeight;
+	SDL_GetRendererOutputSize(m_renderer, &renderWidth, &renderHeight);
+
+	float mapWidth = m_map->getW();
+	float mapHeight = m_map->getH();
+
+	float scale = renderHeight/mapHeight;
+
+	float mapVisibleWidth = renderWidth/scale;
+	int newW, newH, newX, newY;
+	newW = w * scale;
+	newH = h * scale;
+	newY = renderHeight - ((y + h) * scale);	
+	if(m_playerX < mapVisibleWidth/2) {
+		// Beggining of the level
+		newX = x * scale;
+	}
+	else if(m_playerX > mapWidth - mapVisibleWidth/2) {
+		// End of a level
+		newX = (x - mapWidth + mapVisibleWidth) * scale;
+	}
+	else {
+		// Middle of a level
+		newX = (x - m_playerX + mapVisibleWidth/2) * scale;
+	}
+
+	SDL_Rect destRect = {newX, newY, newW, newH};
+	SDL_RenderCopyEx(m_renderer, texture, srcRect, &destRect, 0, NULL, flip); 
+}
 
 void PlayLevel::input() {
 	if(m_pause) {
@@ -168,6 +194,7 @@ void PlayLevel::input() {
 					break;
 				
 				case SDLK_RIGHT:
+					
 					m_moving = true;
 					m_player->setDirection(1);
 					m_positionFond.x = m_positionFond.x+6;

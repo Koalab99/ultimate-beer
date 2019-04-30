@@ -14,8 +14,8 @@ using namespace std;
 class Enemy;
 class Map {
 private:
-	float spawnX;
-	float spawnY;
+	float m_spawnX;
+	float m_spawnY;
 	std::vector<Bloc> m_blocs;
 	std::vector<Enemy> m_enemies;
 	std::vector<Item> m_items;
@@ -42,6 +42,8 @@ public:
 	
 	float getH();
 	float getW();
+	float getSpawnX() const;
+	float getSpawnY() const;
 	std::string getMiniPath();
 	std::string getPath();
 	std::string getTitle();

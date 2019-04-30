@@ -28,6 +28,7 @@ protected:
 	int m_totalMovingFrame;
 	bool m_pause;
 	void updateEnemies();
+	void drawOnMap(SDL_Texture *texture, SDL_Rect *src, float x, float y, float w, float h, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	SDL_Texture *m_background;
 	SDL_Rect m_positionFond;
 	SDL_Renderer *m_renderer;
