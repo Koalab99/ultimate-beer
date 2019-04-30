@@ -9,24 +9,28 @@ Enemy::Enemy(float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_directio
 {
 }
 
+Enemy::~Enemy()
+{
+}
+
 bool Enemy::isAlive() const
 {
-  return m_alive;
+	return m_alive;
 }
 
 void Enemy::setAlive(bool x)
 {  
-  m_alive = x;
+	m_alive = x;
 }
 
 Rectangle Enemy::getRectangle() const
 {
-  return m_rectangle;
+	return m_rectangle;
 }
 
 void Enemy::setRectangle(Rectangle rect)
 {
-  m_rectangle = rect;
+	m_rectangle = rect;
 }
 
 int Enemy::getDirection() const { 
@@ -42,10 +46,6 @@ void Enemy::setDirection(const int direction) {
 	}
 }
 
-Enemy::~Enemy()
-{
-}
-
 Bloc *Enemy::getBloc() const {
 	return m_bloc;
 }
@@ -56,4 +56,20 @@ void Enemy::setBloc(Bloc *bloc) {
 
 void Enemy::setX(float x) {
 	m_rectangle.setX(x);
+}
+
+float Enemy::GetX() const {
+	return m_rectangle.getX();
+}
+
+float Enemy::GetY() const {
+	return m_rectangle.getY();
+}
+
+float Enemy::GetWidth() const {
+	return m_rectangle.getW();
+}
+
+float Enemy::GetHeight() const {
+	return m_rectangle.getH();
 }

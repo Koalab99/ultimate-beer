@@ -15,6 +15,7 @@ protected:
 	std::vector<Enemy> m_enemies;
 	Player *m_player;
 	SDL_Texture *m_playerRunningTexture;
+	SDL_Texture *m_playerStandingTexture;
 	SDL_Texture *m_blocTexture;
 	StateReturnValue m_return;
 	PauseState *m_pauseState;

@@ -51,6 +51,9 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	// Preparing the pause state
 	m_pauseState = new PauseState(m_renderer);
 	m_player = player;
+	// We load enemies
+	m_enemies = m_map->getEnemies();
+	m_blocs
 	// Load running player texture into VRAM
 	m_playerRunningTexture = IMG_LoadTexture(m_renderer, m_player->getRunningTexturePath().c_str());
 	// Handling the case the texture failed to load
@@ -58,6 +61,13 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 		std::cerr << "Couldn't load texture." << std::endl;
 		std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
 		assert(m_playerRunningTexture != nullptr);
+	}
+	// Load standing player texture
+	m_playerStandingTexture = IMG_LoadTexture(m_renderer, m_player->getWaitingTexturePath().c_str());
+	if(m_playerStandingTexture == NULL) {
+		std::cerr << "Couldn't load texture." << std::endl;
+		std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
+		assert(m_playerStandingTexture != NULL);
 	}
 	// Defining player position thanks to the map
 	m_playerX = m_map->getSpawnX();
@@ -80,24 +90,25 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	// Set the return value that will be sent to the PlayState if different than RETURN_NOTHING
 	m_return = RETURN_NOTHING;
 	// Loading the background texture
-	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
-	if(m_background == nullptr) {
-		std::cerr << "Couldn't load texture." << std::endl;
-		std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
-		assert(m_background != nullptr);
-	}
+		// Claire, regarde ce qu'il y a dans la classe Map, on ne va pas forcément tout le temps utiliser lacity.png pour le fond 
+		m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
+		if(m_background == nullptr) {
+			std::cerr << "Couldn't load texture." << std::endl;
+			std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
+			assert(m_background != nullptr);
+		}
 	// Loading bloc texture
 	m_blocTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 10, 10);
-	// Should be changed by Kler
-	SDL_SetRenderTarget(m_renderer, m_blocTexture);
-	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-	SDL_RenderClear(m_renderer);
-	SDL_RenderPresent(m_renderer);
-	SDL_SetRenderTarget(m_renderer, NULL);
+		// Should be changed by Kler
+		SDL_SetRenderTarget(m_renderer, m_blocTexture);
+		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+		SDL_RenderClear(m_renderer);
+		SDL_RenderPresent(m_renderer);
+		SDL_SetRenderTarget(m_renderer, NULL);
 	// Initialize the last update
 	m_lastUpdate = SDL_GetTicks();
-	// Claire can explain this
-	m_positionFond.x=0;
+		// Claire can explain this
+		m_positionFond.x=0;
 }
 
 // PlayLevel Destructor, should free all memory allocated by us or by SDL
@@ -166,9 +177,25 @@ void PlayLevel::render() {
 		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
 			m_positionFond.x= m_positionFond.x-6;
 		}
+		// Calculate visible part of the screen starting with the size of the map that is displayed
+		float mapVisibleWidth = m_width * m_map->getH() / m_height;
+		// Then we want the x position of the bloc stuck to the left border of the window
+		float mapVisibleOffset;
+		// Player too much at the left, we'll use the beggining of the map
+		if(m_playerX < mapVisibleWidth/2) 
+			mapVisibleOffset = 0;
+		// Player too much at the right, we'll use the end of the map minus the width we already calculated
+		else if(m_playerX > m_map->getW() - mapVisibleWidth/2) 
+			mapVisibleOffset = m_map->getW() - mapVisibleWidth;
+		// Player somewhere between the start and the end
+		else 
+			mapVisibleOffset = m_playerX - mapVisibleWidth/2;
+
 		// Display the blocs
-		// For each blocs
-		for(auto i = m_map->getBlocs()->begin(); i < m_map->getBlocs()->end(); i++) {
+		// For each blocs appearing on the screen
+		// Kler should have a look at what happens here, she might be interested by how I render theses black boxes...
+		std::vector<Bloc> *usefulBlocs = m_map->getBlocsInRange(mapVisibleOffset, mapVisibleWidth);
+		for(auto i = usefulBlocs->begin(); i < usefulBlocs->end(); i++) {
 			drawOnMap(m_blocTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
 		}
 		// Player display
@@ -190,9 +217,18 @@ void PlayLevel::render() {
 				drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
 			}
 		}
+		else {
+			if(m_player->getDirection() == -1) {
+				drawOnMap(m_playerStandingTexture, NULL, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
+			}
+			else {
+				drawOnMap(m_playerStandingTexture, NULL, m_playerX, m_playerY, m_playerW, m_playerH);
+			}
+
+		}
+	}
 	// Show what we did to the people
 	SDL_RenderPresent(m_renderer);
-	}
 }
 
 void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, float y, float w, float h, SDL_RendererFlip flip) {
@@ -243,11 +279,11 @@ void PlayLevel::input() {
 		while(SDL_PollEvent(&event) > 0)
 		{ 
 			if(event.type == SDL_QUIT) {
-			// User clicked the cross button to quit, so we leave
+				// User clicked the cross button to quit, so we leave
 				m_return = RETURN_QUIT;
 			}
 			else if(event.type == SDL_KEYDOWN) {
-			// User pressed a key
+				// User pressed a key
 				switch(event.key.keysym.sym) {
 					case SDLK_ESCAPE:
 						// User pressed escape, want to pause
@@ -262,7 +298,7 @@ void PlayLevel::input() {
 							m_positionFond.x = m_positionFond.x-4;
 						}
 						break;
-					
+
 					case SDLK_RIGHT:
 						// User pressed right arrow, want to go to the right
 						m_moving = true;
@@ -278,19 +314,17 @@ void PlayLevel::input() {
 			}
 
 			else if(event.type == SDL_KEYUP) {
-			// User released a key
+				// User released a key
 				switch(event.key.keysym.sym) {
 					case SDLK_RIGHT:
 						// If right arrow is released, stop going to the right
 						if(m_player->getDirection() != -1) {
-							m_player->setDirection(0);
 							m_moving = false;
 						}
 						break;
 					case SDLK_LEFT:
 						// If left arrow is released, stop going to the left
 						if(m_player->getDirection() != 1) {
-							m_player->setDirection(0);
 							m_moving = false;
 						}
 						break;
@@ -332,6 +366,9 @@ StateReturnValue PlayLevel::update() {
 			// Guess the frame number
 			m_movingFrame = (int)(m_totalMovingFrame*(SDL_GetTicks() - m_movingTicks) / m_animationTime) % m_totalMovingFrame;	
 			m_playerX += m_player->getSpeed() * DEFAULT_SPEED * m_player->getDirection() * (SDL_GetTicks() - m_lastUpdate) / 1000;
+			if(m_playerX < 0) {
+				m_playerX = 0;
+			}
 		}
 		else {
 			// Player don't want to move, reset the tick counter
@@ -339,6 +376,7 @@ StateReturnValue PlayLevel::update() {
 		}
 
 	}
+	// Set current tick as last tick for next loop
 	m_lastUpdate = SDL_GetTicks();
 	return m_return; 
 }

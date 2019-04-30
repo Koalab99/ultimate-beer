@@ -9,7 +9,9 @@ const float g = 0.20f;
 Player::Player() {
 	m_speed = 1;
 	m_runningTexturePath = "data/img/player.png";
+	m_waitingTexturePath = "data/img/BEER.png";
 	m_numImagesRunning = 6;
+	m_direction = 1;
 }
 
 Player::~Player() {
@@ -25,14 +27,11 @@ int Player::getLife() const {
 }
 
 void Player::setDirection(int x) {
-	if(x > 0) {
-		m_direction = 1;
-	}
-	else if(x < 0) {
+	if(x < 0) {
 		m_direction = -1;
 	}
 	else {
-		m_direction = 0;
+		m_direction = 1;
 	}
 }
 
@@ -42,6 +41,10 @@ int Player::getDirection() const {
 
 std::string Player::getRunningTexturePath() const {
 	return m_runningTexturePath;
+}
+
+std::string Player::getWaitingTexturePath() const {
+	return m_waitingTexturePath;
 }
 
 int Player::getNumImagesRunning() const {

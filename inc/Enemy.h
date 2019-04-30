@@ -9,32 +9,34 @@
 
 #define ENEMY_SPEED 0.01
 
-class Map;
 class Enemy {
- private:
-  bool  m_alive;
-  Rectangle m_rectangle;
-  int m_direction;
-  Map *m_map;
-  Bloc *m_bloc;
+private:
+	bool  m_alive;
+	Rectangle m_rectangle;
+	int m_direction;
+	Bloc *m_bloc;
 
- public:
-  Enemy(float x, float y); 
-  bool isAlive() const;
-  void setAlive(bool alive);
+public:
+	Enemy(float x, float y); 
+	bool isAlive() const;
+	void setAlive(bool alive);
 
-  Rectangle getRectangle() const;
-  void setRectangle(Rectangle rect);
+	Rectangle getRectangle() const;
+	void setRectangle(Rectangle rect);
 
-  Bloc *getBloc() const;
-  void setBloc(Bloc *bloc);
+	Bloc *getBloc() const;
+	void setBloc(Bloc *bloc);
 
-  int getDirection() const;
-  void setDirection(const int direction);
+	int getDirection() const;
+	void setDirection(const int direction);
 
-  void setX(float x);
+	void setX(float x);
+	float GetX() const;
+	float GetY() const;
+	float GetWidth() const;
+	float GetHeight() const;
 
-  ~Enemy(); 
+	~Enemy(); 
 };
 
 #endif

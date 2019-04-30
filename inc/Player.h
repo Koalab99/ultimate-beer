@@ -10,6 +10,7 @@ private:
 	int m_life;
 	int m_direction;
 	std::string m_runningTexturePath;
+	std::string m_waitingTexturePath;
 	int m_numImagesRunning;	
 	
 public:
@@ -23,6 +24,7 @@ public:
 	int getDirection() const;
 	int getNumImagesRunning() const;
 	std::string getRunningTexturePath() const;
+	std::string getWaitingTexturePath() const;
 
 	void update();
 };

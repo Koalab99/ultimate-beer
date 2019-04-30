@@ -28,9 +28,14 @@ private:
 public:
 	Map(const std::string &filename);
 	~Map();
-	Bloc *collide(float x, float y);
+	const Bloc *collide(std::vector<Bloc> *v, const float x, const float y);
+	const Enemy *collide(std::vector<Enemy> *v, const float x, const float y);
+	const Item *collide(std::vector<Item> *v, const float x, const float y);
+
 	bool blocExists(Bloc *c);
 	std::vector<Bloc> *getBlocsInRange(float x, float w);
+	std::vector<Enemy> *getEnemiesInRange(float x, float w);
+	std::vector<Item> *getItemsInRange(float x, float w);
 	
 	int getNbBloc();
 

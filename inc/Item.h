@@ -16,11 +16,13 @@ public:
 	Item(float, float, int);
 	~Item();
 
-	float getX() const;
-	float getY() const;
+	float GetX() const;
+	float GetY() const;
+	float GetWidth() const;
+	float GetHeight() const;
 
-	void setX(float);
-	void setY(float);
+	void SetX(float);
+	void SetY(float);
 
 	int getId() const;
 	void setEaten(bool);

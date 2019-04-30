@@ -11,24 +11,35 @@ int Item::getId() const {
 	return m_id;
 }
 
-float Item::getX() const
+float Item::GetWidth() const
 {
 	return m_x;
 }
 
-float Item::getY() const
+float Item::GetHeight() const
 {
 	return m_y;
 }
 
-void Item::setX(float x)
+float Item::GetX() const
+{
+	return m_x;
+}
+
+float Item::GetY() const
+{
+	return m_y;
+}
+
+
+void Item::SetX(float x)
 {
 	if(x >= 0) {
 		m_x = x;
 	}
 }
 
-void Item::setY(float y)
+void Item::SetY(float y)
 {
 	if(y >= 0) {
 		m_y = y;
