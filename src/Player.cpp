@@ -8,7 +8,8 @@ const float g = 0.20f;
 
 Player::Player() {
 	m_speed = 0;
-	m_floor = false;
+	m_runningTexturePath = "data/img/player.png";
+	m_numImagesRunning = 6;
 }
 
 Player::~Player() {
@@ -19,26 +20,8 @@ float Player::getSpeed() const {
 	return m_speed;
 }
 
-bool Player::getFloor() const {
-	return m_floor;
-}
-
 int Player::getLife() const {
 	return m_life;
-}
-
-void Player::setMap(Map *map) {
-	m_map = map;
-}
-
-void Player::jump() {
-	if(m_floor) {
-		m_floor = false;
-		m_speed = 2.f;
-	}
-}
-
-void Player::update() {
 }
 
 void Player::setDirection(int x) {
@@ -53,13 +36,15 @@ void Player::setDirection(int x) {
 	}
 }
 
-void Player::loadImage(SDL_Renderer *load)
-{
-	SDL_DestroyTexture(m_texture);
-	m_texture = IMG_LoadTexture(load, "data/img/player.png");
+int Player::getDirection() const {
+	return m_direction;
 }
 
-SDL_Texture* Player::getTexture(){
-	return m_texture; 
+std::string Player::getRunningTexturePath() const {
+	return m_runningTexturePath;
+}
+
+int Player::getNumImagesRunning() const {
+	return m_numImagesRunning;
 }
 

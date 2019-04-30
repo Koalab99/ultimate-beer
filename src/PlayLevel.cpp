@@ -2,6 +2,7 @@
 #include <Map.h>
 #include <Player.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <string>
 #include <Enemy.h>
 #include <Position.h>
@@ -11,6 +12,10 @@
 #include <iostream>
 #include <StateReturnValue.h>
 #include <PauseState.h>
+#include <assert.h>
+
+const int FRAME_RATE = 1000/40; // 40 fps
+const float GRAVITY = 2.0f;
 
 void PlayLevel::updateEnemies() {
 	for(std::vector<Enemy>::iterator i = m_enemies.begin(); i != m_enemies.end(); i++) {
@@ -31,8 +36,23 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_map = nullptr;
 	m_map = new Map(path);
 	m_pauseState = new PauseState(m_renderer);
-	m_pause = false;
 	m_player = player;
+	m_playerRunningTexture = IMG_LoadTexture(m_renderer, m_player->getRunningTexturePath().c_str());
+	if(m_playerRunningTexture == nullptr) {
+		std::cerr << "Couldn't load texture." << std::endl;
+		std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
+		assert(m_playerRunningTexture != nullptr);
+	}
+	m_playerX = 2;
+	m_playerY = 2;
+	m_playerW = 1;
+	m_playerH = 2;
+	m_movingFrame = 0;
+	m_totalMovingFrame = m_player->getNumImagesRunning();
+	m_animationTime = 500; // Animation on 1 sec
+	m_moving = false;
+	m_movingTicks = 0;
+	m_pause = false;
 	m_return = RETURN_NOTHING;
 }
 
@@ -46,10 +66,15 @@ PlayLevel::~PlayLevel() {
 }
 
 StateReturnValue PlayLevel::run() {
+	Uint32 time;
 	while(m_return == RETURN_NOTHING) {
+		time = SDL_GetTicks();
 		render();
 		input();
 		update();
+		if(SDL_GetTicks() - time < FRAME_RATE) {
+			SDL_Delay(FRAME_RATE - (SDL_GetTicks() - time));
+		}
 	}
 
 
@@ -74,9 +99,27 @@ void PlayLevel::render() {
 		int width;
 		int height;
 		SDL_GetRendererOutputSize(m_renderer, &width, &height);
+		SDL_Rect src;
+		SDL_Rect dest;
+		if(m_map->getH() == 0) {
+			std::cout << "Division with zero error" << std::endl;
+			assert(m_map->getH() != 0);
+		}
+		int scale = height / m_map->getH();
+		if(m_moving) {
+			dest = { (int)(scale * m_playerX), (int)(scale * m_playerY), (int)(scale * m_playerW), (int)(scale * m_playerH) };
+			int textureWidth, textureHeight;
+			SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
+			src = { textureWidth / m_totalMovingFrame * m_movingFrame, 0, textureWidth / m_totalMovingFrame, textureHeight };
+			if(m_player->getDirection() == 1) {
+				SDL_RenderCopy(m_renderer, m_playerRunningTexture, &src, &dest);
+			}
+			else if(m_player->getDirection() == -1) {
+				SDL_RenderCopyEx(m_renderer, m_playerRunningTexture, &src, &dest, 0, NULL, SDL_FLIP_HORIZONTAL);
+			}
+		}
 		
 		SDL_RenderPresent(m_renderer);
-
 	}
 }
 
@@ -94,12 +137,38 @@ void PlayLevel::input() {
 			}
 			else if(event.type == SDL_KEYDOWN) {
 				switch(event.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						m_pause = true;
+				case SDLK_ESCAPE:
+					m_pause = true;
+					break;
+				case SDLK_d:
+					m_moving = true;
+					m_player->setDirection(1);
+					break;
+				case SDLK_q: 
+					m_moving = true;
+					m_player->setDirection(-1);
+					break;
+				default:
+					break;
+				}
+			}
+			else if(event.type == SDL_KEYUP) {
+				switch(event.key.keysym.sym) {
+					case SDLK_d:
+						// If D is released
+						if(m_player->getDirection() != -1) {
+							m_player->setDirection(0);
+							m_moving = false;
+						}
+						break;
+					case SDLK_q:
+						if(m_player->getDirection() != 1) {
+							m_player->setDirection(0);
+							m_moving = false;
+						}
 						break;
 					default:
 						break;
-
 				}
 			}
 		}
@@ -121,6 +190,17 @@ StateReturnValue PlayLevel::update() {
 	} 
 	else {
 		// Game code here
+		if(m_moving) {
+			if(m_movingTicks == 0) {
+				m_movingTicks = SDL_GetTicks();
+			}
+			m_movingFrame = (int)(m_totalMovingFrame*(SDL_GetTicks() - m_movingTicks) / m_animationTime) % m_totalMovingFrame;	
+
+		}
+		else {
+			m_movingTicks = 0;
+		}
+		
 		return m_return;
 	}
 	return m_return; 
