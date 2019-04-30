@@ -56,10 +56,6 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_pause = false;
 	m_return = RETURN_NOTHING;
 	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
-	int w, h;
-	SDL_GetRendererOutputSize(m_renderer, &w, &h);
-	int BGW, BGH;
-	SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
 	m_positionFond.x=0;
 }
 
@@ -103,24 +99,24 @@ void PlayLevel::render() {
 	else {
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 		SDL_RenderClear(m_renderer);		
-		int width;
-		int height;
-		SDL_GetRendererOutputSize(m_renderer, &width, &height);
+		SDL_GetRendererOutputSize(m_renderer, &m_width, &m_height);
 		SDL_Rect src;
 		SDL_Rect dest;
 		if(m_map->getH() == 0) {
 			std::cout << "Division with zero error" << std::endl;
 			assert(m_map->getH() != 0);
 		}
-		int scale = height / m_map->getH();
-		int BGW, BGH;
-		SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
+		int scale = m_height / m_map->getH();
+		SDL_QueryTexture(m_background, NULL, NULL, &m_BGW, &m_BGH);
 
-				SDL_Rect backgroundRect = { m_positionFond.x, -200, (BGH*width/height)/3, (BGH/3)*3 };
+				SDL_Rect backgroundRect = { m_positionFond.x, -200, (m_BGH*m_width/m_height)/3, (m_BGH/3)*3 };
 				SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
-		
+				if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
+				m_positionFond.x= m_positionFond.x-6;
+				}
+
 		if(m_moving) {
-			dest = { (int)(scale * m_playerX), height - (int)(scale * m_playerY), (int)(scale * m_playerW), (int)(scale * m_playerH) };
+			dest = { (int)(scale * m_playerX), m_height - (int)(scale * m_playerY), (int)(scale * m_playerW), (int)(scale * m_playerH) };
 			int textureWidth, textureHeight;
 			SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
 			src = { textureWidth / m_totalMovingFrame * m_movingFrame, 0, textureWidth / m_totalMovingFrame, textureHeight };
@@ -197,7 +193,9 @@ void PlayLevel::input() {
 					
 					m_moving = true;
 					m_player->setDirection(1);
-					m_positionFond.x = m_positionFond.x+6;
+					if(m_positionFond.x<m_BGW-(m_BGH*m_width/m_height)/3){
+						m_positionFond.x = m_positionFond.x+6;
+					}
 					break;
 				default:
 					break;
