@@ -7,7 +7,7 @@
 const float g = 0.20f;
 
 Player::Player() {
-	m_speed = 0;
+	m_speed = 1;
 	m_runningTexturePath = "data/img/player.png";
 	m_numImagesRunning = 6;
 }

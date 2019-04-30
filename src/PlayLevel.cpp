@@ -18,6 +18,7 @@
 // Setting framerate so that we don't calculate too much frames (in case your computer is so powerful
 const int FPS = 40;
 const int FRAME_TIME = 1000/FPS;
+const float DEFAULT_SPEED = 5;
 
 // Making a constant gravity, might be changed later and added to the map... See future updates
 const float GRAVITY = 2.0f;
@@ -93,6 +94,8 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	SDL_RenderClear(m_renderer);
 	SDL_RenderPresent(m_renderer);
 	SDL_SetRenderTarget(m_renderer, NULL);
+	// Initialize the last update
+	m_lastUpdate = SDL_GetTicks();
 	// Claire can explain this
 	m_positionFond.x=0;
 }
@@ -328,11 +331,14 @@ StateReturnValue PlayLevel::update() {
 			}
 			// Guess the frame number
 			m_movingFrame = (int)(m_totalMovingFrame*(SDL_GetTicks() - m_movingTicks) / m_animationTime) % m_totalMovingFrame;	
+			m_playerX += m_player->getSpeed() * DEFAULT_SPEED * m_player->getDirection() * (SDL_GetTicks() - m_lastUpdate) / 1000;
 		}
 		else {
 			// Player don't want to move, reset the tick counter
 			m_movingTicks = 0;
 		}
+
 	}
+	m_lastUpdate = SDL_GetTicks();
 	return m_return; 
 }

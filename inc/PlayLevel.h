@@ -25,6 +25,7 @@ protected:
 	bool m_moving;
 	Uint32 m_movingTicks;
 	Uint32 m_animationTime;
+	Uint32 m_lastUpdate;
 	int m_BGW;
 	int m_BGH;
 	int m_width;
