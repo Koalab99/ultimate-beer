@@ -1,4 +1,5 @@
 #include <PlayLevel.h>
+//#include <PlayState.h>
 #include <Map.h>
 #include <Player.h>
 #include <SDL2/SDL_image.h>
@@ -10,6 +11,7 @@
 #include <Position.h>
 #include <Rectangle.h>
 #include <Bloc.h>
+#include <Player.h>
 #include <GameState.h>
 #include <iostream>
 #include <StateReturnValue.h>
@@ -98,14 +100,6 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_nearBlocs = new std::vector<Bloc>();
 	// Set the return value that will be sent to the PlayState if different than RETURN_NOTHING
 	m_return = RETURN_NOTHING;
-	// Loading the background texture
-		// Claire, regarde ce qu'il y a dans la classe Map, on ne va pas forcément tout le temps utiliser lacity.png pour le fond 
-		m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
-		if(m_background == nullptr) {
-			std::cerr << "Couldn't load texture." << std::endl;
-			std::cerr << "IMG_Error : " << IMG_GetError() << std::endl;
-			assert(m_background != nullptr);
-		}
 	// Loading bloc texture
 	m_blocTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 10, 10);
 		// Should be changed by Kler
@@ -292,6 +286,7 @@ void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, floa
 }
 
 void PlayLevel::input() {
+	float mapWidth = m_map->getW();
 	// if the game is paused, leave pause state handle input
 	if(m_pause) {
 		m_pauseState->handleInput();
@@ -319,7 +314,9 @@ void PlayLevel::input() {
 						m_player->setDirection(-1);
 						// Claire can explain that
 						if(m_positionFond.x>3){
-							m_positionFond.x = m_positionFond.x-4;
+							if(m_playerX < mapWidth ){
+								m_positionFond.x = m_positionFond.x-6;
+							}
 						}
 						break;
 
@@ -328,7 +325,7 @@ void PlayLevel::input() {
 						m_moving = true;
 						m_player->setDirection(1);
 						// Claire can explain that
-						if(m_positionFond.x<m_BGW-(m_BGH*m_width/m_height)/3){
+						if(m_playerX < mapWidth ){	
 							m_positionFond.x = m_positionFond.x+6;
 						}
 						break;

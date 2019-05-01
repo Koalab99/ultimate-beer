@@ -103,6 +103,7 @@ StateReturnValue PlayState::update() {
 			if((*i)->getPath() == m_order) {
 				m_playing = true;
 				m_currentLevel = new PlayLevel(m_renderer, (*i)->getPath(), m_player);
+				m_currentLevel->m_background = m_background;
 				if(m_currentLevel == nullptr) {
 					std::cerr << "Something weird is happening" << std::endl;
 				}
