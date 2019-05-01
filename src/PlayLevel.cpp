@@ -26,7 +26,7 @@ const float GRAVITY = 2.0f;
 // Update every enemies on the map
 void PlayLevel::updateEnemies() {
 	// For each enemies
-	for(std::vector<Enemy>::iterator i = m_enemies.begin(); i != m_enemies.end(); i++) {
+	for(std::vector<Enemy>::iterator i = m_enemies->begin(); i != m_enemies->end(); i++) {
 		// Get the enemy hitbox
 		Rectangle rect = i->getRectangle();
 		// Get the bloc it is sitting on
@@ -53,7 +53,8 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_player = player;
 	// We load enemies
 	m_enemies = m_map->getEnemies();
-	m_blocs
+	m_blocs = m_map->getBlocs();
+	m_items = m_map->getItems();
 	// Load running player texture into VRAM
 	m_playerRunningTexture = IMG_LoadTexture(m_renderer, m_player->getRunningTexturePath().c_str());
 	// Handling the case the texture failed to load

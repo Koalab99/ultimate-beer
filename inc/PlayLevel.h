@@ -12,7 +12,9 @@
 class PlayLevel {
 protected:
 	Map *m_map;
-	std::vector<Enemy> m_enemies;
+	std::vector<Enemy> *m_enemies;
+	std::vector<Bloc> *m_blocs;
+	std::vector<Item> *m_items;
 	Player *m_player;
 	SDL_Texture *m_playerRunningTexture;
 	SDL_Texture *m_playerStandingTexture;

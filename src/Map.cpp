@@ -112,12 +112,12 @@ std::vector<Bloc> *Map::getBlocs(){
 	return &m_blocs;
 }
 
-std::vector<Enemy> Map::getEnemies() {
-	return m_enemies;
+std::vector<Enemy> *Map::getEnemies() {
+	return &m_enemies;
 }
 
-std::vector<Item> Map::getItems() {
-	return m_items;
+std::vector<Item> *Map::getItems() {
+	return &m_items;
 }
 
 float Map::getH() {
