@@ -25,9 +25,9 @@ SRC:=$(wildcard $(SRCDIR)*.$(FILETYPE))
 OBJ:=$(patsubst $(SRCDIR)%.$(FILETYPE), $(OBJDIR)%.o, $(SRC))
 DEP:=$(patsubst $(OBJDIR)%.o, $(DEPDIR)%.d, $(OBJ))
 
-.PHONY: all clean mrproper regtest
+.PHONY: all clean mrproper regtest doc
 
-all: $(DIRS) $(BINDIR)$(EXE)
+all: $(DIRS) $(BINDIR)$(EXE) $(DOCDIR)html/index.html
 
 -include $(wildcard $(DEPDIR)*.d)
 
@@ -35,8 +35,8 @@ $(DIRS):
 	@mkdir -p $(DIRS)
 
 $(BINDIR)$(EXE): $(OBJ)
-	@echo "Linking all object files..."
-	$(CC) $^ -o $@ $(LDFLAG)
+	@echo "Linking all object files together..."
+	@$(CC) $^ -o $@ $(LDFLAG)
 	@echo "OK!"
 
 $(OBJDIR)%.o: $(SRCDIR)%.$(FILETYPE)
@@ -45,6 +45,12 @@ $(OBJDIR)%.o: $(SRCDIR)%.$(FILETYPE)
 	@echo "Generating the dependancy file for $*"
 	@echo -n "$(OBJDIR)" > $(DEPDIR)$*.d
 	@$(CC) -MM $(CCFLAG) $(SRCDIR)$*.$(FILETYPE) >> $(DEPDIR)$*.d
+
+$(DOCDIR)html/index.html: $(DATADIR)doxyconfig.conf
+	@doxygen $^
+
+doc:
+	@doxygen $(DATADIR)doxyconfig.conf
 
 regtest:
 	@g++ regtest/LevelFile.cpp -o regtest/testFile
@@ -55,6 +61,5 @@ clean:
 	@rm -f $(OBJDIR)*.o $(DEPDIR)*.d
 
 mrproper:
-	@echo "Deleting all unnecessary files..."
-	@rm -rf $(OBJDIR) $(BINDIR) $(DEPDIR)
-	@rm -rf $(SRCDIR)*~ $(INCDIR)*~
+	@echo "Deleting all unnecessary directories..."
+	@rm -rf $(OBJDIR) $(BINDIR) $(DEPDIR) $(DOCDIR)
