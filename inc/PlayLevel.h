@@ -13,18 +13,22 @@ class PlayLevel {
 protected:
 	Map *m_map;
 	std::vector<Enemy> *m_enemies;
-	std::vector<Bloc> *m_blocs;
-	std::vector<Item> *m_items;
+	std::vector<Enemy> *m_nearEnemies;
+	std::vector<Bloc> *m_nearBlocs;
+	std::vector<Item> *m_nearItems;
 	Player *m_player;
 	SDL_Texture *m_playerRunningTexture;
 	SDL_Texture *m_playerStandingTexture;
 	SDL_Texture *m_blocTexture;
+	SDL_Texture *m_enemyTexture;
 	StateReturnValue m_return;
 	PauseState *m_pauseState;
 	float m_playerX;
 	float m_playerY;
 	float m_playerW;
 	float m_playerH;
+	float m_mapVisibleOffset;
+	float m_mapVisibleWidth;
 	bool m_moving;
 	Uint32 m_movingTicks;
 	Uint32 m_animationTime;

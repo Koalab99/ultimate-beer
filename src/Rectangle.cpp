@@ -20,11 +20,11 @@ float Rectangle::getY() const {
 }
 
 float Rectangle::getH() const {
-	return m_w;
+	return m_h;
 }
 
 float Rectangle::getW() const {
-	return m_h;
+	return m_w;
 }
 
 void Rectangle::setX(float x) {

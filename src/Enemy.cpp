@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Enemy::Enemy(float x, float y): m_alive(true),  m_rectangle(x,y,1,2), m_direction(1)
+Enemy::Enemy(float x, float y): m_alive(true),  m_rectangle(x,y,2,3), m_direction(1)
 {
 }
 

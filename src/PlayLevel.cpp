@@ -6,6 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include <string>
 #include <Enemy.h>
+#include <Item.h>
 #include <Position.h>
 #include <Rectangle.h>
 #include <Bloc.h>
@@ -46,15 +47,19 @@ void PlayLevel::updateEnemies() {
 
 // Constructor of the level
 PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
+	// Initializing the renderer with the parameter
 	m_renderer = renderer;
+	// Generating the map object
 	m_map = new Map(path);
+	if(m_map == nullptr) {
+		std::cerr << "Couldn't allocate map" << std::endl;
+		assert(m_map != nullptr);
+	}
 	// Preparing the pause state
 	m_pauseState = new PauseState(m_renderer);
 	m_player = player;
 	// We load enemies
 	m_enemies = m_map->getEnemies();
-	m_blocs = m_map->getBlocs();
-	m_items = m_map->getItems();
 	// Load running player texture into VRAM
 	m_playerRunningTexture = IMG_LoadTexture(m_renderer, m_player->getRunningTexturePath().c_str());
 	// Handling the case the texture failed to load
@@ -88,6 +93,9 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_movingTicks = 0;
 	// Don't pause the game now
 	m_pause = false;
+	m_nearEnemies = new std::vector<Enemy>();
+	m_nearItems = new std::vector<Item>();
+	m_nearBlocs = new std::vector<Bloc>();
 	// Set the return value that will be sent to the PlayState if different than RETURN_NOTHING
 	m_return = RETURN_NOTHING;
 	// Loading the background texture
@@ -106,6 +114,8 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 		SDL_RenderClear(m_renderer);
 		SDL_RenderPresent(m_renderer);
 		SDL_SetRenderTarget(m_renderer, NULL);
+	// Loading enemy texture
+	m_enemyTexture = IMG_LoadTexture(m_renderer, "data/img/ZombiePizza.png");
 	// Initialize the last update
 	m_lastUpdate = SDL_GetTicks();
 		// Claire can explain this
@@ -121,6 +131,18 @@ PlayLevel::~PlayLevel() {
 	// Deleting pause state if existing
 	if(m_pauseState != nullptr) {
 		delete m_pauseState;
+	}
+	// Deleting enemies
+	if(m_nearEnemies != nullptr) {
+		delete m_nearEnemies;
+	}
+	// Deleting blocs
+	if(m_nearBlocs != nullptr) {
+		delete m_nearBlocs;
+	}
+	// Deleting items
+	if(m_nearItems != nullptr) {
+		delete m_nearItems;
 	}
 }
 
@@ -166,7 +188,7 @@ void PlayLevel::render() {
 		// Won't get into trouble with a division by 0
 		SDL_GetRendererOutputSize(m_renderer, &m_width, &m_height);
 		if(m_map->getH() == 0) {
-			std::cout << "Division with zero error" << std::endl;
+			std::cerr << "Division with zero error" << std::endl;
 			assert(m_map->getH() != 0);
 		}
 		// Getting the size of the background
@@ -178,27 +200,30 @@ void PlayLevel::render() {
 		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
 			m_positionFond.x= m_positionFond.x-6;
 		}
-		// Calculate visible part of the screen starting with the size of the map that is displayed
-		float mapVisibleWidth = m_width * m_map->getH() / m_height;
-		// Then we want the x position of the bloc stuck to the left border of the window
-		float mapVisibleOffset;
-		// Player too much at the left, we'll use the beggining of the map
-		if(m_playerX < mapVisibleWidth/2) 
-			mapVisibleOffset = 0;
-		// Player too much at the right, we'll use the end of the map minus the width we already calculated
-		else if(m_playerX > m_map->getW() - mapVisibleWidth/2) 
-			mapVisibleOffset = m_map->getW() - mapVisibleWidth;
-		// Player somewhere between the start and the end
-		else 
-			mapVisibleOffset = m_playerX - mapVisibleWidth/2;
-
 		// Display the blocs
 		// For each blocs appearing on the screen
 		// Kler should have a look at what happens here, she might be interested by how I render theses black boxes...
-		std::vector<Bloc> *usefulBlocs = m_map->getBlocsInRange(mapVisibleOffset, mapVisibleWidth);
-		for(auto i = usefulBlocs->begin(); i < usefulBlocs->end(); i++) {
+		for(auto i = m_nearBlocs->begin(); i != m_nearBlocs->end(); i++) {
 			drawOnMap(m_blocTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
 		}
+
+		// Drawing pizza 
+		for(auto i = m_nearEnemies->begin(); i != m_nearEnemies->end(); i++) {
+			// It's dead, don't show it
+			if(!i->isAlive()) {
+				continue;
+			}
+			// It's going to the left
+			if(i->getDirection() == -1) {
+				drawOnMap(m_enemyTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight(), SDL_FLIP_HORIZONTAL);
+			}
+			// It's going to the right
+			else {
+				drawOnMap(m_enemyTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
+			}
+		}
+
+		// Leave this part at the bottom so the player's texture won't be hidden by other texture
 		// Player display
 		SDL_Rect src;
 		// Player moving
@@ -241,8 +266,6 @@ void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, floa
 	float mapHeight = m_map->getH();
 	// Simple scale
 	float scale = renderHeight/mapHeight;
-	// Calculating the virtual width of the visible map
-	float mapVisibleWidth = renderWidth/scale;
 	// Applying the scale to non-special variables
 	int newW, newH, newX, newY;
 	newW = w * scale;
@@ -250,17 +273,17 @@ void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, floa
 	// More complex calculus because we want (0, 0) to be the bottom left corner
 	// HELP : SDL treat (0, 0) as the top left corner
 	newY = renderHeight - ((y + h) * scale);	
-	if(m_playerX < mapVisibleWidth/2) {
+	if(m_playerX < m_mapVisibleWidth/2) {
 		// Beggining of the map
 		newX = x * scale;
 	}
-	else if(m_playerX > mapWidth - mapVisibleWidth/2) {
+	else if(m_playerX > mapWidth - m_mapVisibleWidth/2) {
 		// End of the map
-		newX = (x - mapWidth + mapVisibleWidth) * scale;
+		newX = (x - mapWidth + m_mapVisibleWidth) * scale;
 	}
 	else {
 		// Middle of a map
-		newX = (x - m_playerX + mapVisibleWidth/2) * scale;
+		newX = (x - m_playerX + m_mapVisibleWidth/2) * scale;
 	}
 	// Creating the destination rectangle
 	SDL_Rect destRect = {newX, newY, newW, newH};
@@ -375,7 +398,33 @@ StateReturnValue PlayLevel::update() {
 			// Player don't want to move, reset the tick counter
 			m_movingTicks = 0;
 		}
-
+		m_mapVisibleWidth = m_width *  m_map->getH() / m_height;
+	
+		// Player too much at the left, we'll use the beggining of the map
+		if(m_playerX < m_mapVisibleWidth/2) 
+			m_mapVisibleOffset = 0;
+		// Player too much at the right, we'll use the end of the map minus the width we already calculated
+		else if(m_playerX > m_map->getW() - m_mapVisibleWidth/2) 
+			m_mapVisibleOffset = m_map->getW() - m_mapVisibleWidth;
+		// Player somewhere between the start and the end
+		else 
+			m_mapVisibleOffset = m_playerX - m_mapVisibleWidth/2;
+		// Free some memory before reallocation
+		if(m_nearEnemies != nullptr) {
+			delete m_nearEnemies;
+			m_nearEnemies = nullptr;
+		}
+		if(m_nearBlocs != nullptr) {
+			delete m_nearBlocs;
+			m_nearBlocs = nullptr;
+		}
+		if(m_nearItems != nullptr) {
+			delete m_nearItems;
+			m_nearItems = nullptr;
+		}
+		m_nearEnemies = m_map->getEnemiesInRange(m_mapVisibleOffset, m_mapVisibleWidth);
+		m_nearBlocs = m_map->getBlocsInRange(m_mapVisibleOffset, m_mapVisibleWidth);
+		m_nearItems = m_map->getItemsInRange(m_mapVisibleOffset, m_mapVisibleWidth);
 	}
 	// Set current tick as last tick for next loop
 	m_lastUpdate = SDL_GetTicks();
