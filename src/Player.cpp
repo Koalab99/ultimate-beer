@@ -7,6 +7,7 @@
 const float g = 0.20f;
 
 Player::Player() {
+	m_life = 3;
 	m_speed = 1;
 	m_runningTexturePath = "data/img/player.png";
 	m_waitingTexturePath = "data/img/BEER.png";
@@ -51,3 +52,8 @@ int Player::getNumImagesRunning() const {
 	return m_numImagesRunning;
 }
 
+void Player::setLife(int life) {
+	if(life >= 0) {
+		m_life = life;
+	}
+}

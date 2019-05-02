@@ -4,8 +4,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
-#include <unistd.h>
-#include <sys/wait.h>
+#include <assert.h>
 
 extern TTF_Font *gFont;
 
@@ -18,8 +17,9 @@ Button::Button(SDL_Renderer *renderer, std::string message) {
 	SDL_Color black = {0, 0, 0};
 	SDL_Surface *surface = TTF_RenderText_Blended(gFont, message.c_str(), black);
 	if(surface == NULL) {
-		std::cerr << "Impossible loading TTF" << std::endl;
+		std::cerr << "Couldn't load TTF" << std::endl;
 		std::cerr << TTF_GetError() << std::endl;
+		assert(surface != NULL);
 	}
 	// Changing text surface to text texture
 	SDL_Texture *tmp = SDL_CreateTextureFromSurface(m_renderer, surface);

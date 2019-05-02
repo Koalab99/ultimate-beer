@@ -6,6 +6,7 @@
 #include <LevelInfo.h>
 #include <experimental/filesystem>
 #include <StateReturnValue.h>
+#include <DeadScreen.h>
 
 PlayState::PlayState(SDL_Window *window, Player *player) : GameState(window) {
 	m_player = player;
@@ -117,7 +118,11 @@ StateReturnValue PlayState::update() {
 		StateReturnValue result = m_currentLevel->run();
 		m_playing = false;
 		delete m_currentLevel;
-		if(result != RETURN_BACK && result != RETURN_PLAY) {
+		if(result == RETURN_DEAD) {
+			DeadScreen ds(m_renderer);
+			m_player->setLife(3);
+		}
+		else if(result != RETURN_BACK && result != RETURN_PLAY) {
 			return result;
 		}
 	}

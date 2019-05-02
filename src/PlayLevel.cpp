@@ -64,7 +64,7 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_player = player;
 	// We load enemies
 	m_enemies = m_map->getEnemies();
-	// Load running player texture into VRAM
+	// Load running player texture into memory
 	m_playerRunningTexture = IMG_LoadTexture(m_renderer, m_player->getRunningTexturePath().c_str());
 	// Handling the case the texture failed to load
 	if(m_playerRunningTexture == nullptr) {
@@ -95,6 +95,10 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_moving = false;
 	// Player not jumping at the beggining of the game
 	m_jumping = false;
+	// Set to true if player touched an enemy
+	m_playerTouched = false;
+	// Not invincible for now
+	m_invincibleRemainingTime = 0;
 	// Helps slowing the sprite animation
 	m_movingTicks = 0;
 	// Don't pause the game now
@@ -450,6 +454,9 @@ StateReturnValue PlayLevel::update() {
 	}
 	// Set current tick as last tick for next loop
 	m_lastUpdate = currentTicks;
+	if(m_player->getLife() < 1) {
+		m_return = RETURN_DEAD;
+	}
 	return m_return; 
 }
 
@@ -548,39 +555,54 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 	const Enemy *n  = m_map->collide(m_nearEnemies, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
 	const Enemy *ne = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY + m_playerH); 
 	const Enemy *e  = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
-	Enemy *se = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY);
-	Enemy *s  = m_map->collide(m_nearEnemies, m_playerX + m_playerW/2, m_playerY); // South
-	Enemy *sw = m_map->collide(m_nearEnemies, m_playerX, m_playerY);
+	const Enemy *se = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY);
+	const Enemy *s  = m_map->collide(m_nearEnemies, m_playerX + m_playerW/2, m_playerY); // South
+	const Enemy *sw = m_map->collide(m_nearEnemies, m_playerX, m_playerY);
 
 	// Calculing collision
 	if(n != nullptr || ne != nullptr || e != nullptr || w != nullptr || nw != nullptr) {
 		// Player die !
+		int life = m_player->getLife();
+		if(life > 0) {
+			m_player->setLife(life-1);
+		}
 	}
 	else if(s != nullptr) {
 		// Player touch the enemy and kill
 		auto dead = std::find(m_enemies->begin(), m_enemies->end(), *s);
-		dead->setAlive(false);
+		if(dead != m_enemies->end()) 
+			dead->setAlive(false);
 	}
 	else if(se != nullptr && e == nullptr) {
 		// There is a collision in the bottom right corner
 		// We don't know who will die for now
 		if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
 			// Player dies !
+			int life = m_player->getLife();
+			if(life > 0) {
+				m_player->setLife(life-1);
+			}
 		}
 		else {
 			// Enemy dies
 			auto dead = std::find(m_enemies->begin(), m_enemies->end(), *se);
-			dead->setAlive(false);
+			if(dead != m_enemies->end()) 
+				dead->setAlive(false);
 		}
 	}
 	else if(sw != nullptr && s == nullptr && w == nullptr) {
 		if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
 			// Player dies
+			int life = m_player->getLife();
+			if(life > 0) {
+				m_player->setLife(life-1);
+			}
 		}
 		else {
 			// Enemy dies
 			auto dead = std::find(m_enemies->begin(), m_enemies->end(), *sw);
-			dead->setAlive(false);
+			if(dead != m_enemies->end()) 
+				dead->setAlive(false);
 
 		}
 	}

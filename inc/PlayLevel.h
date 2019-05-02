@@ -11,18 +11,20 @@
 
 class PlayLevel {
 protected:
+	SDL_Rect m_positionFond;
+	SDL_Renderer *m_renderer;
 	Map *m_map;
+	StateReturnValue m_return;
+	PauseState *m_pauseState;
+	Player *m_player;
 	std::vector<Enemy> *m_enemies;
 	std::vector<Enemy> *m_nearEnemies;
 	std::vector<Bloc> *m_nearBlocs;
 	std::vector<Item> *m_nearItems;
-	Player *m_player;
 	SDL_Texture *m_playerRunningTexture;
 	SDL_Texture *m_playerStandingTexture;
 	SDL_Texture *m_blocTexture;
 	SDL_Texture *m_enemyTexture;
-	StateReturnValue m_return;
-	PauseState *m_pauseState;
 	float m_playerX;
 	float m_playerY;
 	float m_playerW;
@@ -30,26 +32,26 @@ protected:
 	float m_mapVisibleOffset;
 	float m_mapVisibleWidth;
 	float m_accelerationY;
-	bool m_moving;
-	bool m_jumping;
 	Uint32 m_movingTicks;
 	Uint32 m_animationTime;
 	Uint32 m_lastUpdate;
+	Uint32 m_invincibleRemainingTime;
 	int m_BGW;
 	int m_BGH;
 	int m_width;
 	int m_height;
 	int m_movingFrame;
 	int m_totalMovingFrame;
+	bool m_moving;
+	bool m_jumping;
 	bool m_pause;
+	bool m_playerTouched;
 	void updateEnemies();
 	void updateBlocCollision(Uint32 currentTicks);
 	void updateItemCollision(Uint32 currentTicks);
 	void updateEnemyCollision(Uint32 currentTicks);
 	void drawOnMap(SDL_Texture *texture, SDL_Rect *src, float x, float y, float w, float h, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	
-	SDL_Rect m_positionFond;
-	SDL_Renderer *m_renderer;
 	
 public:
 	PlayLevel(SDL_Renderer *renderer, std::string path, Player *player);

@@ -7,6 +7,7 @@ typedef enum StateReturnValue {
 	RETURN_PLAY,
 	RETURN_MENU, 
 	RETURN_CREDITS,
+	RETURN_DEAD,
 	RETURN_BACK
 	
 } StateReturnValue;
