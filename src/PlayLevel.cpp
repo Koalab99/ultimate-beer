@@ -1,5 +1,4 @@
 #include <PlayLevel.h>
-//#include <PlayState.h>
 #include <Map.h>
 #include <Player.h>
 #include <SDL2/SDL_image.h>
@@ -11,7 +10,6 @@
 #include <Position.h>
 #include <Rectangle.h>
 #include <Bloc.h>
-#include <Player.h>
 #include <GameState.h>
 #include <iostream>
 #include <StateReturnValue.h>
@@ -24,8 +22,8 @@ const int FRAME_TIME = 1000/FPS;
 const float DEFAULT_SPEED = 5;
 
 // Making a constant gravity, might be changed later and added to the map... See future updates
-const float GRAVITY = 2.0f;
-const float DEFAULT_VERT_ACC = 5;
+const float GRAVITY = 2;
+const float DEFAULT_VERT_ACC = 3;
 
 // Update every enemies on the map
 void PlayLevel::updateEnemies() {
@@ -101,6 +99,8 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_nearEnemies = new std::vector<Enemy>();
 	m_nearItems = new std::vector<Item>();
 	m_nearBlocs = new std::vector<Bloc>();
+	// Set the return value that will be sent to the PlayState if different than RETURN_NOTHING
+	m_return = RETURN_NOTHING;
 	// Set the return value that will be sent to the PlayState if different than RETURN_NOTHING
 	m_return = RETURN_NOTHING;
 	// Loading bloc texture
@@ -327,8 +327,11 @@ void PlayLevel::input() {
 						// User pressed right arrow, want to go to the right
 						m_moving = true;
 						m_player->setDirection(1);
+						// User pressed right arrow, want to go to the right
+						m_moving = true;
+						m_player->setDirection(1);
 						// Claire can explain that
-						if(m_playerX < mapWidth ){	
+						if(m_positionFond.x<m_BGW-(m_BGH*m_width/m_height)/3){
 							m_positionFond.x = m_positionFond.x+6;
 						}
 						break;
@@ -355,6 +358,9 @@ void PlayLevel::input() {
 							m_moving = false;
 						}
 						break;
+					case SDLK_SPACE:
+						// If space is released, stop jumping
+						m_jumping = false;
 					default:
 						break;
 				}
@@ -365,6 +371,8 @@ void PlayLevel::input() {
 
 // Update everything
 StateReturnValue PlayLevel::update() {
+	// Setting the current time for the entire function
+	Uint32 currentTicks = SDL_GetTicks();
 	// If game is paused
 	if(m_pause) {
 		// Get the return value
@@ -383,7 +391,7 @@ StateReturnValue PlayLevel::update() {
 		}
 	} 
 	// Game not paused, we can play !
-	else {
+	else {	
 		m_mapVisibleWidth = m_width *  m_map->getH() / m_height;
 	
 		// Player too much at the left, we'll use the beggining of the map
@@ -441,36 +449,44 @@ StateReturnValue PlayLevel::update() {
 
 		// Calculing collision
 		if(s != nullptr) {
+			// Player touch the ground
 			m_playerY = s->GetY() + s->GetHeight();
 			m_accelerationY = 0;
 		}
 		else if(n != nullptr) {
+			// Player's head touch a bloc
 			if(m_accelerationY > 0) {
 				m_accelerationY *= -0.25;
 			}
 		}
 		else {
-			m_accelerationY -= GRAVITY;
+			// Player in the void, apply gravity
+			m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/300;
 		}
 		if(m_jumping && s != nullptr) {
-			std::cout << "JUMP" << std::endl;
+			// Player jump
 			m_accelerationY = DEFAULT_VERT_ACC;
-			m_jumping = false;
 		}
-		m_playerY += m_accelerationY; 
+		// By default, the player can move horizontally
 		bool canMove = true;
 		if(e != nullptr && m_player->getDirection() == 1) {
+			// Cannot go to the right
 			m_playerX = e->GetX() - m_playerW;
 		}
 		else if(w != nullptr && m_player->getDirection() == -1) {
-			m_playerX = e->GetX() - e->GetWidth();
+			// Cannot go to the left
+			m_playerX = w->GetX() + w->GetWidth();
 		}
 
 		if(se != nullptr && s == nullptr && e == nullptr) {
+			// There is a collision in the bottom right corner
 			if(m_playerX + m_playerW - se->GetX() < m_playerY - (se->GetX() + se->GetHeight())) {
 				m_playerX = se->GetX() - m_playerW;
 			}
 			else {
+				if(m_accelerationY <= 0) {
+					m_accelerationY = 0;
+				}
 				m_playerY = se->GetY() + se->GetHeight();
 			}
 		}
@@ -479,12 +495,17 @@ StateReturnValue PlayLevel::update() {
 				m_playerX = sw->GetX() + sw->GetWidth();
 			}
 			else {
+				if(m_accelerationY <= 0) {
+					m_accelerationY = 0;
+				}
 				m_playerY = sw->GetY() + sw->GetHeight();
 			}
 		}
-
+		// Calculate the player's position
+		m_playerY += m_accelerationY * (currentTicks - m_lastUpdate)/ 300; 
+		// No longer need jumping to be set
 	}
 	// Set current tick as last tick for next loop
-	m_lastUpdate = SDL_GetTicks();
+	m_lastUpdate = currentTicks;
 	return m_return; 
 }
