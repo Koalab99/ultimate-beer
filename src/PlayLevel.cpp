@@ -23,6 +23,7 @@ const float DEFAULT_SPEED = 5;
 
 // Making a constant gravity, might be changed later and added to the map... See future updates
 const float GRAVITY = 2.0f;
+const float DEFAULT_VERT_ACC = 5;
 
 // Update every enemies on the map
 void PlayLevel::updateEnemies() {
@@ -89,6 +90,8 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_animationTime = 500; 
 	// Player not moving at the beggining of the game
 	m_moving = false;
+	// Player not jumping at the beggining of the game
+	m_jumping = false;
 	// Helps slowing the sprite animation
 	m_movingTicks = 0;
 	// Don't pause the game now
@@ -332,6 +335,9 @@ void PlayLevel::input() {
 							m_positionFond.x = m_positionFond.x+6;
 						}
 						break;
+					case SDLK_SPACE:
+						m_jumping = true;
+						break;
 					default:
 						break;
 				}
@@ -381,23 +387,6 @@ StateReturnValue PlayLevel::update() {
 	} 
 	// Game not paused, we can play !
 	else {
-		// If player want to move
-		if(m_moving) {
-			// If it didn't move before initialize the moving ticks
-			if(m_movingTicks == 0) {
-				m_movingTicks = SDL_GetTicks();
-			}
-			// Guess the frame number
-			m_movingFrame = (int)(m_totalMovingFrame*(SDL_GetTicks() - m_movingTicks) / m_animationTime) % m_totalMovingFrame;	
-			m_playerX += m_player->getSpeed() * DEFAULT_SPEED * m_player->getDirection() * (SDL_GetTicks() - m_lastUpdate) / 1000;
-			if(m_playerX < 0) {
-				m_playerX = 0;
-			}
-		}
-		else {
-			// Player don't want to move, reset the tick counter
-			m_movingTicks = 0;
-		}
 		m_mapVisibleWidth = m_width *  m_map->getH() / m_height;
 	
 		// Player too much at the left, we'll use the beggining of the map
@@ -422,9 +411,81 @@ StateReturnValue PlayLevel::update() {
 			delete m_nearItems;
 			m_nearItems = nullptr;
 		}
+		// Load the closest elements we're going to interract with
 		m_nearEnemies = m_map->getEnemiesInRange(m_mapVisibleOffset, m_mapVisibleWidth);
 		m_nearBlocs = m_map->getBlocsInRange(m_mapVisibleOffset, m_mapVisibleWidth);
 		m_nearItems = m_map->getItemsInRange(m_mapVisibleOffset, m_mapVisibleWidth);
+		// If player want to move
+		if(m_moving) {
+			// If it didn't move before initialize the moving ticks
+			if(m_movingTicks == 0) {
+				m_movingTicks = SDL_GetTicks();
+			}
+			// Guess the frame number
+			m_movingFrame = (int)(m_totalMovingFrame*(SDL_GetTicks() - m_movingTicks) / m_animationTime) % m_totalMovingFrame;	
+			m_playerX += m_player->getSpeed() * DEFAULT_SPEED * m_player->getDirection() * (SDL_GetTicks() - m_lastUpdate) / 1000;
+			if(m_playerX < 0) {
+				m_playerX = 0;
+			}
+		}
+		else {
+			// Player don't want to move, reset the tick counter
+			m_movingTicks = 0;
+		}
+		// Bloc collisions
+		const Bloc *n  = m_map->collide(m_nearBlocs, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
+		const Bloc *ne = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY + m_playerH); 
+		const Bloc *e  = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
+		const Bloc *se = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY);
+		const Bloc *s  = m_map->collide(m_nearBlocs, m_playerX + m_playerW/2, m_playerY); // South
+		const Bloc *sw = m_map->collide(m_nearBlocs, m_playerX, m_playerY);
+		const Bloc *w  = m_map->collide(m_nearBlocs, m_playerX, m_playerY + m_playerH/2); // West
+		const Bloc *nw = m_map->collide(m_nearBlocs, m_playerX, m_playerY + m_playerH);
+
+		// Calculing collision
+		if(s != nullptr) {
+			m_playerY = s->GetY() + s->GetHeight();
+			m_accelerationY = 0;
+		}
+		else if(n != nullptr) {
+			if(m_accelerationY > 0) {
+				m_accelerationY *= -0.25;
+			}
+		}
+		else {
+			m_accelerationY -= GRAVITY;
+		}
+		if(m_jumping && s != nullptr) {
+			std::cout << "JUMP" << std::endl;
+			m_accelerationY = DEFAULT_VERT_ACC;
+			m_jumping = false;
+		}
+		m_playerY += m_accelerationY; 
+		bool canMove = true;
+		if(e != nullptr && m_player->getDirection() == 1) {
+			m_playerX = e->GetX() - m_playerW;
+		}
+		else if(w != nullptr && m_player->getDirection() == -1) {
+			m_playerX = e->GetX() - e->GetWidth();
+		}
+
+		if(se != nullptr && s == nullptr && e == nullptr) {
+			if(m_playerX + m_playerW - se->GetX() < m_playerY - (se->GetX() + se->GetHeight())) {
+				m_playerX = se->GetX() - m_playerW;
+			}
+			else {
+				m_playerY = se->GetY() + se->GetHeight();
+			}
+		}
+		else if(sw != nullptr && s == nullptr && w == nullptr) {
+			if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
+				m_playerX = sw->GetX() + sw->GetWidth();
+			}
+			else {
+				m_playerY = sw->GetY() + sw->GetHeight();
+			}
+		}
+
 	}
 	// Set current tick as last tick for next loop
 	m_lastUpdate = SDL_GetTicks();

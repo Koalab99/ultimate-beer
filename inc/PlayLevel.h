@@ -29,7 +29,9 @@ protected:
 	float m_playerH;
 	float m_mapVisibleOffset;
 	float m_mapVisibleWidth;
+	float m_accelerationY;
 	bool m_moving;
+	bool m_jumping;
 	Uint32 m_movingTicks;
 	Uint32 m_animationTime;
 	Uint32 m_lastUpdate;

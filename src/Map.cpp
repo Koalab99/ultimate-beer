@@ -23,40 +23,40 @@ Map::~Map(){
 const Bloc *Map::collide(std::vector<Bloc> *v, const float x, const float y) {
 	// Find if there is a bloc colliding the point (x, y)
 	for(auto i = v->cbegin(); i != v->cend(); i++) {
-		if( 	x > i->GetX() && 
-			x < i->GetWidth() + i->GetX() &&
-			y > i->GetY() && 
-			y < i->GetHeight() + i->GetY()) {
+		if( 	x >= i->GetX() && 
+			x <= i->GetWidth() + i->GetX() &&
+			y >= i->GetY() && 
+			y <= i->GetHeight() + i->GetY()) {
 			return &*i;	
 		}
 	}	
-	return NULL;
+	return nullptr;
 }
 
 const Enemy *Map::collide(std::vector<Enemy> *v, const float x, const float y) {
 	// Find if there is a bloc colliding the point (x, y)
 	for(auto i = v->cbegin(); i != v->cend(); i++) {
-		if( 	x > i->GetX() && 
-			x < i->GetWidth() + i->GetX() &&
-			y > i->GetY() && 
-			y < i->GetHeight() + i->GetY()) {
+		if( 	x >= i->GetX() && 
+			x <= i->GetWidth() + i->GetX() &&
+			y >= i->GetY() && 
+			y <= i->GetHeight() + i->GetY()) {
 			return &*i;	
 		}
 	}	
-	return NULL;
+	return nullptr;
 }
 
 const Item *Map::collide(std::vector<Item> *v, const float x, const float y) {
 	// Find if there is a bloc colliding the point (x, y)
 	for(auto i = v->cbegin(); i != v->cend(); i++) {
-		if( 	x > i->GetX() && 
-			x < i->GetWidth() + i->GetX() &&
-			y > i->GetY() && 
-			y < i->GetHeight() + i->GetY()) {
+		if( 	x >= i->GetX() && 
+			x <= i->GetWidth() + i->GetX() &&
+			y >= i->GetY() && 
+			y <= i->GetHeight() + i->GetY()) {
 			return &*i;	
 		}
 	}	
-	return NULL;
+	return nullptr;
 }
 
 std::vector<Bloc> *Map::getBlocsInRange(float x, float w) {
