@@ -5,6 +5,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include <Enemy.h>
 #include <Item.h>
 #include <Position.h>
@@ -19,11 +21,11 @@
 // Setting framerate so that we don't calculate too much frames (in case your computer is so powerful
 const int FPS = 40;
 const int FRAME_TIME = 1000/FPS;
-const float DEFAULT_SPEED = 5;
+const float DEFAULT_SPEED = 6;
 
 // Making a constant gravity, might be changed later and added to the map... See future updates
 const float GRAVITY = 2;
-const float DEFAULT_VERT_ACC = 3.5;
+const float DEFAULT_VERT_ACC = 6;
 const float ACC_FACTOR = 300;
 
 // Update every enemies on the map
@@ -106,18 +108,18 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_return = RETURN_NOTHING;
 	// Loading bloc texture
 	m_blocTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 10, 10);
-		// Should be changed by Kler
-		SDL_SetRenderTarget(m_renderer, m_blocTexture);
-		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-		SDL_RenderClear(m_renderer);
-		SDL_RenderPresent(m_renderer);
-		SDL_SetRenderTarget(m_renderer, NULL);
+	// Should be changed by Kler
+	SDL_SetRenderTarget(m_renderer, m_blocTexture);
+	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+	SDL_RenderClear(m_renderer);
+	SDL_RenderPresent(m_renderer);
+	SDL_SetRenderTarget(m_renderer, NULL);
 	// Loading enemy texture
 	m_enemyTexture = IMG_LoadTexture(m_renderer, "data/img/ZombiePizza.png");
 	// Initialize the last update
 	m_lastUpdate = SDL_GetTicks();
-		// Claire can explain this
-		m_positionFond.x=0;
+	// Claire can explain this
+	m_positionFond.x=0;
 }
 
 // PlayLevel Destructor, should free all memory allocated by us or by SDL
@@ -394,7 +396,7 @@ StateReturnValue PlayLevel::update() {
 	// Game not paused, we can play !
 	else {	
 		m_mapVisibleWidth = m_width *  m_map->getH() / m_height;
-	
+
 		// Player too much at the left, we'll use the beggining of the map
 		if(m_playerX < m_mapVisibleWidth/2) 
 			m_mapVisibleOffset = 0;
@@ -439,92 +441,9 @@ StateReturnValue PlayLevel::update() {
 			m_movingTicks = 0;
 		}
 		// Bloc collisions
-		const Bloc *n  = m_map->collide(m_nearBlocs, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
-		const Bloc *ne = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY + m_playerH); 
-		const Bloc *e  = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
-		const Bloc *se = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY);
-		const Bloc *s  = m_map->collide(m_nearBlocs, m_playerX + m_playerW/2, m_playerY); // South
-		const Bloc *sw = m_map->collide(m_nearBlocs, m_playerX, m_playerY);
-		const Bloc *w  = m_map->collide(m_nearBlocs, m_playerX, m_playerY + m_playerH/2); // West
-		const Bloc *nw = m_map->collide(m_nearBlocs, m_playerX, m_playerY + m_playerH);
-
-		// Calculing collision
-		if(s != nullptr) {
-			// Player touch the ground
-			m_playerY = s->GetY() + s->GetHeight();
-			m_accelerationY = 0;
-		}
-		else if(n != nullptr) {
-			// Player's head touch a bloc
-			if(m_accelerationY > 0) {
-				m_accelerationY *= -0.25;
-			}
-		}
-		else {
-			// Player in the void, apply gravity
-			m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/ACC_FACTOR;
-		}
-		if(m_jumping && s != nullptr) {
-			// Player jump
-			m_accelerationY = DEFAULT_VERT_ACC;
-		}
-		// By default, the player can move horizontally
-		if(e != nullptr && m_player->getDirection() == 1) {
-			// Cannot go to the right
-			m_playerX = e->GetX() - m_playerW;
-		}
-		else if(w != nullptr && m_player->getDirection() == -1) {
-			// Cannot go to the left
-			m_playerX = w->GetX() + w->GetWidth();
-		}
-
-		if(se != nullptr && s == nullptr && e == nullptr) {
-			// There is a collision in the bottom right corner
-			if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
-				m_playerX = se->GetX() - m_playerW;
-			}
-			else {
-				// In case we are jumping, don't stop us during it
-				if(m_accelerationY <= 0) {
-					m_accelerationY = 0;
-				}
-				m_playerY = se->GetY() + se->GetHeight();
-			}
-		}
-		else if(sw != nullptr && s == nullptr && w == nullptr) {
-			if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
-				m_playerX = sw->GetX() + sw->GetWidth();
-			}
-			else {
-				// In case we are jumping, don't stop us during it
-				if(m_accelerationY <= 0) {
-					m_accelerationY = 0;
-				}
-				m_playerY = sw->GetY() + sw->GetHeight();
-			}
-		}
-		else if(ne != nullptr && n == nullptr && e == nullptr) {
-			if(m_playerX + m_playerW - ne->GetX() < (m_playerY + m_playerH) - ne->GetY()) {
-				m_playerX = ne->GetX() - m_playerW;
-			}
-			else {
-				if(m_accelerationY > 0) {
-					m_accelerationY *= -0.25;
-				}
-				m_playerY = ne->GetY() - m_playerH;
-			}
-		}
-		else if(nw != nullptr && n == nullptr && w == nullptr) {
-			if((nw->GetX() + nw->GetWidth()) -  m_playerX < m_playerY + m_playerH - nw->GetY()) {
-				m_playerX = nw->GetX() + nw->GetWidth();
-			}
-			else {
-				if(m_accelerationY > 0) {
-					m_accelerationY *= -0.25;
-				}
-				m_playerY = nw->GetY() - m_playerH;
-			}
-		}
+		updateBlocCollision(currentTicks);
+		updateEnemyCollision(currentTicks);
+		updateItemCollision(currentTicks);
 		// Calculate the player's position
 		m_playerY += m_accelerationY * (currentTicks - m_lastUpdate)/ ACC_FACTOR; 
 		// No longer need jumping to be set
@@ -532,4 +451,233 @@ StateReturnValue PlayLevel::update() {
 	// Set current tick as last tick for next loop
 	m_lastUpdate = currentTicks;
 	return m_return; 
+}
+
+void PlayLevel::updateItemCollision(Uint32 currentTicks) {
+	const Item *n  = m_map->collide(m_nearItems, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
+	const Item *ne = m_map->collide(m_nearItems, m_playerX + m_playerW, m_playerY + m_playerH); 
+	const Item *e  = m_map->collide(m_nearItems, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
+	const Item *se = m_map->collide(m_nearItems, m_playerX + m_playerW, m_playerY);
+	const Item *s  = m_map->collide(m_nearItems, m_playerX + m_playerW/2, m_playerY); // South
+	const Item *sw = m_map->collide(m_nearItems, m_playerX, m_playerY);
+	const Item *w  = m_map->collide(m_nearItems, m_playerX, m_playerY + m_playerH/2); // West
+	const Item *nw = m_map->collide(m_nearItems, m_playerX, m_playerY + m_playerH);
+
+	// Calculing collision
+	if(s != nullptr) {
+		// Player touch the ground
+		m_playerY = s->GetY() + s->GetHeight();
+		m_accelerationY = 0;
+	}
+	else if(n != nullptr) {
+		// Player's head touch a bloc
+		if(m_accelerationY > 0) {
+			m_accelerationY *= -0.25;
+		}
+	}
+	else {
+		// Player in the void, apply gravity
+		m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/ACC_FACTOR;
+	}
+	if(m_jumping && s != nullptr) {
+		// Player jump
+		m_accelerationY = DEFAULT_VERT_ACC;
+	}
+	// By default, the player can move horizontally
+	if(e != nullptr && m_player->getDirection() == 1) {
+		// Cannot go to the right
+		m_playerX = e->GetX() - m_playerW;
+	}
+	else if(w != nullptr && m_player->getDirection() == -1) {
+		// Cannot go to the left
+		m_playerX = w->GetX() + w->GetWidth();
+	}
+
+	if(se != nullptr && s == nullptr && e == nullptr) {
+		// There is a collision in the bottom right corner
+		if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
+			m_playerX = se->GetX() - m_playerW;
+		}
+		else {
+			// In case we are jumping, don't stop us during it
+			if(m_accelerationY <= 0) {
+				m_accelerationY = 0;
+			}
+			m_playerY = se->GetY() + se->GetHeight();
+		}
+	}
+	else if(sw != nullptr && s == nullptr && w == nullptr) {
+		if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
+			m_playerX = sw->GetX() + sw->GetWidth();
+		}
+		else {
+			// In case we are jumping, don't stop us during it
+			if(m_accelerationY <= 0) {
+				m_accelerationY = 0;
+			}
+			m_playerY = sw->GetY() + sw->GetHeight();
+		}
+	}
+	else if(ne != nullptr && n == nullptr && e == nullptr) {
+		if(m_playerX + m_playerW - ne->GetX() < (m_playerY + m_playerH) - ne->GetY()) {
+			m_playerX = ne->GetX() - m_playerW;
+		}
+		else {
+			if(m_accelerationY > 0) {
+				m_accelerationY *= -0.25;
+			}
+			m_playerY = ne->GetY() - m_playerH;
+		}
+	}
+	else if(nw != nullptr && n == nullptr && w == nullptr) {
+		if((nw->GetX() + nw->GetWidth()) -  m_playerX < m_playerY + m_playerH - nw->GetY()) {
+			m_playerX = nw->GetX() + nw->GetWidth();
+		}
+		else {
+			if(m_accelerationY > 0) {
+				m_accelerationY *= -0.25;
+			}
+			m_playerY = nw->GetY() - m_playerH;
+		}
+	}
+}
+
+void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
+	const Enemy *w  = m_map->collide(m_nearEnemies, m_playerX, m_playerY + m_playerH/2); // West
+	const Enemy *nw = m_map->collide(m_nearEnemies, m_playerX, m_playerY + m_playerH);
+	const Enemy *n  = m_map->collide(m_nearEnemies, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
+	const Enemy *ne = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY + m_playerH); 
+	const Enemy *e  = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
+	Enemy *se = m_map->collide(m_nearEnemies, m_playerX + m_playerW, m_playerY);
+	Enemy *s  = m_map->collide(m_nearEnemies, m_playerX + m_playerW/2, m_playerY); // South
+	Enemy *sw = m_map->collide(m_nearEnemies, m_playerX, m_playerY);
+
+	// Calculing collision
+	if(n != nullptr || ne != nullptr || e != nullptr || w != nullptr || nw != nullptr) {
+		// Player die !
+	}
+	else if(s != nullptr) {
+		// Player touch the enemy and kill
+		auto dead = std::find(m_enemies->begin(), m_enemies->end(), *s);
+		dead->setAlive(false);
+	}
+	else if(se != nullptr && e == nullptr) {
+		// There is a collision in the bottom right corner
+		// We don't know who will die for now
+		if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
+			// Player dies !
+		}
+		else {
+			// Enemy dies
+			auto dead = std::find(m_enemies->begin(), m_enemies->end(), *se);
+			dead->setAlive(false);
+		}
+	}
+	else if(sw != nullptr && s == nullptr && w == nullptr) {
+		if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
+			// Player dies
+		}
+		else {
+			// Enemy dies
+			auto dead = std::find(m_enemies->begin(), m_enemies->end(), *sw);
+			dead->setAlive(false);
+
+		}
+	}
+}
+
+void PlayLevel::updateBlocCollision(Uint32 currentTicks) {
+	const Bloc *n  = m_map->collide(m_nearBlocs, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
+	const Bloc *ne = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY + m_playerH); 
+	const Bloc *e  = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
+	const Bloc *se = m_map->collide(m_nearBlocs, m_playerX + m_playerW, m_playerY);
+	const Bloc *s  = m_map->collide(m_nearBlocs, m_playerX + m_playerW/2, m_playerY); // South
+	const Bloc *sw = m_map->collide(m_nearBlocs, m_playerX, m_playerY);
+	const Bloc *w  = m_map->collide(m_nearBlocs, m_playerX, m_playerY + m_playerH/2); // West
+	const Bloc *nw = m_map->collide(m_nearBlocs, m_playerX, m_playerY + m_playerH);
+
+	// Calculing collision
+	if(s != nullptr) {
+		// Player touch the ground
+		m_playerY = s->GetY() + s->GetHeight();
+		if(m_jumping) {
+			m_accelerationY = DEFAULT_VERT_ACC;
+		}
+		else {
+			m_accelerationY = 0;
+		}
+	}
+	else if(n != nullptr) {
+		// Player's head touch a bloc
+		if(m_accelerationY > 0) {
+			m_accelerationY *= -0.25;
+		}
+	}
+	else {
+		// Player in the void, apply gravity
+		m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/ACC_FACTOR;
+	}
+	// By default, the player can move horizontally
+	if(e != nullptr && m_player->getDirection() == 1) {
+		// Cannot go to the right
+		m_playerX = e->GetX() - m_playerW;
+	}
+	else if(w != nullptr && m_player->getDirection() == -1) {
+		// Cannot go to the left
+		m_playerX = w->GetX() + w->GetWidth();
+	}
+
+	if(se != nullptr && s == nullptr && e == nullptr) {
+		// There is a collision in the bottom right corner
+		if(m_playerX + m_playerW - se->GetX() < (se->GetY() + se->GetHeight()) - m_playerY) {
+			m_playerX = se->GetX() - m_playerW;
+		}
+		else {
+			// In case we are jumping, don't stop us during it
+			if(m_accelerationY <= 0) {
+				m_accelerationY = 0;
+			}
+			if(m_jumping) {
+				m_accelerationY = DEFAULT_VERT_ACC;
+			}
+			m_playerY = se->GetY() + se->GetHeight();
+		}
+	}
+	else if(sw != nullptr && s == nullptr && w == nullptr) {
+		if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
+			m_playerX = sw->GetX() + sw->GetWidth();
+		}
+		else {
+			// In case we are jumping, don't stop us during it
+			if(m_accelerationY <= 0) {
+				m_accelerationY = 0;
+			}
+			if(m_jumping) {
+				m_accelerationY = DEFAULT_VERT_ACC;
+			}
+			m_playerY = sw->GetY() + sw->GetHeight();
+		}
+	}
+	else if(ne != nullptr && n == nullptr && e == nullptr) {
+		if(m_playerX + m_playerW - ne->GetX() < (m_playerY + m_playerH) - ne->GetY()) {
+			m_playerX = ne->GetX() - m_playerW;
+		}
+		else {
+			if(m_accelerationY > 0) {
+				m_accelerationY *= -0.25;
+			}
+			m_playerY = ne->GetY() - m_playerH;
+		}
+	}
+	else if(nw != nullptr && n == nullptr && w == nullptr) {
+		if((nw->GetX() + nw->GetWidth()) -  m_playerX < m_playerY + m_playerH - nw->GetY()) {
+			m_playerX = nw->GetX() + nw->GetWidth();
+		}
+		else {
+			if(m_accelerationY > 0) {
+				m_accelerationY *= -0.25;
+			}
+			m_playerY = nw->GetY() - m_playerH;
+		}
+	}
 }

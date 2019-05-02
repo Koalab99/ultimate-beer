@@ -29,7 +29,7 @@ public:
 	Map(const std::string &filename);
 	~Map();
 	const Bloc *collide(std::vector<Bloc> *v, const float x, const float y);
-	const Enemy *collide(std::vector<Enemy> *v, const float x, const float y);
+	Enemy *collide(std::vector<Enemy> *v, const float x, const float y);
 	const Item *collide(std::vector<Item> *v, const float x, const float y);
 
 	bool blocExists(Bloc *c);

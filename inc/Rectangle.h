@@ -21,6 +21,8 @@ public:
 	void setY(float y);
 	void setW(float w);
 	void setH(float h);
+
+	bool operator==(const Rectangle &r) const;
 };
 
 #endif

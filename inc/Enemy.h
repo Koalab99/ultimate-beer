@@ -36,6 +36,8 @@ public:
 	float GetWidth() const;
 	float GetHeight() const;
 
+	bool operator==(const Enemy &e) const;
+
 	~Enemy(); 
 };
 

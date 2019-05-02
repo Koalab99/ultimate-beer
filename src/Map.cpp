@@ -33,14 +33,16 @@ const Bloc *Map::collide(std::vector<Bloc> *v, const float x, const float y) {
 	return nullptr;
 }
 
-const Enemy *Map::collide(std::vector<Enemy> *v, const float x, const float y) {
+Enemy *Map::collide(std::vector<Enemy> *v, const float x, const float y) {
 	// Find if there is a bloc colliding the point (x, y)
-	for(auto i = v->cbegin(); i != v->cend(); i++) {
-		if( 	x >= i->GetX() && 
+	int count = 0;
+	for(auto i = v->cbegin(); i != v->cend(); i++, count++) {
+		if( 	i->isAlive() && 
+			x >= i->GetX() && 
 			x <= i->GetWidth() + i->GetX() &&
 			y >= i->GetY() && 
 			y <= i->GetHeight() + i->GetY()) {
-			return &*i;	
+			return &((v->data())[count]);	
 		}
 	}	
 	return nullptr;

@@ -73,3 +73,7 @@ float Enemy::GetWidth() const {
 float Enemy::GetHeight() const {
 	return m_rectangle.getH();
 }
+
+bool Enemy::operator==(const Enemy &e) const {
+	return m_rectangle == e.getRectangle();
+}

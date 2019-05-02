@@ -64,3 +64,7 @@ void Rectangle::setH(float h) {
 		m_h = 0;
 	}
 }
+
+bool Rectangle::operator==(const Rectangle &r) const {
+	return (m_x == r.getX() && m_y == r.getY() && m_w == r.getW() && m_h == r.getH());
+}
