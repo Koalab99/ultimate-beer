@@ -23,7 +23,8 @@ const float DEFAULT_SPEED = 5;
 
 // Making a constant gravity, might be changed later and added to the map... See future updates
 const float GRAVITY = 2;
-const float DEFAULT_VERT_ACC = 3;
+const float DEFAULT_VERT_ACC = 3.5;
+const float ACC_FACTOR = 300;
 
 // Update every enemies on the map
 void PlayLevel::updateEnemies() {
@@ -461,14 +462,13 @@ StateReturnValue PlayLevel::update() {
 		}
 		else {
 			// Player in the void, apply gravity
-			m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/300;
+			m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/ACC_FACTOR;
 		}
 		if(m_jumping && s != nullptr) {
 			// Player jump
 			m_accelerationY = DEFAULT_VERT_ACC;
 		}
 		// By default, the player can move horizontally
-		bool canMove = true;
 		if(e != nullptr && m_player->getDirection() == 1) {
 			// Cannot go to the right
 			m_playerX = e->GetX() - m_playerW;
@@ -480,10 +480,11 @@ StateReturnValue PlayLevel::update() {
 
 		if(se != nullptr && s == nullptr && e == nullptr) {
 			// There is a collision in the bottom right corner
-			if(m_playerX + m_playerW - se->GetX() < m_playerY - (se->GetX() + se->GetHeight())) {
+			if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
 				m_playerX = se->GetX() - m_playerW;
 			}
 			else {
+				// In case we are jumping, don't stop us during it
 				if(m_accelerationY <= 0) {
 					m_accelerationY = 0;
 				}
@@ -495,14 +496,37 @@ StateReturnValue PlayLevel::update() {
 				m_playerX = sw->GetX() + sw->GetWidth();
 			}
 			else {
+				// In case we are jumping, don't stop us during it
 				if(m_accelerationY <= 0) {
 					m_accelerationY = 0;
 				}
 				m_playerY = sw->GetY() + sw->GetHeight();
 			}
 		}
+		else if(ne != nullptr && n == nullptr && e == nullptr) {
+			if(m_playerX + m_playerW - ne->GetX() < (m_playerY + m_playerH) - ne->GetY()) {
+				m_playerX = ne->GetX() - m_playerW;
+			}
+			else {
+				if(m_accelerationY > 0) {
+					m_accelerationY *= -0.25;
+				}
+				m_playerY = ne->GetY() - m_playerH;
+			}
+		}
+		else if(nw != nullptr && n == nullptr && w == nullptr) {
+			if((nw->GetX() + nw->GetWidth()) -  m_playerX < m_playerY + m_playerH - nw->GetY()) {
+				m_playerX = nw->GetX() + nw->GetWidth();
+			}
+			else {
+				if(m_accelerationY > 0) {
+					m_accelerationY *= -0.25;
+				}
+				m_playerY = nw->GetY() - m_playerH;
+			}
+		}
 		// Calculate the player's position
-		m_playerY += m_accelerationY * (currentTicks - m_lastUpdate)/ 300; 
+		m_playerY += m_accelerationY * (currentTicks - m_lastUpdate)/ ACC_FACTOR; 
 		// No longer need jumping to be set
 	}
 	// Set current tick as last tick for next loop
