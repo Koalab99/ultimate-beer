@@ -40,6 +40,7 @@ protected:
 	int m_BGH;
 	int m_width;
 	int m_height;
+	float m_oldPosition;
 	int m_movingFrame;
 	int m_totalMovingFrame;
 	bool m_moving;

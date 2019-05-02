@@ -207,6 +207,16 @@ void PlayLevel::render() {
 		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
 			m_positionFond.x= m_positionFond.x-6;
 		}
+		float mapWidth = m_map->getW();
+		if((m_oldPosition<m_playerX)&&(m_playerX < mapWidth))
+		{
+			m_positionFond.x= m_positionFond.x+4;
+		}
+		if((m_oldPosition>m_playerX)&&(m_positionFond.x>3))
+		{
+			m_positionFond.x= m_positionFond.x-4;
+		}
+		m_oldPosition=m_playerX;
 		// Display the blocs
 		// For each blocs appearing on the screen
 		// Kler should have a look at what happens here, she might be interested by how I render theses black boxes...
@@ -302,7 +312,6 @@ void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, floa
 }
 
 void PlayLevel::input() {
-	float mapWidth = m_map->getW();
 	// if the game is paused, leave pause state handle input
 	if(m_pause) {
 		m_pauseState->handleInput();
@@ -328,12 +337,6 @@ void PlayLevel::input() {
 						// User pressed left arrow, want to go to the left
 						m_moving = true;
 						m_player->setDirection(-1);
-						// Claire can explain that
-						if(m_positionFond.x>3){
-							if(m_playerX < mapWidth ){
-								m_positionFond.x = m_positionFond.x-6;
-							}
-						}
 						break;
 
 					case SDLK_RIGHT:
@@ -343,10 +346,6 @@ void PlayLevel::input() {
 						// User pressed right arrow, want to go to the right
 						m_moving = true;
 						m_player->setDirection(1);
-						// Claire can explain that
-						if(m_positionFond.x<m_BGW-(m_BGH*m_width/m_height)/3){
-							m_positionFond.x = m_positionFond.x+6;
-						}
 						break;
 					case SDLK_SPACE:
 						m_jumping = true;
