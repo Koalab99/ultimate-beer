@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <assert.h>
+#include <iostream>
 
 extern TTF_Font *gFont;
 
@@ -21,11 +22,18 @@ DeadScreen::DeadScreen(SDL_Renderer *renderer) {
 		std::cerr << "TTF_Error :" << TTF_GetError() << std::endl;
 		assert(surf != nullptr);
 	}
+	int width, height;
+	SDL_GetRendererOutputSize(renderer, &width, &height);
+	std::cout << SDL_GetError() << std::endl;
+	std::cout << width << " " << height << std::endl;
 	SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, surf);
 	SDL_FreeSurface(surf);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, text, NULL, NULL);
+	SDL_Rect rect = {0, 0, width, height/4};
+	SDL_RenderCopy(renderer, text, NULL, &rect);
+	SDL_Rect rect2 = { width/3, height/4, width/3, 3*height/4};
+	SDL_RenderCopy(renderer, m_pizza, NULL, &rect2);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(m_pizza);
 	SDL_DestroyTexture(text);

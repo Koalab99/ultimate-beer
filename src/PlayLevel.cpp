@@ -148,6 +148,9 @@ PlayLevel::~PlayLevel() {
 	if(m_nearItems != nullptr) {
 		delete m_nearItems;
 	}
+	if(m_enemyTexture != NULL) {
+		SDL_DestroyTexture(m_enemyTexture);
+	}
 }
 
 StateReturnValue PlayLevel::run() {
@@ -229,34 +232,37 @@ void PlayLevel::render() {
 
 		// Leave this part at the bottom so the player's texture won't be hidden by other texture
 		// Player display
-		SDL_Rect src;
-		// Player moving
-		if(m_moving) {
-			int textureWidth, textureHeight;
-			SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
-			// Chosing the right part of the sprite we're going to use
-			src = { textureWidth / m_totalMovingFrame * m_movingFrame, 0, textureWidth / m_totalMovingFrame, textureHeight };
-			// Player moving to the right
-			if(m_player->getDirection() == 1) {
-				// Showing the sprite as is
-				drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH);
-			}
-			// Player moving to the left
-			else if(m_player->getDirection() == -1) {
-				// Showing the sprite flipped
-				drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
-			}
-		}
-		else {
-			if(m_player->getDirection() == -1) {
-				drawOnMap(m_playerStandingTexture, NULL, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
+		if(!m_playerTouched || (m_invincibleRemainingTime/100)%2 == 1) {
+			SDL_Rect src;
+			// Player moving
+			if(m_moving) {
+				int textureWidth, textureHeight;
+				SDL_QueryTexture(m_playerRunningTexture, NULL, NULL, &textureWidth, &textureHeight);
+				// Chosing the right part of the sprite we're going to use
+				src = { textureWidth / m_totalMovingFrame * m_movingFrame, 0, textureWidth / m_totalMovingFrame, textureHeight };
+				// Player moving to the right
+				if(m_player->getDirection() == 1) {
+					// Showing the sprite as is
+					drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH);
+				}
+				// Player moving to the left
+				else if(m_player->getDirection() == -1) {
+					// Showing the sprite flipped
+					drawOnMap(m_playerRunningTexture, &src, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
+				}
 			}
 			else {
-				drawOnMap(m_playerStandingTexture, NULL, m_playerX, m_playerY, m_playerW, m_playerH);
-			}
+				if(m_player->getDirection() == -1) {
+					drawOnMap(m_playerStandingTexture, NULL, m_playerX, m_playerY, m_playerW, m_playerH, SDL_FLIP_HORIZONTAL);
+				}
+				else {
+					drawOnMap(m_playerStandingTexture, NULL, m_playerX, m_playerY, m_playerW, m_playerH);
+				}
 
+			}
 		}
 	}
+
 	// Show what we did to the people
 	SDL_RenderPresent(m_renderer);
 }
@@ -399,6 +405,12 @@ StateReturnValue PlayLevel::update() {
 	} 
 	// Game not paused, we can play !
 	else {	
+		// Calcul it anyway.
+		m_invincibleRemainingTime += currentTicks - m_lastUpdate;
+		// Check the invicibility of the player
+		if(m_playerTouched && m_invincibleRemainingTime > 3000) {
+			m_playerTouched = false;
+		}
 		m_mapVisibleWidth = m_width *  m_map->getH() / m_height;
 
 		// Player too much at the left, we'll use the beggining of the map
@@ -446,7 +458,9 @@ StateReturnValue PlayLevel::update() {
 		}
 		// Bloc collisions
 		updateBlocCollision(currentTicks);
-		updateEnemyCollision(currentTicks);
+		if(!m_playerTouched) {
+			updateEnemyCollision(currentTicks);
+		}
 		updateItemCollision(currentTicks);
 		// Calculate the player's position
 		m_playerY += m_accelerationY * (currentTicks - m_lastUpdate)/ ACC_FACTOR; 
@@ -455,6 +469,7 @@ StateReturnValue PlayLevel::update() {
 	// Set current tick as last tick for next loop
 	m_lastUpdate = currentTicks;
 	if(m_player->getLife() < 1) {
+		SDL_Delay(500);
 		m_return = RETURN_DEAD;
 	}
 	return m_return; 
@@ -565,6 +580,8 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 		int life = m_player->getLife();
 		if(life > 0) {
 			m_player->setLife(life-1);
+			m_playerTouched = true;
+			m_invincibleRemainingTime = 0;
 		}
 	}
 	else if(s != nullptr) {
@@ -581,6 +598,8 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 			int life = m_player->getLife();
 			if(life > 0) {
 				m_player->setLife(life-1);
+				m_playerTouched = true;
+				m_invincibleRemainingTime = 0;
 			}
 		}
 		else {
@@ -596,6 +615,8 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 			int life = m_player->getLife();
 			if(life > 0) {
 				m_player->setLife(life-1);
+				m_playerTouched = true;
+				m_invincibleRemainingTime = 0;
 			}
 		}
 		else {
