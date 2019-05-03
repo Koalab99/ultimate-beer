@@ -471,6 +471,10 @@ StateReturnValue PlayLevel::update() {
 		SDL_Delay(500);
 		m_return = RETURN_DEAD;
 	}
+	else if(m_playerX > m_map->getW()) {
+		SDL_Delay(500);
+		m_return = RETURN_WIN;
+	}
 	return m_return; 
 }
 

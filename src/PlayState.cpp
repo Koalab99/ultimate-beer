@@ -7,6 +7,7 @@
 #include <experimental/filesystem>
 #include <StateReturnValue.h>
 #include <DeadScreen.h>
+#include <WinScreen.h>
 
 PlayState::PlayState(SDL_Window *window, Player *player) : GameState(window) {
 	m_player = player;
@@ -121,6 +122,12 @@ StateReturnValue PlayState::update() {
 		if(result == RETURN_DEAD) {
 			DeadScreen ds(m_renderer);
 			m_player->setLife(3);
+		}
+		else if(result == RETURN_WIN) {
+			WinScreen ws(m_renderer);
+			ws.show();
+			SDL_Delay(3000);
+
 		}
 		else if(result != RETURN_BACK && result != RETURN_PLAY) {
 			return result;
