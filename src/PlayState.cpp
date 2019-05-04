@@ -1,6 +1,7 @@
 #include <PlayState.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <PlayLevel.h>
 #include <Player.h>
 #include <LevelInfo.h>
@@ -9,7 +10,8 @@
 #include <DeadScreen.h>
 #include <WinScreen.h>
 
-PlayState::PlayState(SDL_Window *window, Player *player) : GameState(window) {
+PlayState::PlayState(SDL_Window *window, Player *player, Mix_Music *music) : GameState(window) {
+	m_music = music;
 	m_player = player;
 	m_quit = false;
 	m_playing = false;
@@ -107,7 +109,7 @@ StateReturnValue PlayState::update() {
 				m_currentLevel = new PlayLevel(m_renderer, (*i)->getPath(), m_player);
 				m_currentLevel->m_background = m_background;
 				if(m_currentLevel == nullptr) {
-					std::cerr << "Something weird is happening" << std::endl;
+					std::cerr << "Couldn't allocate new memory on the heap." << std::endl;
 				}
 				break;
 			}
@@ -117,6 +119,7 @@ StateReturnValue PlayState::update() {
 		// We created a new PlayLevel object, ready to use !
 		// We take its return code in order to treat it properly depending on what happened
 		StateReturnValue result = m_currentLevel->run();
+		Mix_PlayMusic(m_music, -1);
 		m_playing = false;
 		delete m_currentLevel;
 		if(result == RETURN_DEAD) {

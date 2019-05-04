@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <Menu.h>
 #include <StateReturnValue.h>
 
@@ -23,9 +24,13 @@ Game::~Game() {
 		delete m_state;
 	if(m_window != NULL)
 		SDL_DestroyWindow(m_window);
+	if(m_menuMusic != NULL) {
+		Mix_FreeMusic(m_menuMusic);
+	}
 	SDL_Quit();
 	TTF_Quit();
 	IMG_Quit();
+	Mix_Quit();
 }
 
 int Game::init() {
@@ -42,6 +47,13 @@ int Game::init() {
 		TTF_Quit();
 		exit(EXIT_FAILURE);
 	}
+	flags = 0;
+	if((Mix_Init(flags)&flags) != flags) {
+		std::cerr << "Impossible loading mixer" << std::endl;
+		std::cerr << "Mixer error : " << Mix_GetError() << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096);
 
 	m_window = SDL_CreateWindow("Ultimate Beer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 720, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if(m_window == NULL) {
@@ -58,6 +70,12 @@ int Game::init() {
 	if(m_player == nullptr || m_state == nullptr) {
 		return -1;
 	}
+	m_menuMusic = Mix_LoadMUS("data/music/menu.wav");
+	if(!m_menuMusic) {
+		std::cerr << "Couldn't load menu music" << std::endl;
+		std::cerr << "Mixer error : " << Mix_GetError() << std::endl;
+	}
+	Mix_FadeInMusic(m_menuMusic, -1, 3000);
 	m_quit = false;
 	return 0;
 }
@@ -72,7 +90,7 @@ int Game::loop() {
 			break;
 		case RETURN_PLAY:
 			delete m_state;
-			m_state = new PlayState(m_window, m_player);
+			m_state = new PlayState(m_window, m_player, m_menuMusic);
 			break;
 		case RETURN_MENU:
 			delete m_state;

@@ -3,7 +3,7 @@
 #include <Player.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -133,6 +133,8 @@ PlayLevel::~PlayLevel() {
 }
 
 StateReturnValue PlayLevel::run() {
+	Mix_Music *music = Mix_LoadMUS("data/music/playingMusic.wav");
+	Mix_PlayMusic(music, -1);
 	// time helps regulating the frame rate
 	Uint32 time;
 	while(m_return == RETURN_NOTHING) {
@@ -149,6 +151,7 @@ StateReturnValue PlayLevel::run() {
 			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - time));
 		}
 	}
+	Mix_FreeMusic(music);
 	return m_return;
 }
 
@@ -579,7 +582,7 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 		if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
 			// Player dies !
 			int life = m_player->getLife();
-			if(life > 0) {
+			if(life > 0 && !m_playerTouched) {
 				m_player->setLife(life-1);
 				m_playerTouched = true;
 				m_invincibleRemainingTime = 0;
@@ -596,7 +599,7 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 		if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
 			// Player dies
 			int life = m_player->getLife();
-			if(life > 0) {
+			if(life > 0 && !m_playerTouched) {
 				m_player->setLife(life-1);
 				m_playerTouched = true;
 				m_invincibleRemainingTime = 0;
