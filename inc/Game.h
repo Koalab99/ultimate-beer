@@ -6,6 +6,7 @@
 #include <Map.h>
 #include <Enemy.h>
 #include <GameState.h>
+#include <SDL2/SDL_mixer.h>
 
 class Game {
 private:
@@ -13,6 +14,7 @@ private:
 	GameState *m_state;
 	bool m_quit;
 	SDL_Window *m_window;
+	Mix_Music *m_menuMusic;
 
 public:
 	Game();
