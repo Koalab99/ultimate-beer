@@ -6,28 +6,29 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 // Map constructor
 Map::Map(const std::string &filename) {
 	// Such an empty constructor...
 	open(filename);
+	updateEnemies();
 }
 
 // Map destructor
 Map::~Map(){
 }
 
-// Collision in 3.
-// 2..
-// 1... LINE!
-const Bloc *Map::collide(std::vector<Bloc> *v, const float x, const float y) {
+// Collisions
+Bloc *Map::collide(std::vector<Bloc> *v, const float x, const float y) {
 	// Find if there is a bloc colliding the point (x, y)
-	for(auto i = v->cbegin(); i != v->cend(); i++) {
+	int count = 0;
+	for(auto i = v->cbegin(); i != v->cend(); i++, count++) {
 		if( 	x >= i->GetX() && 
 			x <= i->GetWidth() + i->GetX() &&
 			y >= i->GetY() && 
-			y <= i->GetHeight() + i->GetY()) {
-			return &*i;	
+			y <= i->GetHeight() + i->GetY()) { 
+			return &((v->data())[count]);
 		}
 	}	
 	return nullptr;
@@ -64,7 +65,6 @@ const Item *Map::collide(std::vector<Item> *v, const float x, const float y) {
 std::vector<Bloc> *Map::getBlocsInRange(float x, float w) {
 	// Make a copy of blocs that fit the condition below
 	std::vector<Bloc> *ret = new std::vector<Bloc>();
-	// This is the most efficient way to test it, don't ask me how, make a truth table to check it out, won't do it again
 	for(auto i = m_blocs.begin(); i != m_blocs.end(); i++) {
 		if( 	i->GetX() < w + x &&
 			(i->GetX() + i->GetWidth() > x || 
@@ -78,7 +78,6 @@ std::vector<Bloc> *Map::getBlocsInRange(float x, float w) {
 std::vector<Enemy> *Map::getEnemiesInRange(float x, float w) {
 	// Make a copy of enemies that fit the condition below
 	std::vector<Enemy> *ret = new std::vector<Enemy>();
-	// This is the most efficient way to test it, don't ask me how, make a truth table to check it out, won't do it again
 	for(auto i = m_enemies.begin(); i != m_enemies.end(); i++) {
 		if( 	i->GetX() < w + x &&
 			(i->GetX() + i->GetWidth() > x || 
@@ -92,7 +91,6 @@ std::vector<Enemy> *Map::getEnemiesInRange(float x, float w) {
 std::vector<Item> *Map::getItemsInRange(float x, float w) {
 	// Make a copy of items that fit the condition below
 	std::vector<Item> *ret = new std::vector<Item>();
-	// This is the most efficient way to test it, don't ask me how, make a truth table to check it out, won't do it again
 	for(auto i = m_items.begin(); i != m_items.end(); i++) {
 		if( 	i->GetX() < w + x &&
 			(i->GetX() + i->GetWidth() > x || 
@@ -206,7 +204,26 @@ void Map::open(const std::string &path){
 	}
 	else{
 		// We could not open the file, so there is no map, no game, no beer, no thing!
-		cout << "Error : Unable to open the file." << endl;
+		std::cerr << "Error : Unable to open the file." << std::endl;
 	}
 }
 
+void Map::updateEnemies() {
+	for(auto i = m_enemies.begin(); i != m_enemies.end(); i++) {
+		int count;
+		for(count = 0; count < i->GetY(); count++) {
+			Bloc *tmp = collide(&m_blocs, i->GetX() + i->GetWidth()/2, i->GetY()-count); 
+			if(tmp != nullptr) {
+				auto f = std::find(m_blocs.begin(), m_blocs.end(), *tmp);
+				if(f != m_blocs.end()) {
+					i->setBloc(&*f);
+					i->setY( i->getBloc()->GetY() + i->getBloc()->GetHeight());
+				}
+				break;
+			}
+		}
+		if(count >= i->GetY()) {
+			i->setAlive(false);
+		}
+	}
+}

@@ -47,7 +47,7 @@ protected:
 	bool m_jumping;
 	bool m_pause;
 	bool m_playerTouched;
-	void updateEnemies();
+	void updateEnemies(Uint32 currentTicks);
 	void updateBlocCollision(Uint32 currentTicks);
 	void updateItemCollision(Uint32 currentTicks);
 	void updateEnemyCollision(Uint32 currentTicks);

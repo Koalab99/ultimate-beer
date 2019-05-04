@@ -28,7 +28,7 @@ private:
 public:
 	Map(const std::string &filename);
 	~Map();
-	const Bloc *collide(std::vector<Bloc> *v, const float x, const float y);
+	Bloc *collide(std::vector<Bloc> *v, const float x, const float y);
 	Enemy *collide(std::vector<Enemy> *v, const float x, const float y);
 	const Item *collide(std::vector<Item> *v, const float x, const float y);
 
@@ -44,6 +44,7 @@ public:
 	std::vector<Item> *getItems();
 
 	void open(const string &path);
+	void updateEnemies();
 	
 	float getH();
 	float getW();

@@ -7,7 +7,7 @@
 #include <string>
 #include <Bloc.h>
 
-#define ENEMY_SPEED 0.01
+#define ENEMY_SPEED 1.0
 
 class Enemy {
 private:
@@ -31,6 +31,7 @@ public:
 	void setDirection(const int direction);
 
 	void setX(float x);
+	void setY(float y);
 	float GetX() const;
 	float GetY() const;
 	float GetWidth() const;

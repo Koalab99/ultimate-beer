@@ -21,33 +21,12 @@
 // Setting framerate so that we don't calculate too much frames (in case your computer is so powerful
 const int FPS = 40;
 const int FRAME_TIME = 1000/FPS;
-const float DEFAULT_SPEED = 6;
+const float DEFAULT_SPEED = 10;
 
 // Making a constant gravity, might be changed later and added to the map... See future updates
 const float GRAVITY = 2;
 const float DEFAULT_VERT_ACC = 6;
 const float ACC_FACTOR = 300;
-
-// Update every enemies on the map
-void PlayLevel::updateEnemies() {
-	// For each enemies
-	for(std::vector<Enemy>::iterator i = m_enemies->begin(); i != m_enemies->end(); i++) {
-		// Get the enemy hitbox
-		Rectangle rect = i->getRectangle();
-		// Get the bloc it is sitting on
-		Bloc *b = i->getBloc();
-		// If enemy can't go to the right, it goes to the left
-		if(i->getDirection() == 1 && rect.getX() + rect.getW() >= b->GetX() + b->GetWidth()) {
-			i->setDirection(-1);
-		}
-		// If enemy can't go to the left, it goes to the right
-		else if(i->getDirection() == -1 && rect.getX() <= b->GetX()) {
-			i->setDirection(1);
-		}
-		// Set new enemy position
-		i->setX(rect.getX() + i->getDirection() * ENEMY_SPEED);
-	}
-}
 
 // Constructor of the level
 PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
@@ -438,6 +417,7 @@ StateReturnValue PlayLevel::update() {
 		m_nearEnemies = m_map->getEnemiesInRange(m_mapVisibleOffset, m_mapVisibleWidth);
 		m_nearBlocs = m_map->getBlocsInRange(m_mapVisibleOffset, m_mapVisibleWidth);
 		m_nearItems = m_map->getItemsInRange(m_mapVisibleOffset, m_mapVisibleWidth);
+
 		// If player want to move
 		if(m_moving) {
 			// If it didn't move before initialize the moving ticks
@@ -457,10 +437,10 @@ StateReturnValue PlayLevel::update() {
 		}
 		// Bloc collisions
 		updateBlocCollision(currentTicks);
-		if(!m_playerTouched) {
-			updateEnemyCollision(currentTicks);
-		}
+		updateEnemyCollision(currentTicks);
 		updateItemCollision(currentTicks);
+		// Make enemies move
+		updateEnemies(currentTicks);
 		// Calculate the player's position
 		m_playerY += m_accelerationY * (currentTicks - m_lastUpdate)/ ACC_FACTOR; 
 		// No longer need jumping to be set
@@ -468,11 +448,11 @@ StateReturnValue PlayLevel::update() {
 	// Set current tick as last tick for next loop
 	m_lastUpdate = currentTicks;
 	if(m_player->getLife() < 1) {
-		SDL_Delay(500);
+		SDL_Delay(200);
 		m_return = RETURN_DEAD;
 	}
 	else if(m_playerX > m_map->getW()) {
-		SDL_Delay(500);
+		SDL_Delay(200);
 		m_return = RETURN_WIN;
 	}
 	return m_return; 
@@ -581,7 +561,7 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 	if(n != nullptr || ne != nullptr || e != nullptr || w != nullptr || nw != nullptr) {
 		// Player die !
 		int life = m_player->getLife();
-		if(life > 0) {
+		if(life > 0 && !m_playerTouched) {
 			m_player->setLife(life-1);
 			m_playerTouched = true;
 			m_invincibleRemainingTime = 0;
@@ -727,3 +707,28 @@ void PlayLevel::updateBlocCollision(Uint32 currentTicks) {
 		}
 	}
 }
+
+// Update every enemies on the map
+void PlayLevel::updateEnemies(Uint32 currentTicks) {
+	// For each enemies
+	for(std::vector<Enemy>::iterator i = m_enemies->begin(); i != m_enemies->end(); i++) {
+		// Get the enemy hitbox
+		Rectangle rect = i->getRectangle();
+		// Get the bloc it is sitting on
+		Bloc *b = i->getBloc();
+		if(b == nullptr || !i->isAlive()) {
+			continue;
+		}
+		// If enemy can't go to the right, it goes to the left
+		if((i->getDirection() == 1 && rect.getX() + rect.getW() >= b->GetX() + b->GetWidth()) || m_map->collide(m_map->getBlocs(), i->GetX() + i->GetWidth(), i->GetY() + i->GetHeight()/2) == nullptr) {
+			i->setDirection(-1);
+		}
+		// If enemy can't go to the left, it goes to the right
+		else if((i->getDirection() == -1 && rect.getX() <= b->GetX()) || m_map->collide(m_map->getBlocs(), i->GetX(), i->GetY() + i->GetHeight() / 2) == nullptr) {
+			i->setDirection(1);
+		}
+		// Set new enemy position
+		i->setX(rect.getX() + i->getDirection() * ENEMY_SPEED * (currentTicks - m_lastUpdate)/1000);
+	}
+}
+

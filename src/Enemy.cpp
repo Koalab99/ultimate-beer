@@ -58,6 +58,10 @@ void Enemy::setX(float x) {
 	m_rectangle.setX(x);
 }
 
+void Enemy::setY(float y) {
+	m_rectangle.setY(y);
+}
+
 float Enemy::GetX() const {
 	return m_rectangle.getX();
 }
