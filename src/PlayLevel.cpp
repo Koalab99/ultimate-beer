@@ -211,9 +211,17 @@ void PlayLevel::render() {
 			m_positionFond.x= m_positionFond.x-6;
 		}
 		float mapWidth = m_map->getW();
-		if((m_oldPosition<m_playerX)&&(m_playerX < mapWidth))
+		if((m_oldPosition<m_playerX)&&(m_playerX < mapWidth- m_mapVisibleWidth/2))
 		{
 			m_positionFond.x= m_positionFond.x+4;
+		}
+		if((m_oldPosition<m_playerX)&&(m_playerX > mapWidth- m_mapVisibleWidth/2))
+		{
+			m_positionFond.x= m_positionFond.x+10;
+		}
+		if((m_oldPosition>m_playerX)&&(m_playerX > mapWidth- m_mapVisibleWidth/2))
+		{
+			m_positionFond.x= m_positionFond.x-10;
 		}
 		if((m_oldPosition>m_playerX)&&(m_positionFond.x>3))
 		{
