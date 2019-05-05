@@ -10,7 +10,7 @@ Player::Player() {
 	m_life = 3;
 	m_speed = 1;
 	m_runningTexturePath = "data/img/player.png";
-	m_waitingTexturePath = "data/img/BEER.png";
+	m_waitingTexturePath = "data/img/StaticPlayer.png";
 	m_numImagesRunning = 6;
 	m_direction = 1;
 }

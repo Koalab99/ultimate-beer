@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 
+/* Defines the player's avatar: how fast and where is it going, how much life it has, what it looks like...*/
 class Player {
 private:
 	float m_speed;

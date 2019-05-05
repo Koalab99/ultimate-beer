@@ -2,16 +2,19 @@
 #include <Position.h>
 #include <iostream>
 
+//returns the vertical position of the bloc
 float Bloc::GetX() const
 {
 	return m_x;
 }
 
+//returns the horizontal position of the bloc
 float Bloc::GetY() const
 {
 	return m_y;
 }
 
+//sets the bloc position
 void Bloc::SetX(float x)
 {
 	if(x >= 0) {
@@ -26,16 +29,19 @@ void Bloc::SetY(float y)
 	}
 }
 
+//return the Width of the bloc
 float Bloc::GetWidth() const
 {
 	return m_width;
 }
 
+//return the Height of the bloc
 float Bloc::GetHeight() const
 {
 	return m_height;
 }
 
+//return the type of the bloc
 int Bloc::GetType()
 {
 	return m_type;
@@ -46,6 +52,7 @@ Bloc::Bloc()
 
 }
 
+//sets the bloc on its width, height and vertical & horizontal positions
 Bloc::Bloc(float w, float h, float x, float y){
 	m_width = w;
 	m_height = h;
@@ -53,11 +60,13 @@ Bloc::Bloc(float w, float h, float x, float y){
 	m_y = y;
 }
 
+//destructor
 Bloc::~Bloc()
 {
 
 }
 
+//Calculates where the bloc is
 Position Bloc::isInside(Position &p) {
 	Position ret;
 	if(m_x <= p.getX() && m_x + m_width >= p.getX()) {

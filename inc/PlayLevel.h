@@ -9,6 +9,9 @@
 #include <StateReturnValue.h>
 #include <PauseState.h>
 
+/* Sets level up, especially frames and their movements, gravity, jumps, textures...
+Defines all that might happened during the game and what each function should do in each case */
+
 class PlayLevel {
 protected:
 	SDL_Rect m_positionFond;

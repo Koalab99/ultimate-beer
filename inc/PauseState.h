@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+/*Defines what happens when the player puts the game on hold while he ain't done playing*/
+
 class PauseState {
 private:
 	int m_mouseX;

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <assert.h>
 
+
 extern TTF_Font *gFont;
 
 Button::Button(SDL_Renderer *renderer, std::string message) {
