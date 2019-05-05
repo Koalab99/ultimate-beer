@@ -3,6 +3,7 @@
 
 #include <Position.h>
 
+//Defines the plateforms width, height and postion as blocs
 class Bloc {
 private:
 	float m_width;
