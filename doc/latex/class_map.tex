@@ -1,0 +1,77 @@
+\hypertarget{class_map}{}\section{Map Class Reference}
+\label{class_map}\index{Map@{Map}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_map_a871049c7b391e75039ccba5a4d757dae}\label{class_map_a871049c7b391e75039ccba5a4d757dae}} 
+{\bfseries Map} (const std\+::string \&filename)
+\item 
+\mbox{\Hypertarget{class_map_ab3015fbbe52c9d7aac4de6ccfbe284ff}\label{class_map_ab3015fbbe52c9d7aac4de6ccfbe284ff}} 
+\hyperlink{class_bloc}{Bloc} $\ast$ {\bfseries collide} (std\+::vector$<$ \hyperlink{class_bloc}{Bloc} $>$ $\ast$v, const float x, const float y)
+\item 
+\mbox{\Hypertarget{class_map_a438e13105ce6dd292313b40d45200d36}\label{class_map_a438e13105ce6dd292313b40d45200d36}} 
+\hyperlink{class_enemy}{Enemy} $\ast$ {\bfseries collide} (std\+::vector$<$ \hyperlink{class_enemy}{Enemy} $>$ $\ast$v, const float x, const float y)
+\item 
+\mbox{\Hypertarget{class_map_af0dad50e330f19d9f1d8adb6909add92}\label{class_map_af0dad50e330f19d9f1d8adb6909add92}} 
+const \hyperlink{class_item}{Item} $\ast$ {\bfseries collide} (std\+::vector$<$ \hyperlink{class_item}{Item} $>$ $\ast$v, const float x, const float y)
+\item 
+\mbox{\Hypertarget{class_map_a6f49044f90ae658a070a8e5b6bdd67d0}\label{class_map_a6f49044f90ae658a070a8e5b6bdd67d0}} 
+bool {\bfseries bloc\+Exists} (\hyperlink{class_bloc}{Bloc} $\ast$c)
+\item 
+\mbox{\Hypertarget{class_map_ae42653fb8c0ce554090df9b520dcc6a1}\label{class_map_ae42653fb8c0ce554090df9b520dcc6a1}} 
+std\+::vector$<$ \hyperlink{class_bloc}{Bloc} $>$ $\ast$ {\bfseries get\+Blocs\+In\+Range} (float x, float w)
+\item 
+\mbox{\Hypertarget{class_map_addc796dab4fe8fb33edbaddd7dd71842}\label{class_map_addc796dab4fe8fb33edbaddd7dd71842}} 
+std\+::vector$<$ \hyperlink{class_enemy}{Enemy} $>$ $\ast$ {\bfseries get\+Enemies\+In\+Range} (float x, float w)
+\item 
+\mbox{\Hypertarget{class_map_af4f4a944bb3700983e0892d6dc6aa9cb}\label{class_map_af4f4a944bb3700983e0892d6dc6aa9cb}} 
+std\+::vector$<$ \hyperlink{class_item}{Item} $>$ $\ast$ {\bfseries get\+Items\+In\+Range} (float x, float w)
+\item 
+\mbox{\Hypertarget{class_map_ad1822eb34d49b91796599daa90d6fcc8}\label{class_map_ad1822eb34d49b91796599daa90d6fcc8}} 
+int {\bfseries get\+Nb\+Bloc} ()
+\item 
+\mbox{\Hypertarget{class_map_a08b571aa94c59a41ab646311504d3af9}\label{class_map_a08b571aa94c59a41ab646311504d3af9}} 
+std\+::vector$<$ \hyperlink{class_bloc}{Bloc} $>$ $\ast$ {\bfseries get\+Blocs} ()
+\item 
+\mbox{\Hypertarget{class_map_a6168b5804d06a0462afd76bb234685b9}\label{class_map_a6168b5804d06a0462afd76bb234685b9}} 
+std\+::vector$<$ \hyperlink{class_enemy}{Enemy} $>$ $\ast$ {\bfseries get\+Enemies} ()
+\item 
+\mbox{\Hypertarget{class_map_a746d12f1d91bed6e1e243bca50e6fa9a}\label{class_map_a746d12f1d91bed6e1e243bca50e6fa9a}} 
+std\+::vector$<$ \hyperlink{class_item}{Item} $>$ $\ast$ {\bfseries get\+Items} ()
+\item 
+\mbox{\Hypertarget{class_map_ae15bbb0a73703d8e9bbc4f80b511aac3}\label{class_map_ae15bbb0a73703d8e9bbc4f80b511aac3}} 
+void {\bfseries open} (const string \&path)
+\item 
+\mbox{\Hypertarget{class_map_a1509c81d2f9ab6626a57e42e790850d4}\label{class_map_a1509c81d2f9ab6626a57e42e790850d4}} 
+void {\bfseries update\+Enemies} ()
+\item 
+\mbox{\Hypertarget{class_map_a523bfb9f7a26d70905093c005b7b6d44}\label{class_map_a523bfb9f7a26d70905093c005b7b6d44}} 
+float {\bfseries getH} ()
+\item 
+\mbox{\Hypertarget{class_map_a977ef84d621e6ed348e65de66ba2e981}\label{class_map_a977ef84d621e6ed348e65de66ba2e981}} 
+float {\bfseries getW} ()
+\item 
+\mbox{\Hypertarget{class_map_ac2afba890b15084e56136111fb40169c}\label{class_map_ac2afba890b15084e56136111fb40169c}} 
+float {\bfseries get\+SpawnX} () const
+\item 
+\mbox{\Hypertarget{class_map_a2c6885440298accab8e3a223e3c70626}\label{class_map_a2c6885440298accab8e3a223e3c70626}} 
+float {\bfseries get\+SpawnY} () const
+\item 
+\mbox{\Hypertarget{class_map_a129ab8c5fb2c96679308049f14b254a7}\label{class_map_a129ab8c5fb2c96679308049f14b254a7}} 
+std\+::string {\bfseries get\+Mini\+Path} ()
+\item 
+\mbox{\Hypertarget{class_map_a8ae5eff73773a478777b61876da5b15f}\label{class_map_a8ae5eff73773a478777b61876da5b15f}} 
+std\+::string {\bfseries get\+Path} ()
+\item 
+\mbox{\Hypertarget{class_map_a7a00c22a66333e8a59255413b3f03bb9}\label{class_map_a7a00c22a66333e8a59255413b3f03bb9}} 
+std\+::string {\bfseries get\+Title} ()
+\item 
+\mbox{\Hypertarget{class_map_abf737727a0a0710ff124ea1641ceec26}\label{class_map_abf737727a0a0710ff124ea1641ceec26}} 
+bool {\bfseries fall} (float x, float y, float w)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+inc/Map.\+h\item 
+src/Map.\+cpp\end{DoxyCompactItemize}
