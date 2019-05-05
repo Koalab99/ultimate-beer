@@ -9,6 +9,7 @@
 #include <StateReturnValue.h>
 #include <DeadScreen.h>
 #include <WinScreen.h>
+#include <assert.h>
 
 PlayState::PlayState(SDL_Window *window, Player *player, Mix_Music *music) : GameState(window) {
 	m_music = music;
@@ -23,10 +24,15 @@ PlayState::PlayState(SDL_Window *window, Player *player, Mix_Music *music) : Gam
 	if(m_background == NULL) {
 		std::cerr << "Could not load image lacity.png" << std::endl;
 		std::cerr << IMG_GetError() << std::endl;
+		assert(m_background != NULL);
 	}
 	m_menuButton = new Button(m_renderer, "Go back");
 	for(auto& fileName: std::experimental::filesystem::directory_iterator("data/map")) {
 		LevelInfo *levelInfo = new LevelInfo(m_renderer, fileName.path());
+		if(levelInfo == nullptr) {
+			std::cerr << "Couldn't load informations about " << fileName.path() << std::endl;
+			assert(levelInfo != nullptr);
+		}
 		m_levels.push_back(levelInfo);
 	}
 }
