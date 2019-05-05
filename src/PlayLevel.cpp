@@ -21,12 +21,14 @@
 // Setting framerate so that we don't calculate too much frames (in case your computer is so powerful
 const int FPS = 40;
 const int FRAME_TIME = 1000/FPS;
+// Setting default speed for player movement
 const float DEFAULT_SPEED = 10;
-
 // Making a constant gravity, might be changed later and added to the map... See future updates
 const float GRAVITY = 2;
-const float DEFAULT_VERT_ACC = 6;
-const float ACC_FACTOR = 300;
+// Jump acceleration toward positive Y
+const float DEFAULT_VERT_ACC = 4;
+// Used to make the jump faster, slow when it becomes bigger
+const float ACC_FACTOR = 200;
 
 // Constructor of the level
 PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
@@ -97,8 +99,20 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	SDL_RenderClear(m_renderer);
 	SDL_RenderPresent(m_renderer);
 	SDL_SetRenderTarget(m_renderer, NULL);
+	// Loading beer texture
+	m_beerTexture = IMG_LoadTexture(m_renderer, "data/img/BEER.png");
+	if(m_beerTexture == NULL) {
+		std::cerr << "Couldn't load BEER.png" << std::endl;
+		std::cerr << "IMG Error:" << IMG_GetError() << std::endl;
+		assert(m_beerTexture != NULL);
+	}
 	// Loading enemy texture
 	m_enemyTexture = IMG_LoadTexture(m_renderer, "data/img/ZombiePizza.png");
+	if(m_enemyTexture == NULL) {
+		std::cerr << "Couldn't load ZombiePizza.png" << std::endl;
+		std::cerr << "IMG Error:" << IMG_GetError() << std::endl;
+		assert(m_enemyTexture != NULL);
+	}
 	// Initialize the last update
 	m_lastUpdate = SDL_GetTicks();
 	// Claire can explain this
@@ -205,7 +219,13 @@ void PlayLevel::render() {
 		for(auto i = m_nearBlocs->begin(); i != m_nearBlocs->end(); i++) {
 			drawOnMap(m_blocTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
 		}
-
+		// Drawing beers
+		for(auto i = m_nearItems->begin(); i != m_nearItems->end(); i++) {
+			if(i->isEaten()) {
+				continue;
+			}
+			drawOnMap(m_beerTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
+		}
 		// Drawing pizza 
 		for(auto i = m_nearEnemies->begin(); i != m_nearEnemies->end(); i++) {
 			// It's dead, don't show it
@@ -463,90 +483,41 @@ StateReturnValue PlayLevel::update() {
 
 void PlayLevel::updateItemCollision(Uint32 currentTicks) {
 	const Item *n  = m_map->collide(m_nearItems, m_playerX + m_playerW/2, m_playerY + m_playerH); // North
-	const Item *ne = m_map->collide(m_nearItems, m_playerX + m_playerW, m_playerY + m_playerH); 
 	const Item *e  = m_map->collide(m_nearItems, m_playerX + m_playerW, m_playerY + m_playerH/2); // East
-	const Item *se = m_map->collide(m_nearItems, m_playerX + m_playerW, m_playerY);
 	const Item *s  = m_map->collide(m_nearItems, m_playerX + m_playerW/2, m_playerY); // South
-	const Item *sw = m_map->collide(m_nearItems, m_playerX, m_playerY);
 	const Item *w  = m_map->collide(m_nearItems, m_playerX, m_playerY + m_playerH/2); // West
-	const Item *nw = m_map->collide(m_nearItems, m_playerX, m_playerY + m_playerH);
 
-	// Calculing collision
-	if(s != nullptr) {
-		// Player touch the ground
-		m_playerY = s->GetY() + s->GetHeight();
-		m_accelerationY = 0;
-	}
-	else if(n != nullptr) {
-		// Player's head touch a bloc
-		if(m_accelerationY > 0) {
-			m_accelerationY *= -0.25;
+	bool gotIt = false;
+	if(n != nullptr && !n->isEaten()) {
+		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *n);
+		if(eaten != m_map->getItems()->end()) {
+			eaten->setEaten(true);
+			gotIt = true;
 		}
 	}
-	else {
-		// Player in the void, apply gravity
-		m_accelerationY -= GRAVITY*(currentTicks - m_lastUpdate)/ACC_FACTOR;
-	}
-	if(m_jumping && s != nullptr) {
-		// Player jump
-		m_accelerationY = DEFAULT_VERT_ACC;
-	}
-	// By default, the player can move horizontally
-	if(e != nullptr && m_player->getDirection() == 1) {
-		// Cannot go to the right
-		m_playerX = e->GetX() - m_playerW;
-	}
-	else if(w != nullptr && m_player->getDirection() == -1) {
-		// Cannot go to the left
-		m_playerX = w->GetX() + w->GetWidth();
-	}
-
-	if(se != nullptr && s == nullptr && e == nullptr) {
-		// There is a collision in the bottom right corner
-		if(m_playerX + m_playerW - se->GetX() < (se->GetX() + se->GetHeight()) - m_playerY) {
-			m_playerX = se->GetX() - m_playerW;
-		}
-		else {
-			// In case we are jumping, don't stop us during it
-			if(m_accelerationY <= 0) {
-				m_accelerationY = 0;
-			}
-			m_playerY = se->GetY() + se->GetHeight();
+	if(e != nullptr && !e->isEaten()) {
+		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *e);
+		if(eaten != m_map->getItems()->end()) {
+			eaten->setEaten(true);
+			gotIt = true;
 		}
 	}
-	else if(sw != nullptr && s == nullptr && w == nullptr) {
-		if((sw->GetX() + sw->GetWidth()) - m_playerX < (sw->GetY() + sw->GetHeight()) - m_playerY) {
-			m_playerX = sw->GetX() + sw->GetWidth();
-		}
-		else {
-			// In case we are jumping, don't stop us during it
-			if(m_accelerationY <= 0) {
-				m_accelerationY = 0;
-			}
-			m_playerY = sw->GetY() + sw->GetHeight();
+	if(w != nullptr && !w->isEaten()) {
+		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *w);
+		if(eaten != m_map->getItems()->end()) {
+			eaten->setEaten(true);
+			gotIt = true;
 		}
 	}
-	else if(ne != nullptr && n == nullptr && e == nullptr) {
-		if(m_playerX + m_playerW - ne->GetX() < (m_playerY + m_playerH) - ne->GetY()) {
-			m_playerX = ne->GetX() - m_playerW;
-		}
-		else {
-			if(m_accelerationY > 0) {
-				m_accelerationY *= -0.25;
-			}
-			m_playerY = ne->GetY() - m_playerH;
+	if(s != nullptr && !s->isEaten()) {
+		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *s);
+		if(eaten != m_map->getItems()->end()) {
+			eaten->setEaten(true);
+			gotIt = true;
 		}
 	}
-	else if(nw != nullptr && n == nullptr && w == nullptr) {
-		if((nw->GetX() + nw->GetWidth()) -  m_playerX < m_playerY + m_playerH - nw->GetY()) {
-			m_playerX = nw->GetX() + nw->GetWidth();
-		}
-		else {
-			if(m_accelerationY > 0) {
-				m_accelerationY *= -0.25;
-			}
-			m_playerY = nw->GetY() - m_playerH;
-		}
+	if(gotIt) {
+		// Do something to the player
 	}
 }
 
@@ -723,11 +694,11 @@ void PlayLevel::updateEnemies(Uint32 currentTicks) {
 			continue;
 		}
 		// If enemy can't go to the right, it goes to the left
-		if((i->getDirection() == 1 && rect.getX() + rect.getW() >= b->GetX() + b->GetWidth()) || m_map->collide(m_map->getBlocs(), i->GetX() + i->GetWidth(), i->GetY() + i->GetHeight()/2) == nullptr) {
+		if(i->getDirection() == 1 && (rect.getX() + rect.getW() >= b->GetX() + b->GetWidth() || m_map->collide(m_map->getBlocs(), i->GetX() + i->GetWidth(), i->GetY() + i->GetHeight()/2) != nullptr)) {
 			i->setDirection(-1);
 		}
 		// If enemy can't go to the left, it goes to the right
-		else if((i->getDirection() == -1 && rect.getX() <= b->GetX()) || m_map->collide(m_map->getBlocs(), i->GetX(), i->GetY() + i->GetHeight() / 2) == nullptr) {
+		else if(i->getDirection() == -1 && (rect.getX() <= b->GetX() || m_map->collide(m_map->getBlocs(), i->GetX(), i->GetY() + i->GetHeight() / 2) != nullptr)) {
 			i->setDirection(1);
 		}
 		// Set new enemy position

@@ -20,6 +20,7 @@ public:
 	float GetY() const;
 	float GetWidth() const;
 	float GetHeight() const;
+	Rectangle getRectangle() const;
 
 	void SetX(float);
 	void SetY(float);
@@ -27,6 +28,8 @@ public:
 	int getId() const;
 	void setEaten(bool);
 	bool isEaten() const;
+
+	bool operator==(const Item &a);
 };
 
 #endif

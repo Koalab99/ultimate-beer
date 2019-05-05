@@ -25,6 +25,7 @@ protected:
 	SDL_Texture *m_playerStandingTexture;
 	SDL_Texture *m_blocTexture;
 	SDL_Texture *m_enemyTexture;
+	SDL_Texture *m_beerTexture;
 	float m_playerX;
 	float m_playerY;
 	float m_playerW;
