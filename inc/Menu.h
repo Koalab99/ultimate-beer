@@ -29,6 +29,7 @@ private:
   std::string m_choice;
   std::vector<Button*> m_buttons;
   SDL_Texture *m_background;
+  SDL_Texture *m_title;
 };
 
 #endif

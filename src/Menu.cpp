@@ -2,6 +2,7 @@
 #include <GameState.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <Button.h>
 #include <vector>
 #include <string>
@@ -11,8 +12,14 @@
 
 using namespace std;
 
+extern TTF_Font *gFont;
+
 // Menu constructor, take a window parameter so that it can create a render for it thanks to the GameState class inheritance
 Menu::Menu(SDL_Window* window): GameState(window){
+	// Create the title
+	SDL_Surface *tmp = TTF_RenderText_Blended(gFont, "The Quest For The Ultimate Beer", {0, 0, 0});
+	m_title = SDL_CreateTextureFromSurface(m_renderer, tmp);
+	SDL_FreeSurface(tmp);
 	// Create the play button
 	std::string playText = "Play";
 	Button *play = new Button(m_renderer, playText);
@@ -82,6 +89,9 @@ void Menu::render() {
 	int count;
 	// Reset the choice
 	m_choice = "";
+	// Show title
+	SDL_Rect r = { w / 10, h / 10, 4*w/5, h/5};
+	SDL_RenderCopy(m_renderer, m_title, NULL, &r);
 	// For each buttons in the buttons vector
 	for(count = 0, i = m_buttons.begin(); i != m_buttons.end(); i++, count++) {
 		// Get the button texture

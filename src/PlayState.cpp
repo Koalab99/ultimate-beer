@@ -125,15 +125,18 @@ StateReturnValue PlayState::update() {
 		// We created a new PlayLevel object, ready to use !
 		// We take its return code in order to treat it properly depending on what happened
 		StateReturnValue result = m_currentLevel->run();
-		Mix_PlayMusic(m_music, -1);
 		m_playing = false;
 		delete m_currentLevel;
 		if(result == RETURN_DEAD) {
+			Mix_Chunk *tmp = Mix_LoadWAV("data/music/gameDead.wav");
+			Mix_PlayChannel(-1, tmp, 0);
 			DeadScreen ds(m_renderer);
 			m_player->setLife(3);
 		}
 		else if(result == RETURN_WIN) {
 			WinScreen ws(m_renderer);
+			Mix_Chunk *tmp = Mix_LoadWAV("data/music/gameWin.wav");
+			Mix_PlayChannel(-1, tmp, 0);
 			ws.show();
 			SDL_Delay(3000);
 
@@ -141,6 +144,7 @@ StateReturnValue PlayState::update() {
 		else if(result != RETURN_BACK && result != RETURN_PLAY) {
 			return result;
 		}
+		Mix_PlayMusic(m_music, -1);
 	}
 	m_order = "";
 	return RETURN_NOTHING;
