@@ -38,7 +38,7 @@ Menu::Menu(SDL_Window* window): GameState(window){
 	// Initialize quit to false
 	m_quit = false;
 	// Load the background image
-	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
+	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity3.png");
 	assert(m_background != NULL);
 }
 

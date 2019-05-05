@@ -59,6 +59,7 @@ protected:
 	void updateItemCollision(Uint32 currentTicks);
 	void updateEnemyCollision(Uint32 currentTicks);
 	void drawOnMap(SDL_Texture *texture, SDL_Rect *src, float x, float y, float w, float h, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void drawBackground();
 	
 	
 public:

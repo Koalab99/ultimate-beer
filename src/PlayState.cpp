@@ -20,7 +20,7 @@ PlayState::PlayState(SDL_Window *window, Player *player, Mix_Music *music) : Gam
 	m_order = "";
 	m_mouseX = -1;
 	m_mouseY = -1;
-	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity.png");
+	m_background = IMG_LoadTexture(m_renderer, "data/img/lacity2.png");
 	if(m_background == NULL) {
 		std::cerr << "Could not load image lacity.png" << std::endl;
 		std::cerr << IMG_GetError() << std::endl;
@@ -48,10 +48,16 @@ PlayState::~PlayState() {
 void PlayState::render() {
 	SDL_SetRenderDrawColor(m_renderer, 255, 128, 128, 255);
 	SDL_RenderClear(m_renderer);
-
-//	SDL_RenderCopy(m_renderer, m_background, NULL, NULL);
+	// Get the renderer's size
 	int width, height, count;
 	SDL_GetRendererOutputSize(m_renderer, &width, &height);
+	// Get the background width and height
+	int BGW, BGH;
+	SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
+	// Calculate the src rectangle of the background
+	SDL_Rect backgroundRect = { (BGW - BGH*width/height)/2, 0, BGH*width/height, BGH };
+	// Copy the texture to the renderer
+	SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
 	int x, y, w, h;
 	x = 10;
 	y = 10;

@@ -200,37 +200,10 @@ void PlayLevel::render() {
 			std::cerr << "Division with zero error" << std::endl;
 			assert(m_map->getH() != 0);
 		}
-		// Getting the size of the background
-		// Claire should explain this
-		SDL_QueryTexture(m_background, NULL, NULL, &m_BGW, &m_BGH);
-
-		SDL_Rect backgroundRect = { m_positionFond.x, -200, (m_BGH*m_width/m_height)/3, (m_BGH/3)*3 };
-		SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
-		drawOnMap(m_background, NULL, 0, 0, m_map->getW(), m_map->getH());
-		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
-			m_positionFond.x= m_positionFond.x-6;
-		}
-		float mapWidth = m_map->getW();
-		if((m_oldPosition<m_playerX)&&(m_playerX < mapWidth- m_mapVisibleWidth/2))
-		{
-			m_positionFond.x= m_positionFond.x+4;
-		}
-		if((m_oldPosition<m_playerX)&&(m_playerX > mapWidth- m_mapVisibleWidth/2))
-		{
-			m_positionFond.x= m_positionFond.x+10;
-		}
-		if((m_oldPosition>m_playerX)&&(m_playerX > mapWidth- m_mapVisibleWidth/2))
-		{
-			m_positionFond.x= m_positionFond.x-10;
-		}
-		if((m_oldPosition>m_playerX)&&(m_positionFond.x>3))
-		{
-			m_positionFond.x= m_positionFond.x-4;
-		}
-		m_oldPosition=m_playerX;
+		// Rendering the background
+		drawBackground();
 		// Display the blocs
 		// For each blocs appearing on the screen
-		// Kler should have a look at what happens here, she might be interested by how I render theses black boxes...
 		for(auto i = m_nearBlocs->begin(); i != m_nearBlocs->end(); i++) {
 			for(int j = 0; j < (int)i->GetWidth(); j++) {
 				for(int k = 0; k < (int)i->GetHeight(); k++) {
@@ -300,6 +273,26 @@ void PlayLevel::render() {
 
 	// Show what we did to the people
 	SDL_RenderPresent(m_renderer);
+}
+
+void PlayLevel::drawBackground() {
+	int BGW, BGH;
+	SDL_QueryTexture(m_background, NULL, NULL, &BGW, &BGH);
+	SDL_Rect backgroundRect;
+	// Calculate the src rectangle of the background
+	if(m_playerX < m_mapVisibleWidth/2) {
+		backgroundRect = { 0, 0, BGH*m_width/m_height, BGH };
+	}
+	else if(m_playerX > m_map->getW() - m_mapVisibleWidth / 2) {
+		backgroundRect = { BGW - BGH*m_width/m_height, 0, BGH*m_width/m_height, BGH };	
+	}
+	else {
+		float BGVisibleWidth = BGH*m_width/m_height;
+		float BGVisibleOffset = (BGW-BGVisibleWidth) * m_mapVisibleOffset / (m_map->getW()-m_mapVisibleWidth);
+		backgroundRect = {(int)BGVisibleOffset, 0, (int)BGVisibleWidth, BGH };	
+	}
+	// Copy the texture to the renderer
+	SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);	
 }
 
 void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, float y, float w, float h, SDL_RendererFlip flip) {
