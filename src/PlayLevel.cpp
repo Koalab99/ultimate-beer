@@ -65,7 +65,7 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	m_playerY = m_map->getSpawnY();
 	// Set default player height and width
 	m_playerW = 2;
-	m_playerH = 2;
+	m_playerH = 3;
 	// Initializing the moving frame counter, will increase when running and go back to zero when stopping
 	m_movingFrame = 0;
 	// Get the number of frames the sprite is made of

@@ -11,7 +11,7 @@ Player::Player() {
 	m_speed = 1;
 	m_runningTexturePath = "data/img/player.png";
 	m_waitingTexturePath = "data/img/StaticPlayer.png";
-	m_numImagesRunning = 6;
+	m_numImagesRunning = 11;
 	m_direction = 1;
 }
 
