@@ -31,7 +31,7 @@ Button::Button(SDL_Renderer *renderer, std::string message) {
 	// Free surface
 	SDL_FreeSurface(surface);
 	// Changing this surface into the button's texture
-	SDL_Texture *texture2 = IMG_LoadTexture(m_renderer, "data/img/Blocs.png");
+	SDL_Texture *texture2 = IMG_LoadTexture(m_renderer, "data/img/sexybutton.png");//SDL_CreateTextureFromSurface(m_renderer, surface2);
 	SDL_SetTextureBlendMode(texture2, SDL_BLENDMODE_NONE);
 	if(m_texture == NULL) {
 		std::cerr << "Could not create texture from surface" << std::endl;
