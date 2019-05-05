@@ -24,8 +24,6 @@ DeadScreen::DeadScreen(SDL_Renderer *renderer) {
 	}
 	int width, height;
 	SDL_GetRendererOutputSize(renderer, &width, &height);
-	std::cout << SDL_GetError() << std::endl;
-	std::cout << width << " " << height << std::endl;
 	SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, surf);
 	SDL_FreeSurface(surf);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

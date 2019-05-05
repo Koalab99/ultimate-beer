@@ -29,6 +29,8 @@ const float GRAVITY = 2;
 const float DEFAULT_VERT_ACC = 4;
 // Used to make the jump faster, slow when it becomes bigger
 const float ACC_FACTOR = 200;
+// Time for invincibily
+const Uint32 INVINCIBLE_TIME = 2000;
 
 // Constructor of the level
 PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
@@ -92,13 +94,7 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 	// Set the return value that will be sent to the PlayState if different than RETURN_NOTHING
 	m_return = RETURN_NOTHING;
 	// Loading bloc texture
-	m_blocTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 10, 10);
-	// Should be changed by Kler
-	SDL_SetRenderTarget(m_renderer, m_blocTexture);
-	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-	SDL_RenderClear(m_renderer);
-	SDL_RenderPresent(m_renderer);
-	SDL_SetRenderTarget(m_renderer, NULL);
+	m_blocTexture = IMG_LoadTexture(m_renderer, "data/img/Blocs.png");
 	// Loading beer texture
 	m_beerTexture = IMG_LoadTexture(m_renderer, "data/img/BEER.png");
 	if(m_beerTexture == NULL) {
@@ -113,6 +109,8 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 		std::cerr << "IMG Error:" << IMG_GetError() << std::endl;
 		assert(m_enemyTexture != NULL);
 	}
+	m_enemyDeadSong = Mix_LoadWAV("data/music/killedEnemy.wav");
+	m_itemTaken = Mix_LoadWAV("data/music/beerTaken.wav");
 	// Initialize the last update
 	m_lastUpdate = SDL_GetTicks();
 	// Claire can explain this
@@ -144,9 +142,17 @@ PlayLevel::~PlayLevel() {
 	if(m_enemyTexture != NULL) {
 		SDL_DestroyTexture(m_enemyTexture);
 	}
+	if(m_enemyDeadSong != NULL) {
+		Mix_FreeChunk(m_enemyDeadSong);
+	}
+	if(m_itemTaken != NULL) {
+		Mix_FreeChunk(m_itemTaken);
+	}
 }
 
 StateReturnValue PlayLevel::run() {
+	Mix_Chunk *spawnSong = Mix_LoadWAV("data/music/spawn.wav");
+	Mix_PlayChannel(-1, spawnSong, 0);
 	Mix_Music *music = Mix_LoadMUS("data/music/playingMusic.wav");
 	Mix_PlayMusic(music, -1);
 	// time helps regulating the frame rate
@@ -200,6 +206,7 @@ void PlayLevel::render() {
 
 		SDL_Rect backgroundRect = { m_positionFond.x, -200, (m_BGH*m_width/m_height)/3, (m_BGH/3)*3 };
 		SDL_RenderCopy(m_renderer, m_background, &backgroundRect, NULL);
+		drawOnMap(m_background, NULL, 0, 0, m_map->getW(), m_map->getH());
 		if(m_positionFond.x-6>m_BGW-(m_BGH*m_width/m_height)/3){
 			m_positionFond.x= m_positionFond.x-6;
 		}
@@ -217,7 +224,15 @@ void PlayLevel::render() {
 		// For each blocs appearing on the screen
 		// Kler should have a look at what happens here, she might be interested by how I render theses black boxes...
 		for(auto i = m_nearBlocs->begin(); i != m_nearBlocs->end(); i++) {
-			drawOnMap(m_blocTexture, NULL, i->GetX(), i->GetY(), i->GetWidth(), i->GetHeight());
+			for(int j = 0; j < (int)i->GetWidth(); j++) {
+				for(int k = 0; k < (int)i->GetHeight(); k++) {
+					drawOnMap(m_blocTexture, NULL, 
+						i->GetX() + j * ((int)i->GetWidth()) / i->GetWidth(), 
+						i->GetY() + k * ((int)i->GetHeight()) / i->GetHeight(), 
+						((int)i->GetWidth())/i->GetWidth(), 
+						((int)i->GetHeight()) / i->GetHeight());
+				}
+			}
 		}
 		// Drawing beers
 		for(auto i = m_nearItems->begin(); i != m_nearItems->end(); i++) {
@@ -308,7 +323,7 @@ void PlayLevel::drawOnMap(SDL_Texture *texture, SDL_Rect *srcRect, float x, floa
 		newX = (x - m_playerX + m_mapVisibleWidth/2) * scale;
 	}
 	// Creating the destination rectangle
-	SDL_Rect destRect = {newX, newY, newW, newH};
+	SDL_Rect destRect = {newX, newY, newW+1, newH+1};
 	// Copy the texture to the screen
 	SDL_RenderCopyEx(m_renderer, texture, srcRect, &destRect, 0, NULL, flip); 
 }
@@ -409,7 +424,7 @@ StateReturnValue PlayLevel::update() {
 		// Calcul it anyway.
 		m_invincibleRemainingTime += currentTicks - m_lastUpdate;
 		// Check the invicibility of the player
-		if(m_playerTouched && m_invincibleRemainingTime > 3000) {
+		if(m_playerTouched && m_invincibleRemainingTime > INVINCIBLE_TIME) {
 			m_playerTouched = false;
 		}
 		m_mapVisibleWidth = m_width *  m_map->getH() / m_height;
@@ -470,7 +485,7 @@ StateReturnValue PlayLevel::update() {
 	}
 	// Set current tick as last tick for next loop
 	m_lastUpdate = currentTicks;
-	if(m_player->getLife() < 1) {
+	if(m_player->getLife() < 1 || m_playerX + m_playerH < 0) {
 		SDL_Delay(200);
 		m_return = RETURN_DEAD;
 	}
@@ -489,6 +504,7 @@ void PlayLevel::updateItemCollision(Uint32 currentTicks) {
 
 	bool gotIt = false;
 	if(n != nullptr && !n->isEaten()) {
+		Mix_PlayChannel(-1, m_itemTaken, 0);
 		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *n);
 		if(eaten != m_map->getItems()->end()) {
 			eaten->setEaten(true);
@@ -496,6 +512,7 @@ void PlayLevel::updateItemCollision(Uint32 currentTicks) {
 		}
 	}
 	if(e != nullptr && !e->isEaten()) {
+		Mix_PlayChannel(-1, m_itemTaken, 0);
 		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *e);
 		if(eaten != m_map->getItems()->end()) {
 			eaten->setEaten(true);
@@ -503,6 +520,7 @@ void PlayLevel::updateItemCollision(Uint32 currentTicks) {
 		}
 	}
 	if(w != nullptr && !w->isEaten()) {
+		Mix_PlayChannel(-1, m_itemTaken, 0);
 		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *w);
 		if(eaten != m_map->getItems()->end()) {
 			eaten->setEaten(true);
@@ -510,6 +528,7 @@ void PlayLevel::updateItemCollision(Uint32 currentTicks) {
 		}
 	}
 	if(s != nullptr && !s->isEaten()) {
+		Mix_PlayChannel(-1, m_itemTaken, 0);
 		auto eaten = std::find(m_map->getItems()->begin(), m_map->getItems()->end(), *s);
 		if(eaten != m_map->getItems()->end()) {
 			eaten->setEaten(true);
@@ -543,6 +562,7 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 	}
 	else if(s != nullptr) {
 		// Player touch the enemy and kill
+		Mix_PlayChannel(-1, m_enemyDeadSong, 0);
 		auto dead = std::find(m_enemies->begin(), m_enemies->end(), *s);
 		if(dead != m_enemies->end()) 
 			dead->setAlive(false);
@@ -561,6 +581,7 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 		}
 		else {
 			// Enemy dies
+			Mix_PlayChannel(-1, m_enemyDeadSong, 0);
 			auto dead = std::find(m_enemies->begin(), m_enemies->end(), *se);
 			if(dead != m_enemies->end()) 
 				dead->setAlive(false);
@@ -578,6 +599,7 @@ void PlayLevel::updateEnemyCollision(Uint32 currentTicks) {
 		}
 		else {
 			// Enemy dies
+			Mix_PlayChannel(-1, m_enemyDeadSong, 0);
 			auto dead = std::find(m_enemies->begin(), m_enemies->end(), *sw);
 			if(dead != m_enemies->end()) 
 				dead->setAlive(false);

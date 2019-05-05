@@ -4,6 +4,7 @@
 #include <Map.h>
 #include <Player.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <Enemy.h>
 #include <GameState.h>
 #include <StateReturnValue.h>
@@ -29,6 +30,8 @@ protected:
 	SDL_Texture *m_blocTexture;
 	SDL_Texture *m_enemyTexture;
 	SDL_Texture *m_beerTexture;
+	Mix_Chunk *m_enemyDeadSong;
+	Mix_Chunk *m_itemTaken;
 	float m_playerX;
 	float m_playerY;
 	float m_playerW;
