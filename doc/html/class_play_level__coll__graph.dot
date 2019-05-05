@@ -1,0 +1,12 @@
+digraph "PlayLevel"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="PlayLevel",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" m_pauseState" ,fontname="Helvetica"];
+  Node2 [label="PauseState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pause_state.html"];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" m_map" ,fontname="Helvetica"];
+  Node3 [label="Map",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_map.html"];
+  Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" m_player" ,fontname="Helvetica"];
+  Node4 [label="Player",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_player.html"];
+}
