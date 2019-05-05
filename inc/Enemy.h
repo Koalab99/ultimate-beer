@@ -7,7 +7,7 @@
 #include <string>
 #include <Bloc.h>
 
-#define ENEMY_SPEED 1.0
+#define ENEMY_SPEED 1.5
 
 class Enemy {
 private:

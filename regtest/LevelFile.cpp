@@ -5,6 +5,9 @@
 
 using namespace std;
 
+/*
+ *  Read the informations from the file given as a parameter, can take multiple parameters
+ */
 int main(int argc, char **argv) {
 	if(argc < 2) {
 		cout << "Usage : " << argv[0] << " [FILE1, ...]" << endl;
