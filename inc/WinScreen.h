@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+//handles whatever gets drawn on the screen
 class WinScreen {
 private:
 	SDL_Renderer *m_renderer;	

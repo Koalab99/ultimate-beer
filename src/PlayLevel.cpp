@@ -18,7 +18,7 @@
 #include <PauseState.h>
 #include <assert.h>
 
-// Setting framerate so that we don't calculate too much frames (in case your computer is so powerful
+/* Setting framerate so that we don't calculate too much frames (in case your computer is too powerful or not enough*/
 const int FPS = 40;
 const int FRAME_TIME = 1000/FPS;
 // Setting default speed for player movement
