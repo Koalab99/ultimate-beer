@@ -10,23 +10,32 @@
 #include <SDL2/SDL_mixer.h>
 #include <Menu.h>
 #include <StateReturnValue.h>
+#include <assert.h>
 
 extern TTF_Font *gFont;
 
 Game::Game() {
-
+	// We don't do anything here because we need a return value for the init, which is what init does!
 }
 
+// Destructor, free memory
 Game::~Game() {
+	// Delete player if exists
 	if(m_player != nullptr) 
 		delete m_player;
+	// Delete current state if exists
 	if(m_state != nullptr) 
 		delete m_state;
+	// Delete window if exists
 	if(m_window != NULL)
 		SDL_DestroyWindow(m_window);
+	// Delete music if exists
 	if(m_menuMusic != NULL) {
 		Mix_FreeMusic(m_menuMusic);
 	}
+	// Stop all musicsw
+	Mix_CloseAudio();
+	// Quit SDL, TTF, IMG and Mix
 	SDL_Quit();
 	TTF_Quit();
 	IMG_Quit();
@@ -34,74 +43,77 @@ Game::~Game() {
 }
 
 int Game::init() {
-	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) {
-		exit(EXIT_FAILURE);	
-	}
-	if(TTF_Init() == -1) {
-		SDL_Quit();
-		exit(EXIT_FAILURE);
-	}
+	// Initializing SDL
+	assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == 0);
+	// Initializing TTF
+	assert(TTF_Init() != -1);
+	// Initializing IMG with flags for more images support (JPG)
 	int flags = IMG_INIT_JPG;
-	if((IMG_Init(flags)&flags) != flags) {
-		SDL_Quit();
-		TTF_Quit();
-		exit(EXIT_FAILURE);
-	}
-	flags = 0;
-	if((Mix_Init(flags)&flags) != flags) {
-		std::cerr << "Impossible loading mixer" << std::endl;
-		std::cerr << "Mixer error : " << Mix_GetError() << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096);
-
+	assert((IMG_Init(flags)&flags) == flags);
+	// Initializing Mix_Init with no flags, always true 
+	assert(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096) != -1);
 	m_window = SDL_CreateWindow("Ultimate Beer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 720, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	if(m_window == NULL) {
-		return -1;
-	}
+	assert(m_window != NULL);
 //	SDL_SetWindowMinimumSize(m_window, 360, 240); // Doesnt work idk why
 	m_player = new Player();
+	assert(m_player != nullptr);
+	// Set the global font
 	gFont = TTF_OpenFont("data/font/Action_Man.ttf", 128);
 	if(gFont == NULL) {
+		// Couldn't load global font
 		std::cerr << "Could not load font" << std::endl;
 		std::cerr << TTF_GetError() << std::endl;
+		assert(gFont != NULL);
 	}
+	// Create a new menu as the current state
 	m_state = new Menu(m_window);
-	if(m_player == nullptr || m_state == nullptr) {
-		return -1;
-	}
+	assert(m_state != nullptr);
+	// Load the menu music
 	m_menuMusic = Mix_LoadMUS("data/music/menu.wav");
 	if(!m_menuMusic) {
+		// The menu music couldn't load
 		std::cerr << "Couldn't load menu music" << std::endl;
 		std::cerr << "Mixer error : " << Mix_GetError() << std::endl;
+		assert(m_menuMusic != NULL);
 	}
-	Mix_FadeInMusic(m_menuMusic, -1, 3000);
+
+	Mix_FadeInMusic(m_menuMusic, -1, 2000);
 	m_quit = false;
 	return 0;
 }
 
 int Game::loop() {
+	// Everything happens here
+	// First: We draw on screen
 	m_state->render();
+	// Then : We get user input
 	m_state->input();
+	// Get the action asked by the user
 	StateReturnValue type = m_state->update();
 	switch(type) {
 		case RETURN_QUIT:
+			// User wants to quit
+			// return false to end the loop
 			return false;
 			break;
 		case RETURN_PLAY:
+			// User wants the play screen
 			delete m_state;
 			m_state = new PlayState(m_window, m_player, m_menuMusic);
 			break;
 		case RETURN_MENU:
+			// User wants the menu screen
 			delete m_state;
 			m_state = new Menu(m_window);
 			break;
 		default:
+			// User don't need us
 			break;
 	}
 	return true;
 }
 
+// Getters
 Player *Game::getPlayer() const {
 	return m_player;
 }
