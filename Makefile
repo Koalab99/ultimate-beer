@@ -47,10 +47,11 @@ $(OBJDIR)%.o: $(SRCDIR)%.$(FILETYPE)
 	@$(CC) -MM $(CCFLAG) $(SRCDIR)$*.$(FILETYPE) >> $(DEPDIR)$*.d
 
 $(DOCDIR)html/index.html: $(DATADIR)doxyconfig.conf
-	@doxygen $^
+	@echo "Generating doxygen confind in $(DOCDIR)"
+	@doxygen $^ >$(DOCDIR)doxy.out
 
 doc:
-	@doxygen $(DATADIR)doxyconfig.conf
+	@doxygen $(DATADIR)doxyconfig.conf 
 
 regtest:
 	@g++ regtest/LevelFile.cpp -o regtest/testFile
