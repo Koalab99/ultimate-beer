@@ -30,6 +30,7 @@ protected:
 	SDL_Texture *m_blocTexture;
 	SDL_Texture *m_enemyTexture;
 	SDL_Texture *m_beerTexture;
+	SDL_Texture *m_heartTexture;
 	Mix_Chunk *m_enemyDeadSong;
 	Mix_Chunk *m_itemTaken;
 	float m_playerX;
