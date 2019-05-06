@@ -19,11 +19,33 @@ private:
 	Mix_Music *m_menuMusic;
 
 public:
+	/**
+	@brief Constructor
+	*/
 	Game();
+	/**
+	@brief Destructor
+	*/
 	~Game();
+	/**
+	@brief Initiation of game(Sdl,IMG with,Mix_Init,font, musique)
+	@return 0 if there are no problemes
+	*/
 	int init();
-	int loop();
+	/**
+	@brief Selection for menu
+	@return 0 if there are no problemes
+	*/
+	bool loop();
+	/**
+	@brief Get Player
+	@return Pointer Player
+	*/
 	Player *getPlayer() const;
+	/**
+	@brief Get State
+	@return Pointer GameState
+	*/
 	GameState *getState();
 
 };

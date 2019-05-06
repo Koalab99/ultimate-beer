@@ -18,28 +18,89 @@ private:
 	Bloc *m_bloc;
 
 public:
-	Enemy(float x, float y); 
+	/**
+	@brief Constructor
+	@param x:positionX, y:positionY
+	*/
+	Enemy(float x, float y);
+	/**
+	@brief Is the enemy alive ?
+	@return true if enemy is alive
+	*/
 	bool isAlive() const;
+	/**
+	@brief Set alive of enemy
+	@param alive : true if enemy is alive
+	*/
 	void setAlive(bool alive);
-
+	/**
+	@brief Get Rectangle(position and dimension) of enemy
+	@return Rectangle
+	*/
 	Rectangle getRectangle() const;
+	/**
+	@brief Set Rectangle of enemy
+	@param Rectangle : position and dimension
+	*/
 	void setRectangle(Rectangle rect);
-
+	/**
+	@brief Get Bloc of enemy
+	@return bloc 
+	*/
 	Bloc *getBloc() const;
+	/**
+	@brief Set Bloc of enemy
+	@param pointer bloc
+	*/
 	void setBloc(Bloc *bloc);
-
+	/**
+	@brief Get Direction of enemy
+	@return 1 if direction forward or -1 if direction back
+	*/
 	int getDirection() const;
+	/**
+	@brief Set Direction of enemy
+	@param: 1 if direction forward or -1 if direction back
+	*/
 	void setDirection(const int direction);
-
+	/**
+	@brief Set position X of enemy
+	@param float x
+	*/
 	void setX(float x);
+	/**
+	@brief Set position Y of enemy
+	@param float y
+	*/
 	void setY(float y);
+	/**
+	@brief Get position X of enemy
+	@return float x
+	*/
 	float GetX() const;
+	/**
+	@brief Get position Y of enemy
+	@return float y
+	*/
 	float GetY() const;
+	/**
+	@brief Get width of enemy
+	@return float:Width
+	*/
 	float GetWidth() const;
+	/**
+	@brief Get height of enemy
+	@return float:Height
+	*/
 	float GetHeight() const;
-
+	/**
+	@brief Compares 2 enemy and return true if they are equal
+	@return bool
+	*/
 	bool operator==(const Enemy &e) const;
-
+	/**
+	@brief Destructor
+	*/
 	~Enemy(); 
 };
 

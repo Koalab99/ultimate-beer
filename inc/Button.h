@@ -15,13 +15,33 @@ private:
 	SDL_Texture *m_texture;
 	SDL_Renderer *m_renderer;
 public:
+	/**
+	@brief Constructor
+	*/
 	Button(SDL_Renderer *renderer, std::string message);
+	/**
+	@brief Destructor
+	*/
 	~Button();
-
+	/**
+	@brief Get width of button
+	@return int
+	*/
 	int getW();
+	/**
+	@brief Get height of button
+	@return int
+	*/
 	int getH();
-
+	/**
+	@brief Get texture of button
+	@return Texture
+	*/
 	SDL_Texture *getTexture();
+	/**
+	@brief Get message of button
+	@return string
+	*/
 	std::string getMessage();
 };
 
