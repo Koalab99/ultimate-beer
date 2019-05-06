@@ -24,12 +24,11 @@ Button::Button(SDL_Renderer *renderer, std::string message) {
 	}
 	// Changing text surface to text texture
 	SDL_Texture *tmp = SDL_CreateTextureFromSurface(m_renderer, surface);
+	SDL_FreeSurface(surface);
 //	SDL_SetTextureBlendMode(tmp, SDL_BLENDMODE_NONE);
 	if(tmp == NULL) {
 		std::cerr << "Could not create texture from surface" << std::endl;
 	}
-	// Free surface
-	SDL_FreeSurface(surface);
 	// Changing this surface into the button's texture
 	SDL_Texture *texture2 = IMG_LoadTexture(m_renderer, "data/img/Blocs.png");
 	SDL_SetTextureBlendMode(texture2, SDL_BLENDMODE_NONE);

@@ -20,6 +20,8 @@ Game::Game() {
 
 // Destructor, free memory
 Game::~Game() {
+	// Delete font
+	TTF_CloseFont(gFont);
 	// Delete player if exists
 	if(m_player != nullptr) 
 		delete m_player;

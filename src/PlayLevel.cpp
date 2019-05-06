@@ -630,11 +630,9 @@ void PlayLevel::updateBlocCollision(Uint32 currentTicks) {
 			m_accelerationY = 0;
 		}
 	}
-	else if(n != nullptr) {
+	else if(n != nullptr && m_accelerationY > 0) {
 		// Player's head touch a bloc
-		if(m_accelerationY > 0) {
-			m_accelerationY *= -0.25;
-		}
+		m_accelerationY *= -0.25;
 	}
 	else {
 		// Player in the void, apply gravity
