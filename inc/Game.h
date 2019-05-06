@@ -8,8 +8,9 @@
 #include <GameState.h>
 #include <SDL2/SDL_mixer.h>
 
-/*Defines the basics for the game: sets up the window's size and open it,
-sets up the musics, check whether you're playing or not, etc... */
+/**
+*detailed description Defines the basics for the game: sets up the window's size and open it,
+*sets up the musics, check whether you're playing or not, etc... */
 class Game {
 private:
 	Player *m_player;

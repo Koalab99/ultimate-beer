@@ -6,7 +6,8 @@
 #include <vector>
 #include <StateReturnValue.h>
 
-/*Defines the menu and some of the game's possibilities, like playing or quiting, changing the langage, checking the rules...*/
+/**
+*detailed description Defines the menu and some of the game's possibilities, like playing or quiting, changing the langage, checking the rules...*/
 class Menu: public GameState {
 public:
   /**

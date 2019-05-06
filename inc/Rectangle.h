@@ -1,7 +1,9 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-//Defines a rectangle (as the name indicates it)
+/**
+*detailed descriptionDefines a rectangle (as the name indicates it)
+*/
 class Rectangle {
 private:
 	 /**

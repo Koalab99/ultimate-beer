@@ -4,8 +4,9 @@
 #include <Rectangle.h>
 #include <iostream>
 
-/*Defines the general position of an item, it's general shape (width and height)
-Determines if it has been eaten by the player, and what happens if so*/
+/**
+*detailed description Defines the general position of an item, it's general shape (width and height)
+*Determines if it has been eaten by the player, and what happens if so*/
 class Item {
 private:
 	/**

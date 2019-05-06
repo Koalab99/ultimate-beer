@@ -3,7 +3,9 @@
 
 #include <Position.h>
 
-/*Defines a "bloc"  width, height and postion which we will use to define all kind of stuff (player, ennemy and plateform) before adding textures*/
+/**
+*detailed description Defines a "bloc"  width, height and postion which we will use to define all kind of stuff (player, ennemy and plateform) before adding textures
+*/
 class Bloc {
 private:
 	/**

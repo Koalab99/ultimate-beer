@@ -3,7 +3,9 @@
 
 #include <SDL2/SDL.h>
 
-//handles whatever gets drawn on the screen
+/**
+*detailed description handles whatever gets drawn on the screen
+*/
 class WinScreen {
 private:
 	/**

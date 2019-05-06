@@ -9,7 +9,8 @@
 
 #define ENEMY_SPEED 1.5
 
-/*Sets up an ennemy: Is is alive? Where does it stands? Where is it going? etc...)*/
+/**
+*detailed description Sets up an ennemy: Is is alive? Where does it stands? Where is it going? etc...)*/
 class Enemy {
 private:
 	/**

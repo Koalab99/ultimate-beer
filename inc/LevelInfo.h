@@ -4,7 +4,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-/*Defines what has to be known for each level: it's name, what it looks like, it's number of ennemies and items... */ 
+/**
+*detailed description Defines what has to be known for each level: it's name, what it looks like, it's number of ennemies and items... */ 
 class LevelInfo {
 private:
 	/**

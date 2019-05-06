@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 
-/*Defines what happens when the player puts the game on hold while he ain't done playing*/
+/**
+*detailed description Defines what happens when the player puts the game on hold while he ain't done playing*/
 
 class PauseState {
 private:
@@ -22,8 +23,17 @@ private:
 	@brief Pointer of renderer
 	*/
 	SDL_Renderer *m_renderer;
+	/**
+	@brief Pointer vector button
+	*/
 	std::vector<Button*> m_buttons;
+	/**
+	@brief pressed text button
+	*/
 	std::string m_buttonPressedText;
+	/**
+	@brief return StateReturnValue
+	*/
 	StateReturnValue m_returnValue;
 public:
 	/**
@@ -34,8 +44,17 @@ public:
 	@brief Destructor
 	*/
 	~PauseState();
+	/**
+	@brief Boucle render
+	*/
 	void render();
+	/**
+	@brief return StateReturnValue
+	*/
 	StateReturnValue update();
+	/**
+	@brief input managing and gestioning
+	*/
 	void handleInput();
 };
 

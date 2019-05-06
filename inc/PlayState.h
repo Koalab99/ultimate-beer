@@ -24,9 +24,11 @@ private:
 public:
 	/**
 	@brief Constructor
-	@param pointer SDL_Window, pointer Player, pointer Mix_Music
+	@param w SDL_Window  pointer
+	@param p Player pointer
+	@param m Mix_Music pointer
 	*/
-	PlayState(SDL_Window *, Player *, Mix_Music *);
+	PlayState(SDL_Window * w, Player * p, Mix_Music * m);
 	/**
 	@brief Destructor
 	*/
@@ -39,6 +41,9 @@ public:
 	@brief Boucle input
 	*/
 	void input();
+	/**
+	@brief Return Value
+	*/
 	StateReturnValue update();
 };
 

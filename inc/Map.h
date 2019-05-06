@@ -11,10 +11,13 @@
 #include <fstream>
 
 
-/*Sets up the map, which(among other things) includes a lot of getters, updating the enemies status, checking if things are colliding, etc...*/
+
 
 using namespace std;
 class Enemy;
+/**
+*detailed description Sets up the map, which(among other things) includes a lot of getters, updating the enemies status, checking if things are colliding, etc...
+*/
 class Map {
 private:
 	/**

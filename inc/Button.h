@@ -5,7 +5,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-//Sets up the buttons for the menu (Play, Credits, Quit, Go back, etc...)
+/**
+*detailed description Sets up the buttons for the menu (Play, Credits, Quit, Go back, etc...)
 
 class Button {
 private:

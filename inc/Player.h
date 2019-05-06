@@ -4,7 +4,9 @@
 #include <SDL2/SDL.h>
 #include <string>
 
-/* Defines the player's avatar: how fast and where is it going, how much life it has, what it looks like...*/
+/**
+*Detailed description Defines the player's avatar: how fast and where is it going, how much life it has, what it looks like...
+*/
 class Player {
 private:
 	/**
@@ -53,12 +55,12 @@ public:
 	float getSpeed() const;
 	/**
 	@brief Set number of life of player.
-	@param m_life int
+	@param life int m_life
 	*/
 	void setLife(int life);
 	/**
 	@brief Set direction of player. 1 if direction forward or -1 if direction back
-	@param life int m_direction
+	@param x int m_direction
 	*/
 	void setDirection(int x);
 	/**
