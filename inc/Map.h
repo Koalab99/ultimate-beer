@@ -17,21 +17,51 @@ using namespace std;
 class Enemy;
 class Map {
 private:
+	/**
+	@brief Position X of player of begining
+	*/
 	float m_spawnX;
+	/**
+	@brief Position Y of player of begining
+	*/
 	float m_spawnY;
+	/**
+	@brief Group of blocs
+	*/
 	std::vector<Bloc> m_blocs;
+	/**
+	@brief Group of enemys
+	*/
 	std::vector<Enemy> m_enemies;
+	/**
+	@brief Group of items
+	*/
 	std::vector<Item> m_items;
+	/**
+	@brief Title of map
+	*/
 	std::string m_title;
+	/**
+	@brief Path for miniature
+	*/
 	std::string m_minipath;
+	/**
+	@brief Path for image
+	*/
 	std::string m_path;
+	/**
+	@brief height map
+	*/
 	float m_h;
+	/**
+	@brief width map
+	*/
 	float m_w;
 	
 public:
 	/**
 	@brief Constructor
-	@param string filename
+	@param filename string
 	*/
 	Map(const std::string &filename);
 	/**
@@ -40,46 +70,52 @@ public:
 	~Map();
 	/**
 	@brief Test collide with player and many blocs 
-	@param vector<Bloc> 
-	@param  float x: position x player , float y: position y player
-	@return m_blocs
+	@param v pointer vector<Bloc> 
+	@param x float position x player
+	@param y float position y player
+	@return Bloc m_blocs
 	*/
 	Bloc *collide(std::vector<Bloc> *v, const float x, const float y);
 	/**
 	@brief Test collide with player and many enemys 
-	@param vector<Enemy> 
-	@param  float x: position x player , float y: position y player
+	@param v pointer vector<Enemy> 
+	@param x float position x player 
+	@param y float position y player
 	@return m_enemies
 	*/
 	Enemy *collide(std::vector<Enemy> *v, const float x, const float y);
 	/**
 	@brief Test collide with player and many items 
-	@param vector<Item> 
-	@param  float x: position x player , float y: position y player
-	@return m_items
+	@param v pointer vector<Item> 
+	@param x float position x player 
+	@param y float position y player
+	@return Item pointer m_items
 	*/
 	const Item *collide(std::vector<Item> *v, const float x, const float y);
 	/**
 	@brief Test if bloc exist 
-	@param bloc 
+	@param c pointer bloc 
 	@return true if bloc exist and false if bloc not exist
 	*/
 	bool blocExists(Bloc *c);
 	/**
 	@brief Recovers the blocs not far away 
-	@param x:position w:weight
+	@param x float position 
+	@param w float weight
 	@return vector<Bloc> m_blocs
 	*/
 	std::vector<Bloc> *getBlocsInRange(float x, float w);
 	/**
 	@brief Recovers the enemies not far away 
-	@param x:position w:weight
+	@param x float position
+	@param w float weight
 	@return vector<Enemy> m_enemies
 	*/
 	std::vector<Enemy> *getEnemiesInRange(float x, float w);
 	/**
 	@brief Recovers the item not far away 
-	@param x:position w:weight
+	@param x float position
+	@param w float weight
 	@return vector<Item> m_items
 	*/
 	std::vector<Item> *getItemsInRange(float x, float w);
@@ -105,7 +141,7 @@ public:
 	std::vector<Item> *getItems();
 	/**
 	@brief Open the Map and definition of this objects 
-	@param string path m_path
+	@param path string m_path
 	*/
 	void open(const string &path);
 	/**
@@ -124,12 +160,12 @@ public:
 	float getW();
 	/**
 	@brief Get first position X of player
-	@return m_spawnX
+	@return float m_spawnX
 	*/
 	float getSpawnX() const;
 	/**
 	@brief Get first position Y of player
-	@return m_spawnY
+	@return float m_spawnY
 	*/
 	float getSpawnY() const;
 	/**
@@ -139,18 +175,20 @@ public:
 	std::string getMiniPath();
 	/**
 	@brief Get Path 
-	@return m_path
+	@return string m_path
 	*/
 	std::string getPath();
 	/**
 	@brief Get title 
-	@return m_title
+	@return string m_title
 	*/
 	std::string getTitle();
 	/**
 	@brief the player is he falling ?
-	@param x:position X of player, y:position Y of player, w:width of map 
-	@return true if player fall and false if player not fall
+	@param x position X of player
+	@param y position Y of player
+	@param w width of map 
+	@return bool true if player fall and false if player not fall
 	*/
 	bool fall(float x, float y, float w);
 };

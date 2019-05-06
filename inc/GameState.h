@@ -28,7 +28,13 @@ class GameState
   virtual StateReturnValue update() = 0;
   
 protected:
+  /**
+	@brief Pointer SDL_Window
+	*/
   SDL_Window* m_window;
+  /**
+	@brief Pointer SDL_Renderer 
+	*/
   SDL_Renderer *m_renderer;
 };
 #endif

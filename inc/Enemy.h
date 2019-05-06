@@ -43,7 +43,7 @@ public:
 	bool isAlive() const;
 	/**
 	@brief Set alive of enemy
-	@param alive : bool true if enemy is alive
+	@param alive bool true if enemy is alive
 	*/
 	void setAlive(bool alive);
 	/**
@@ -58,12 +58,12 @@ public:
 	void setRectangle(Rectangle rect);
 	/**
 	@brief Get Bloc of enemy
-	@return pointeur Bloc 
+	@return Bloc pointer
 	*/
 	Bloc *getBloc() const;
 	/**
 	@brief Set Bloc of enemy
-	@param pointer bloc
+	@param bloc pointer
 	*/
 	void setBloc(Bloc *bloc);
 	/**
@@ -73,17 +73,17 @@ public:
 	int getDirection() const;
 	/**
 	@brief Set Direction of enemy
-	@param: direction int 1 if direction forward or -1 if direction back
+	@param direction int 1 if direction forward or -1 if direction back
 	*/
 	void setDirection(const int direction);
 	/**
 	@brief Set position X of enemy
-	@param float x
+	@param x float 
 	*/
 	void setX(float x);
 	/**
 	@brief Set position Y of enemy
-	@param float y
+	@param y float
 	*/
 	void setY(float y);
 	/**
@@ -108,6 +108,7 @@ public:
 	float GetHeight() const;
 	/**
 	@brief Compares 2 enemy and return true if they are equal
+	@param e Enemy
 	@return bool
 	*/
 	bool operator==(const Enemy &e) const;

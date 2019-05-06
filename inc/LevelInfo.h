@@ -7,6 +7,9 @@
 /*Defines what has to be known for each level: it's name, what it looks like, it's number of ennemies and items... */ 
 class LevelInfo {
 private:
+	/**
+	@brief Name 
+	*/
 	std::string m_name;
 	std::string m_texturePath;
 	std::string m_path;
@@ -20,7 +23,8 @@ private:
 public:
 	/**
 	@brief Constructor
-	@param pointer renderer, string path
+	@param renderer pointer SDL_Renderer
+	@param path string
 	*/
 	LevelInfo(SDL_Renderer *renderer, std::string path);
 	/**
@@ -29,52 +33,52 @@ public:
 	~LevelInfo();
 	/**
 	@brief Get Name of level
-	@return m_name
+	@return string m_name
 	*/
 	std::string getName() const;
 	/**
-	@brief Get texture of level
-	@return *m_texture
+	@brief Get texture Path
+	@return string
 	*/
 	std::string getTexturePath() const;
 	/**
 	@brief Get Texture of level
-	@return Texture
+	@return SDL_Texture pointer
 	*/
 	SDL_Texture *getTexture() const;
 	/**
 	@brief Get Title of level
-	@return m_title
+	@return SDL_Texture pointer m_title
 	*/
 	SDL_Texture *getTitle() const;
 	/**
 	@brief Get number of blocs in level
-	@return m_nbBlocs
+	@return int m_nbBlocs
 	*/
 	int getNbBlocs() const;
 	/**
 	@brief Get number of enemys  in level
-	@return m_nbEnemies
+	@return int m_nbEnemies
 	*/
 	int getNbEnemies() const;
 	/**
 	@brief Get number of items in level
-	@return m_nbItems
+	@return int m_nbItems
 	*/
 	int getNbItems() const;
 	/**
 	@brief Get position X
-	@return m_x
+	@return int m_x
 	*/
 	int getX() const;
 	/**
 	@brief Get position X
-	@return m_y
+	@return int m_y
 	*/
 	int getY() const;
 	/**
 	@brief Get path
-	@return m_texturePath
+	@return string m_texturePath
 	*/
 	std::string getPath() const;
 };

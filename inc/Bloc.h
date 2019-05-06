@@ -40,14 +40,14 @@ public:
 	float GetY() const;
 	/**
 	@brief Set position X of bloc
-	@param float m_x
+	@param x float m_x
 	*/
-	void SetX(float);
+	void SetX(float x);
 	/**
 	@brief Set position Y of bloc
-	@param float m_y
+	@param y float m_y
 	*/
-	void SetY(float);
+	void SetY(float y);
 	/**
 	@brief Get width of bloc
 	@return float m_width

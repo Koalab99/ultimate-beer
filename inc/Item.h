@@ -24,27 +24,31 @@ private:
 	@brief true if item are eaten and false if item are not eaten 
 	*/
 	bool m_eaten;
+	/**
+	@brief identifiant of item 
+	*/
 	int m_id;
 
 public:
 	/**
 	@brief Constructor
-	@param float:m_x float:m_y
-	@param int m_id 
+	@param x float m_x 
+	@param y float m_y
+	@param id int m_id 
 	*/
-	Item(float, float, int);
+	Item(float x, float y, int id);
 	/**
 	@brief Destructor
 	*/
 	~Item();
 	/**
 	@brief Get position X of item
-	@return m_x:positionX
+	@return float m_x positionX
 	*/
 	float GetX() const;
 	/**
 	@brief Get position Y of item
-	@return m_y:positionY
+	@return float m_y positionY
 	*/
 	float GetY() const;
 	/**
@@ -59,19 +63,19 @@ public:
 	float GetHeight() const;
 	/**
 	@brief Get rectangle (dimension and position) of item
-	@return m_rectangle
+	@return Rectangle m_rectangle
 	*/
 	Rectangle getRectangle() const;
 	/**
 	@brief Set position X of item
-	@param float m_x
+	@param x float m_x
 	*/
-	void SetX(float);
+	void SetX(float x);
 	/**
 	@brief Set position Y of item
-	@param float m_y
+	@param y float m_y
 	*/
-	void SetY(float);
+	void SetY(float y);
 	/**
 	@brief Get login of item
 	@return int m_id
@@ -79,16 +83,17 @@ public:
 	int getId() const;
 	/**
 	@brief Set if it has been eaten  
-	@param true if item are eaten and false if item are not eaten
+	@param eat bool true if item are eaten and false if item are not eaten
 	*/
-	void setEaten(bool);
+	void setEaten(bool eat);
 	/**
 	@brief Determines if it has been eaten  
-	@return m_eaten
+	@return bool m_eaten
 	*/
 	bool isEaten() const;
 	/**
 	@brief Compares 2 item and return true if they are equal
+	@param a Item
 	@return bool 
 	*/
 	bool operator==(const Item &a);

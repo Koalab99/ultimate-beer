@@ -11,9 +11,9 @@ class Menu: public GameState {
 public:
   /**
 	@brief Constructor
-  @param SDL_Window pointer
+  @param w SDL_Window pointer
 	*/
-  Menu(SDL_Window*);
+  Menu(SDL_Window* w);
   /**
 	@brief true if player play
 	*/
