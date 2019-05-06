@@ -31,19 +31,19 @@ public:
 	void setY(float y);
 	/**
 	@brief Addition of 2 positions
-	@param Position
+	@param b
 	@return Position result
 	*/
 	Position operator+(Position &b);
 	/**
 	@brief Soustraction of 2 positions
-	@param Position
+	@param b
 	@return Position result
 	*/
 	Position operator-(Position &b);
 	/**
-	@brief Is Null?
-	@param True if is null
+	@brief Is Null? Return true if is null.
+	@return bool
 	*/
 	bool isNull() const;
 };

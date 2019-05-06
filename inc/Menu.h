@@ -11,17 +11,40 @@ class Menu: public GameState {
 public:
   /**
 	@brief Constructor
+  @param SDL_Window pointer
 	*/
   Menu(SDL_Window*);
-
+  /**
+	@brief true if player play
+	*/
   bool play();
+  /**
+	@brief true if character exist
+	*/
   bool character();
+  /**
+	@brief after update
+	*/
   bool language();
+  /**
+	@brief if true go to rules
+	*/
   bool rules();
+  /**
+	@brief if true quit game
+	*/
   bool quit();
-
+  /**
+	@brief entree
+	*/
   void input();
+  /**
+	@brief StateReturnValue
+	*/
   StateReturnValue update();
+  /**
+	@brief boucle
+	*/
   void render();
   /**
 	@brief Destructor

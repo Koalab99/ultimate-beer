@@ -39,12 +39,12 @@ public:
 	bool loop();
 	/**
 	@brief Get Player
-	@return Pointer Player
+	@return Player pointer
 	*/
 	Player *getPlayer() const;
 	/**
 	@brief Get State
-	@return Pointer GameState
+	@return GameState pointer
 	*/
 	GameState *getState();
 

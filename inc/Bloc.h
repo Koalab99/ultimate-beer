@@ -58,8 +58,16 @@ public:
 	@return float height
 	*/
 	float GetHeight() const;
+	/**
+	@brief Get type
+	@return int m_type
+	*/
 	int GetType();
-
+	/**
+	@brief Player is in bloc?
+	@param p
+	@return Position
+	*/
 	Position isInside(Position &p);
 	/**
 	@brief Constructor
@@ -67,8 +75,10 @@ public:
 	Bloc();
 	/**
 	@brief Constructeur
-	@param w:m_width, h:m_height
-	@param x:m_x, y:m_y 
+	@param w m_width
+	@param h m_height
+	@param x m_x
+	@param y m_y 
 	*/
 	Bloc(float w, float h, float x, float y);
 	/**

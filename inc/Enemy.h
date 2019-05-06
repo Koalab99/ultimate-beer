@@ -12,25 +12,38 @@
 /*Sets up an ennemy: Is is alive? Where does it stands? Where is it going? etc...)*/
 class Enemy {
 private:
+	/**
+	@brief bool true if enemy is alive
+	*/
 	bool  m_alive;
+	/**
+	@brief Rectangle for dimention of enemy
+	*/
 	Rectangle m_rectangle;
+	/**
+	@brief 1 if direction forward or -1 if direction back
+	*/
 	int m_direction;
+	/**
+	@brief pointer of bloc of enemy
+	*/
 	Bloc *m_bloc;
 
 public:
 	/**
 	@brief Constructor
-	@param x:positionX, y:positionY
+	@param x m_x
+	@param y m_y
 	*/
 	Enemy(float x, float y);
 	/**
 	@brief Is the enemy alive ?
-	@return true if enemy is alive
+	@return bool true if enemy is alive
 	*/
 	bool isAlive() const;
 	/**
 	@brief Set alive of enemy
-	@param alive : true if enemy is alive
+	@param alive : bool true if enemy is alive
 	*/
 	void setAlive(bool alive);
 	/**
@@ -40,12 +53,12 @@ public:
 	Rectangle getRectangle() const;
 	/**
 	@brief Set Rectangle of enemy
-	@param Rectangle : position and dimension
+	@param rect Rectangle : position and dimension
 	*/
 	void setRectangle(Rectangle rect);
 	/**
 	@brief Get Bloc of enemy
-	@return bloc 
+	@return pointeur Bloc 
 	*/
 	Bloc *getBloc() const;
 	/**
@@ -55,12 +68,12 @@ public:
 	void setBloc(Bloc *bloc);
 	/**
 	@brief Get Direction of enemy
-	@return 1 if direction forward or -1 if direction back
+	@return int 1 if direction forward or -1 if direction back
 	*/
 	int getDirection() const;
 	/**
 	@brief Set Direction of enemy
-	@param: 1 if direction forward or -1 if direction back
+	@param: direction int 1 if direction forward or -1 if direction back
 	*/
 	void setDirection(const int direction);
 	/**
@@ -90,7 +103,7 @@ public:
 	float GetWidth() const;
 	/**
 	@brief Get height of enemy
-	@return float:Height
+	@return float Height
 	*/
 	float GetHeight() const;
 	/**

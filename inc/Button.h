@@ -9,15 +9,31 @@
 
 class Button {
 private:
+	/**
+	@brief width of button
+	*/
 	int m_width;
+	/**
+	@brief height of button
+	*/
 	int m_height;
+	/**
+	@brief message in button
+	*/
 	std::string m_message;
+	/**
+	@brief texture of button
+	*/
 	SDL_Texture *m_texture;
+	/**
+	@brief pionter renderer
+	*/
 	SDL_Renderer *m_renderer;
 public:
 	/**
 	@brief Constructor
-	@param pointer renderer, string message
+	@param renderer pointer
+	@param message string
 	*/
 	Button(SDL_Renderer *renderer, std::string message);
 	/**

@@ -7,11 +7,29 @@
 /* Defines the player's avatar: how fast and where is it going, how much life it has, what it looks like...*/
 class Player {
 private:
+	/**
+	@brief Speed of player
+	*/
 	float m_speed;
+	/**
+	@brief Number of life of player
+	*/
 	int m_life;
+	/**
+	@brief 1 if direction forward or -1 if direction back
+	*/
 	int m_direction;
+	/**
+	@brief Name of Texture for run 
+	*/
 	std::string m_runningTexturePath;
+	/**
+	@brief Name of Texture for wait
+	*/
 	std::string m_waitingTexturePath;
+	/**
+	@brief Number of image needed to make the player run
+	*/
 	int m_numImagesRunning;	
 	
 public:
@@ -35,17 +53,17 @@ public:
 	float getSpeed() const;
 	/**
 	@brief Set number of life of player.
-	@param int m_life
+	@param m_life int
 	*/
 	void setLife(int life);
 	/**
 	@brief Set direction of player. 1 if direction forward or -1 if direction back
-	@param int m_direction
+	@param life int m_direction
 	*/
 	void setDirection(int x);
 	/**
 	@brief Get direction of player. 1 if direction forward or -1 if direction back
-	@return int m_direction
+	@return x int m_direction
 	*/
 	int getDirection() const;
 	/**
@@ -63,7 +81,9 @@ public:
 	@return string m_waitingTexturePath
 	*/
 	std::string getWaitingTexturePath() const;
-
+	/**
+	@brief boucle update
+	*/
 	void update();
 };
 
