@@ -10,14 +10,29 @@
 
 class PauseState {
 private:
+	/**
+	@brief Position X of the mouse
+	*/
 	int m_mouseX;
+	/**
+	@brief Position Y of the mouse
+	*/
 	int m_mouseY;
+	/**
+	@brief Pointer of renderer
+	*/
 	SDL_Renderer *m_renderer;
 	std::vector<Button*> m_buttons;
 	std::string m_buttonPressedText;
 	StateReturnValue m_returnValue;
 public:
+	/**
+	@brief Constructor 
+	*/
 	PauseState(SDL_Renderer *renderer);
+	/**
+	@brief Destructor
+	*/
 	~PauseState();
 	void render();
 	StateReturnValue update();

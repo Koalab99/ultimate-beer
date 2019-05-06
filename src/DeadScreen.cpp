@@ -16,7 +16,7 @@ DeadScreen::DeadScreen(SDL_Renderer *renderer) {
 		std::cerr << "IMG_Error :" << IMG_GetError() << std::endl;
 		assert(m_pizza != nullptr);
 	}
-	SDL_Surface *surf = TTF_RenderText_Blended(gFont, "You dead !", {0, 0, 0});
+	SDL_Surface *surf = TTF_RenderText_Blended(gFont, "You died !", {0, 0, 0});
 	if(surf == nullptr) {
 		std::cerr << "Couldn't render text" << std::endl;
 		std::cerr << "TTF_Error :" << TTF_GetError() << std::endl;

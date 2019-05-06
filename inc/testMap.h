@@ -27,7 +27,10 @@
  * 			but with one extra feature:
  * 				A number which describe the type of item!
  */
-
+/**
+	@brief Map have a no problem ? 
+	@return bool true if map have a no problem
+	*/
 bool mapIsOk(std::string &path) {
 	std::ifstream file;
 	file.open(path);

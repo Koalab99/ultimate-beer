@@ -10,7 +10,14 @@ private:
 	SDL_Texture *m_pizza;
 	void run();
 public:
+	/**
+	@brief Constructor
+	@param pointer renderer
+	*/
 	DeadScreen(SDL_Renderer *renderer);
+	/**
+	@brief Destructor
+	*/
 	~DeadScreen();
 };
 

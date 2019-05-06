@@ -84,7 +84,7 @@ int Game::init() {
 	return 0;
 }
 
-int Game::loop() {
+bool Game::loop() {
 	// Everything happens here
 	// First: We draw on screen
 	m_state->render();
