@@ -5,23 +5,33 @@ It is not suitable for children under 13 years old.
 ## Installation
 ### Update your system
 You first need to make sure your system is up to date. On Ubuntu use
+
 `sudo apt update && sudo apt upgrade -y`
 ### Install dependancies
 Then you install the dependancies for the project. On Ubuntu use
+
 `sudo apt install git build-essential libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev`
 ### Download the project
 Then you will want to download the project with
+
 `git clone https://gitlab.com/lifap4/ultimatebeercore.git`
 ### Compile the project
 Then change your working directory to ultimatebeercore with
+
 `cd ultimatebeercore`
 Then you can compile the project with
+
 `make`
 
 ## Play
 ### How to launch the game
 To start the game, run in the ultimatebeercore directory :
+<<<<<<< HEAD
 `./bin/ultimateBeer`
+=======
+
+`./bin/ultimatebeer`
+>>>>>>> 1c2bf787f3190a35f7515b397217c744e42110ca
 ### How to play
 Once the game is on, click on "Play" with your mouse. Then, select the level of your choice.
 To run back and forward, you need to push the 'left' and 'right' arrows of your keypad.

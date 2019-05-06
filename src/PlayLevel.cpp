@@ -486,7 +486,7 @@ StateReturnValue PlayLevel::update() {
 	}
 	// Set current tick as last tick for next loop
 	m_lastUpdate = currentTicks;
-	if(m_player->getLife() < 1 || m_playerX + m_playerH < 0) {
+	if(m_player->getLife() < 1 || m_playerY + m_playerH < 0) {
 		SDL_Delay(200);
 		m_return = RETURN_DEAD;
 	}
