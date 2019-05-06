@@ -109,6 +109,12 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 		std::cerr << "IMG Error:" << IMG_GetError() << std::endl;
 		assert(m_enemyTexture != NULL);
 	}
+	m_heartTexture = IMG_LoadTexture(m_renderer, "data/img/heart.png");
+	if(m_heartTexture == NULL) {
+		std::cerr << "Couldn't load heart.png" << std::endl;
+		std::cerr << "IMG Error:" << IMG_GetError() << std::endl;
+		assert(m_heartTexture != NULL);
+	}
 	m_enemyDeadSong = Mix_LoadWAV("data/music/killedEnemy.wav");
 	m_itemTaken = Mix_LoadWAV("data/music/beerTaken.wav");
 	// Initialize the last update
@@ -119,6 +125,9 @@ PlayLevel::PlayLevel(SDL_Renderer *renderer, std::string path, Player *player) {
 
 // PlayLevel Destructor, should free all memory allocated by us or by SDL
 PlayLevel::~PlayLevel() {
+	if(m_heartTexture != nullptr) {
+		SDL_DestroyTexture(m_heartTexture);
+	}
 	// Deleting map if existing
 	if(m_map != nullptr) {
 		delete m_map;
@@ -268,6 +277,10 @@ void PlayLevel::render() {
 				}
 
 			}
+		}
+		for(int i = 0; i < m_player->getLife(); i++) {
+			SDL_Rect rect = {(int)(i* m_height/ m_map->getH()) , 0, (int)(m_height / m_map->getH()), (int)(m_height / m_map->getH())};
+			SDL_RenderCopy(m_renderer, m_heartTexture, NULL, &rect);
 		}
 	}
 
@@ -538,6 +551,7 @@ void PlayLevel::updateItemCollision(Uint32 currentTicks) {
 	}
 	if(gotIt) {
 		// Do something to the player
+		m_player->setLife(m_player->getLife() + 1);
 	}
 }
 
