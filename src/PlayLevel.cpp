@@ -17,6 +17,7 @@
 #include <StateReturnValue.h>
 #include <PauseState.h>
 #include <assert.h>
+#include <algorithm>
 
 /* Setting framerate so that we don't calculate too much frames (in case your computer is too powerful or not enough*/
 const int FPS = 40;

@@ -10,6 +10,7 @@
 #include <DeadScreen.h>
 #include <WinScreen.h>
 #include <assert.h>
+#include <algorithm>
 
 PlayState::PlayState(SDL_Window *window, Player *player, Mix_Music *music) : GameState(window) {
 	m_music = music;
@@ -35,6 +36,9 @@ PlayState::PlayState(SDL_Window *window, Player *player, Mix_Music *music) : Gam
 		}
 		m_levels.push_back(levelInfo);
 	}
+	std::sort(m_levels.begin(), m_levels.end(), [ ](const auto& a, const auto& b) {
+			return a->getName() < b->getName();	
+		});
 }
 
 PlayState::~PlayState() {
