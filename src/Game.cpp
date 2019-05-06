@@ -9,6 +9,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <Menu.h>
+#include <Credit.h>
 #include <StateReturnValue.h>
 #include <assert.h>
 
@@ -107,6 +108,10 @@ bool Game::loop() {
 			// User wants the menu screen
 			delete m_state;
 			m_state = new Menu(m_window);
+			break;
+		case RETURN_CREDITS:
+			delete m_state;
+			m_state = new Credit(m_window);
 			break;
 		default:
 			// User don't need us

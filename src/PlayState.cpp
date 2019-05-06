@@ -75,7 +75,7 @@ void PlayState::render() {
 		m_order = "Menu";		
 	}
 	std::vector<LevelInfo*>::iterator i;
-	for(i = m_levels.begin(), count = 0; count < 8 && i != m_levels.end(); count++, i++) {
+	for(i = m_levels.begin(), count = 1; count < 8 && i != m_levels.end(); count++, i++) {
 		x = (count%4)*width/4 + 10;
 		y = ((int)(count/4)*2+1) * height/5 + 10;
 		w = width/4 - 20;
