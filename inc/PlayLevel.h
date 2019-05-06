@@ -64,17 +64,40 @@ protected:
 	
 	
 public:
+	/**
+	@brief Construtor
+	@param pointer renderer, string path, pointer Player
+	*/
 	PlayLevel(SDL_Renderer *renderer, std::string path, Player *player);
-
+	/**
+	@brief Destructor
+	*/
 	~PlayLevel();
+	/**
+	@brief Player run
+	@return StateReturnValue m_return
+	*/
 	StateReturnValue run();
+	/**
+	@brief Boucle continue des évenements
+	*/
 	void render();
 	StateReturnValue update();
+	/**
+	@brief Boucle continue des évenements entrée par utilisateur
+	*/
 	void input();
 	SDL_Texture *m_background;
+	/**
+	@brief Get Player
+	@return pointer Player
+	*/
 	Player *getPlayer() const;
+	/**
+	@brief Get Map
+	@return pointer Map
+	*/
 	Map *getMap() const;
-//	PlayState *getPlayState() const;
 
 };
 

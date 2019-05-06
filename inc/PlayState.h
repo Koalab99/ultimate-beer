@@ -22,10 +22,22 @@ private:
 	Button *m_menuButton;
 
 public:
+	/**
+	@brief Constructor
+	@param pointer SDL_Window, pointer Player, pointer Mix_Music
+	*/
 	PlayState(SDL_Window *, Player *, Mix_Music *);
+	/**
+	@brief Destructor
+	*/
 	~PlayState();
-
+	/**
+	@brief Boucle render
+	*/
 	void render();
+	/**
+	@brief Boucle input
+	*/
 	void input();
 	StateReturnValue update();
 };

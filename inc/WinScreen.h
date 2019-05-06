@@ -11,9 +11,18 @@ private:
 	SDL_Texture *m_beer;
 	SDL_Texture *m_text;
 public:
+/**
+	@brief Constructor
+	@param pointer renderer
+	*/
 	WinScreen(SDL_Renderer *renderer);
+	/**
+	@brief Destructor
+	*/
 	~WinScreen();
-
+	/**
+	@brief Affichage of win screen 
+	*/
 	void show();
 };
 
